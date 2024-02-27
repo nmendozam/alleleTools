@@ -2,7 +2,13 @@ This script is used to parse typing data and convert append it to a vcf file wit
 
 # Getting started
 
-The requirements for this script are:
+You can use conda to install the environment to be on se safe side.
+
+```bash
+conda env create -f environment.yml
+```
+
+But in theory the only requirements are:
 
 - Python 3.6 or higher
 - pandas
