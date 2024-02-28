@@ -1,0 +1,602 @@
+##fileformat=VCFv4.1
+##FILTER=<ID=PASS,Description="All filters passed">
+##fileDate=20150218
+##reference=ftp://ftp.1000genomes.ebi.ac.uk//vol1/ftp/technical/reference/phase2_reference_assembly_sequence/hs37d5.fa.gz
+##source=1000GenomesPhase3Pipeline
+##contig=<ID=1,assembly=b37,length=249250621>
+##contig=<ID=2,assembly=b37,length=243199373>
+##contig=<ID=3,assembly=b37,length=198022430>
+##contig=<ID=4,assembly=b37,length=191154276>
+##contig=<ID=5,assembly=b37,length=180915260>
+##contig=<ID=6,assembly=b37,length=171115067>
+##contig=<ID=7,assembly=b37,length=159138663>
+##contig=<ID=8,assembly=b37,length=146364022>
+##contig=<ID=9,assembly=b37,length=141213431>
+##contig=<ID=10,assembly=b37,length=135534747>
+##contig=<ID=11,assembly=b37,length=135006516>
+##contig=<ID=12,assembly=b37,length=133851895>
+##contig=<ID=13,assembly=b37,length=115169878>
+##contig=<ID=14,assembly=b37,length=107349540>
+##contig=<ID=15,assembly=b37,length=102531392>
+##contig=<ID=16,assembly=b37,length=90354753>
+##contig=<ID=17,assembly=b37,length=81195210>
+##contig=<ID=18,assembly=b37,length=78077248>
+##contig=<ID=19,assembly=b37,length=59128983>
+##contig=<ID=20,assembly=b37,length=63025520>
+##contig=<ID=21,assembly=b37,length=48129895>
+##contig=<ID=22,assembly=b37,length=51304566>
+##contig=<ID=GL000191.1,assembly=b37,length=106433>
+##contig=<ID=GL000192.1,assembly=b37,length=547496>
+##contig=<ID=GL000193.1,assembly=b37,length=189789>
+##contig=<ID=GL000194.1,assembly=b37,length=191469>
+##contig=<ID=GL000195.1,assembly=b37,length=182896>
+##contig=<ID=GL000196.1,assembly=b37,length=38914>
+##contig=<ID=GL000197.1,assembly=b37,length=37175>
+##contig=<ID=GL000198.1,assembly=b37,length=90085>
+##contig=<ID=GL000199.1,assembly=b37,length=169874>
+##contig=<ID=GL000200.1,assembly=b37,length=187035>
+##contig=<ID=GL000201.1,assembly=b37,length=36148>
+##contig=<ID=GL000202.1,assembly=b37,length=40103>
+##contig=<ID=GL000203.1,assembly=b37,length=37498>
+##contig=<ID=GL000204.1,assembly=b37,length=81310>
+##contig=<ID=GL000205.1,assembly=b37,length=174588>
+##contig=<ID=GL000206.1,assembly=b37,length=41001>
+##contig=<ID=GL000207.1,assembly=b37,length=4262>
+##contig=<ID=GL000208.1,assembly=b37,length=92689>
+##contig=<ID=GL000209.1,assembly=b37,length=159169>
+##contig=<ID=GL000210.1,assembly=b37,length=27682>
+##contig=<ID=GL000211.1,assembly=b37,length=166566>
+##contig=<ID=GL000212.1,assembly=b37,length=186858>
+##contig=<ID=GL000213.1,assembly=b37,length=164239>
+##contig=<ID=GL000214.1,assembly=b37,length=137718>
+##contig=<ID=GL000215.1,assembly=b37,length=172545>
+##contig=<ID=GL000216.1,assembly=b37,length=172294>
+##contig=<ID=GL000217.1,assembly=b37,length=172149>
+##contig=<ID=GL000218.1,assembly=b37,length=161147>
+##contig=<ID=GL000219.1,assembly=b37,length=179198>
+##contig=<ID=GL000220.1,assembly=b37,length=161802>
+##contig=<ID=GL000221.1,assembly=b37,length=155397>
+##contig=<ID=GL000222.1,assembly=b37,length=186861>
+##contig=<ID=GL000223.1,assembly=b37,length=180455>
+##contig=<ID=GL000224.1,assembly=b37,length=179693>
+##contig=<ID=GL000225.1,assembly=b37,length=211173>
+##contig=<ID=GL000226.1,assembly=b37,length=15008>
+##contig=<ID=GL000227.1,assembly=b37,length=128374>
+##contig=<ID=GL000228.1,assembly=b37,length=129120>
+##contig=<ID=GL000229.1,assembly=b37,length=19913>
+##contig=<ID=GL000230.1,assembly=b37,length=43691>
+##contig=<ID=GL000231.1,assembly=b37,length=27386>
+##contig=<ID=GL000232.1,assembly=b37,length=40652>
+##contig=<ID=GL000233.1,assembly=b37,length=45941>
+##contig=<ID=GL000234.1,assembly=b37,length=40531>
+##contig=<ID=GL000235.1,assembly=b37,length=34474>
+##contig=<ID=GL000236.1,assembly=b37,length=41934>
+##contig=<ID=GL000237.1,assembly=b37,length=45867>
+##contig=<ID=GL000238.1,assembly=b37,length=39939>
+##contig=<ID=GL000239.1,assembly=b37,length=33824>
+##contig=<ID=GL000240.1,assembly=b37,length=41933>
+##contig=<ID=GL000241.1,assembly=b37,length=42152>
+##contig=<ID=GL000242.1,assembly=b37,length=43523>
+##contig=<ID=GL000243.1,assembly=b37,length=43341>
+##contig=<ID=GL000244.1,assembly=b37,length=39929>
+##contig=<ID=GL000245.1,assembly=b37,length=36651>
+##contig=<ID=GL000246.1,assembly=b37,length=38154>
+##contig=<ID=GL000247.1,assembly=b37,length=36422>
+##contig=<ID=GL000248.1,assembly=b37,length=39786>
+##contig=<ID=GL000249.1,assembly=b37,length=38502>
+##contig=<ID=MT,assembly=b37,length=16569>
+##contig=<ID=NC_007605,assembly=b37,length=171823>
+##contig=<ID=X,assembly=b37,length=155270560>
+##contig=<ID=Y,assembly=b37,length=59373566>
+##contig=<ID=hs37d5,assembly=b37,length=35477943>
+##ALT=<ID=CNV,Description="Copy Number Polymorphism">
+##ALT=<ID=DEL,Description="Deletion">
+##ALT=<ID=DUP,Description="Duplication">
+##ALT=<ID=INS:ME:ALU,Description="Insertion of ALU element">
+##ALT=<ID=INS:ME:LINE1,Description="Insertion of LINE1 element">
+##ALT=<ID=INS:ME:SVA,Description="Insertion of SVA element">
+##ALT=<ID=INS:MT,Description="Nuclear Mitochondrial Insertion">
+##ALT=<ID=INV,Description="Inversion">
+##ALT=<ID=CN0,Description="Copy number allele: 0 copies">
+##ALT=<ID=CN1,Description="Copy number allele: 1 copy">
+##ALT=<ID=CN2,Description="Copy number allele: 2 copies">
+##ALT=<ID=CN3,Description="Copy number allele: 3 copies">
+##ALT=<ID=CN4,Description="Copy number allele: 4 copies">
+##ALT=<ID=CN5,Description="Copy number allele: 5 copies">
+##ALT=<ID=CN6,Description="Copy number allele: 6 copies">
+##ALT=<ID=CN7,Description="Copy number allele: 7 copies">
+##ALT=<ID=CN8,Description="Copy number allele: 8 copies">
+##ALT=<ID=CN9,Description="Copy number allele: 9 copies">
+##ALT=<ID=CN10,Description="Copy number allele: 10 copies">
+##ALT=<ID=CN11,Description="Copy number allele: 11 copies">
+##ALT=<ID=CN12,Description="Copy number allele: 12 copies">
+##ALT=<ID=CN13,Description="Copy number allele: 13 copies">
+##ALT=<ID=CN14,Description="Copy number allele: 14 copies">
+##ALT=<ID=CN15,Description="Copy number allele: 15 copies">
+##ALT=<ID=CN16,Description="Copy number allele: 16 copies">
+##ALT=<ID=CN17,Description="Copy number allele: 17 copies">
+##ALT=<ID=CN18,Description="Copy number allele: 18 copies">
+##ALT=<ID=CN19,Description="Copy number allele: 19 copies">
+##ALT=<ID=CN20,Description="Copy number allele: 20 copies">
+##ALT=<ID=CN21,Description="Copy number allele: 21 copies">
+##ALT=<ID=CN22,Description="Copy number allele: 22 copies">
+##ALT=<ID=CN23,Description="Copy number allele: 23 copies">
+##ALT=<ID=CN24,Description="Copy number allele: 24 copies">
+##ALT=<ID=CN25,Description="Copy number allele: 25 copies">
+##ALT=<ID=CN26,Description="Copy number allele: 26 copies">
+##ALT=<ID=CN27,Description="Copy number allele: 27 copies">
+##ALT=<ID=CN28,Description="Copy number allele: 28 copies">
+##ALT=<ID=CN29,Description="Copy number allele: 29 copies">
+##ALT=<ID=CN30,Description="Copy number allele: 30 copies">
+##ALT=<ID=CN31,Description="Copy number allele: 31 copies">
+##ALT=<ID=CN32,Description="Copy number allele: 32 copies">
+##ALT=<ID=CN33,Description="Copy number allele: 33 copies">
+##ALT=<ID=CN34,Description="Copy number allele: 34 copies">
+##ALT=<ID=CN35,Description="Copy number allele: 35 copies">
+##ALT=<ID=CN36,Description="Copy number allele: 36 copies">
+##ALT=<ID=CN37,Description="Copy number allele: 37 copies">
+##ALT=<ID=CN38,Description="Copy number allele: 38 copies">
+##ALT=<ID=CN39,Description="Copy number allele: 39 copies">
+##ALT=<ID=CN40,Description="Copy number allele: 40 copies">
+##ALT=<ID=CN41,Description="Copy number allele: 41 copies">
+##ALT=<ID=CN42,Description="Copy number allele: 42 copies">
+##ALT=<ID=CN43,Description="Copy number allele: 43 copies">
+##ALT=<ID=CN44,Description="Copy number allele: 44 copies">
+##ALT=<ID=CN45,Description="Copy number allele: 45 copies">
+##ALT=<ID=CN46,Description="Copy number allele: 46 copies">
+##ALT=<ID=CN47,Description="Copy number allele: 47 copies">
+##ALT=<ID=CN48,Description="Copy number allele: 48 copies">
+##ALT=<ID=CN49,Description="Copy number allele: 49 copies">
+##ALT=<ID=CN50,Description="Copy number allele: 50 copies">
+##ALT=<ID=CN51,Description="Copy number allele: 51 copies">
+##ALT=<ID=CN52,Description="Copy number allele: 52 copies">
+##ALT=<ID=CN53,Description="Copy number allele: 53 copies">
+##ALT=<ID=CN54,Description="Copy number allele: 54 copies">
+##ALT=<ID=CN55,Description="Copy number allele: 55 copies">
+##ALT=<ID=CN56,Description="Copy number allele: 56 copies">
+##ALT=<ID=CN57,Description="Copy number allele: 57 copies">
+##ALT=<ID=CN58,Description="Copy number allele: 58 copies">
+##ALT=<ID=CN59,Description="Copy number allele: 59 copies">
+##ALT=<ID=CN60,Description="Copy number allele: 60 copies">
+##ALT=<ID=CN61,Description="Copy number allele: 61 copies">
+##ALT=<ID=CN62,Description="Copy number allele: 62 copies">
+##ALT=<ID=CN63,Description="Copy number allele: 63 copies">
+##ALT=<ID=CN64,Description="Copy number allele: 64 copies">
+##ALT=<ID=CN65,Description="Copy number allele: 65 copies">
+##ALT=<ID=CN66,Description="Copy number allele: 66 copies">
+##ALT=<ID=CN67,Description="Copy number allele: 67 copies">
+##ALT=<ID=CN68,Description="Copy number allele: 68 copies">
+##ALT=<ID=CN69,Description="Copy number allele: 69 copies">
+##ALT=<ID=CN70,Description="Copy number allele: 70 copies">
+##ALT=<ID=CN71,Description="Copy number allele: 71 copies">
+##ALT=<ID=CN72,Description="Copy number allele: 72 copies">
+##ALT=<ID=CN73,Description="Copy number allele: 73 copies">
+##ALT=<ID=CN74,Description="Copy number allele: 74 copies">
+##ALT=<ID=CN75,Description="Copy number allele: 75 copies">
+##ALT=<ID=CN76,Description="Copy number allele: 76 copies">
+##ALT=<ID=CN77,Description="Copy number allele: 77 copies">
+##ALT=<ID=CN78,Description="Copy number allele: 78 copies">
+##ALT=<ID=CN79,Description="Copy number allele: 79 copies">
+##ALT=<ID=CN80,Description="Copy number allele: 80 copies">
+##ALT=<ID=CN81,Description="Copy number allele: 81 copies">
+##ALT=<ID=CN82,Description="Copy number allele: 82 copies">
+##ALT=<ID=CN83,Description="Copy number allele: 83 copies">
+##ALT=<ID=CN84,Description="Copy number allele: 84 copies">
+##ALT=<ID=CN85,Description="Copy number allele: 85 copies">
+##ALT=<ID=CN86,Description="Copy number allele: 86 copies">
+##ALT=<ID=CN87,Description="Copy number allele: 87 copies">
+##ALT=<ID=CN88,Description="Copy number allele: 88 copies">
+##ALT=<ID=CN89,Description="Copy number allele: 89 copies">
+##ALT=<ID=CN90,Description="Copy number allele: 90 copies">
+##ALT=<ID=CN91,Description="Copy number allele: 91 copies">
+##ALT=<ID=CN92,Description="Copy number allele: 92 copies">
+##ALT=<ID=CN93,Description="Copy number allele: 93 copies">
+##ALT=<ID=CN94,Description="Copy number allele: 94 copies">
+##ALT=<ID=CN95,Description="Copy number allele: 95 copies">
+##ALT=<ID=CN96,Description="Copy number allele: 96 copies">
+##ALT=<ID=CN97,Description="Copy number allele: 97 copies">
+##ALT=<ID=CN98,Description="Copy number allele: 98 copies">
+##ALT=<ID=CN99,Description="Copy number allele: 99 copies">
+##ALT=<ID=CN100,Description="Copy number allele: 100 copies">
+##ALT=<ID=CN101,Description="Copy number allele: 101 copies">
+##ALT=<ID=CN102,Description="Copy number allele: 102 copies">
+##ALT=<ID=CN103,Description="Copy number allele: 103 copies">
+##ALT=<ID=CN104,Description="Copy number allele: 104 copies">
+##ALT=<ID=CN105,Description="Copy number allele: 105 copies">
+##ALT=<ID=CN106,Description="Copy number allele: 106 copies">
+##ALT=<ID=CN107,Description="Copy number allele: 107 copies">
+##ALT=<ID=CN108,Description="Copy number allele: 108 copies">
+##ALT=<ID=CN109,Description="Copy number allele: 109 copies">
+##ALT=<ID=CN110,Description="Copy number allele: 110 copies">
+##ALT=<ID=CN111,Description="Copy number allele: 111 copies">
+##ALT=<ID=CN112,Description="Copy number allele: 112 copies">
+##ALT=<ID=CN113,Description="Copy number allele: 113 copies">
+##ALT=<ID=CN114,Description="Copy number allele: 114 copies">
+##ALT=<ID=CN115,Description="Copy number allele: 115 copies">
+##ALT=<ID=CN116,Description="Copy number allele: 116 copies">
+##ALT=<ID=CN117,Description="Copy number allele: 117 copies">
+##ALT=<ID=CN118,Description="Copy number allele: 118 copies">
+##ALT=<ID=CN119,Description="Copy number allele: 119 copies">
+##ALT=<ID=CN120,Description="Copy number allele: 120 copies">
+##ALT=<ID=CN121,Description="Copy number allele: 121 copies">
+##ALT=<ID=CN122,Description="Copy number allele: 122 copies">
+##ALT=<ID=CN123,Description="Copy number allele: 123 copies">
+##ALT=<ID=CN124,Description="Copy number allele: 124 copies">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##INFO=<ID=CIEND,Number=2,Type=Integer,Description="Confidence interval around END for imprecise variants">
+##INFO=<ID=CIPOS,Number=2,Type=Integer,Description="Confidence interval around POS for imprecise variants">
+##INFO=<ID=CS,Number=1,Type=String,Description="Source call set.">
+##INFO=<ID=END,Number=1,Type=Integer,Description="End coordinate of this variant">
+##INFO=<ID=IMPRECISE,Number=0,Type=Flag,Description="Imprecise structural variation">
+##INFO=<ID=MC,Number=.,Type=String,Description="Merged calls.">
+##INFO=<ID=MEINFO,Number=4,Type=String,Description="Mobile element info of the form NAME,START,END<POLARITY; If there is only 5' OR 3' support for this call, will be NULL NULL for START and END">
+##INFO=<ID=MEND,Number=1,Type=Integer,Description="Mitochondrial end coordinate of inserted sequence">
+##INFO=<ID=MLEN,Number=1,Type=Integer,Description="Estimated length of mitochondrial insert">
+##INFO=<ID=MSTART,Number=1,Type=Integer,Description="Mitochondrial start coordinate of inserted sequence">
+##INFO=<ID=SVLEN,Number=.,Type=Integer,Description="SV length. It is only calculated for structural variation MEIs. For other types of SVs; one may calculate the SV length by INFO:END-START+1, or by finding the difference between lengthes of REF and ALT alleles">
+##INFO=<ID=SVTYPE,Number=1,Type=String,Description="Type of structural variant">
+##INFO=<ID=TSD,Number=1,Type=String,Description="Precise Target Site Duplication for bases, if unknown, value will be NULL">
+##INFO=<ID=AC,Number=A,Type=Integer,Description="Total number of alternate alleles in called genotypes">
+##INFO=<ID=AF,Number=A,Type=Float,Description="Estimated allele frequency in the range (0,1)">
+##INFO=<ID=NS,Number=1,Type=Integer,Description="Number of samples with data">
+##INFO=<ID=AN,Number=1,Type=Integer,Description="Total number of alleles in called genotypes">
+##INFO=<ID=EAS_AF,Number=A,Type=Float,Description="Allele frequency in the EAS populations calculated from AC and AN, in the range (0,1)">
+##INFO=<ID=EUR_AF,Number=A,Type=Float,Description="Allele frequency in the EUR populations calculated from AC and AN, in the range (0,1)">
+##INFO=<ID=AFR_AF,Number=A,Type=Float,Description="Allele frequency in the AFR populations calculated from AC and AN, in the range (0,1)">
+##INFO=<ID=AMR_AF,Number=A,Type=Float,Description="Allele frequency in the AMR populations calculated from AC and AN, in the range (0,1)">
+##INFO=<ID=SAS_AF,Number=A,Type=Float,Description="Allele frequency in the SAS populations calculated from AC and AN, in the range (0,1)">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Total read depth; only low coverage data were counted towards the DP, exome data were not used">
+##INFO=<ID=AA,Number=1,Type=String,Description="Ancestral Allele. Format: AA|REF|ALT|IndelType. AA: Ancestral allele, REF:Reference Allele, ALT:Alternate Allele, IndelType:Type of Indel (REF, ALT and IndelType are only defined for indels)">
+##INFO=<ID=VT,Number=.,Type=String,Description="indicates what type of variant the line represents">
+##INFO=<ID=EX_TARGET,Number=0,Type=Flag,Description="indicates whether a variant is within the exon pull down target boundaries">
+##INFO=<ID=MULTI_ALLELIC,Number=0,Type=Flag,Description="indicates whether a site is multi-allelic">
+##bcftools_viewVersion=1.19+htslib-1.19
+##bcftools_viewCommand=view -m2 -M2 -v snps -Q 0.9999999999:major -q 0.01:minor -e ALT="." ALL.6.phase3_shapeit2_mvncall_integrated_v5b.20130502.genotypes.vcf.gz; Date=Fri Feb 23 09:37:53 2024
+##INFO=<ID=F_MISSING,Number=.,Type=Float,Description="Added by +fill-tags expression F_MISSING=F_MISSING">
+##INFO=<ID=AC_Hom,Number=A,Type=Integer,Description="Allele counts in homozygous genotypes">
+##INFO=<ID=AC_Het,Number=A,Type=Integer,Description="Allele counts in heterozygous genotypes">
+##INFO=<ID=AC_Hemi,Number=A,Type=Integer,Description="Allele counts in hemizygous genotypes">
+##INFO=<ID=MAF,Number=1,Type=Float,Description="Frequency of the second most common allele">
+##INFO=<ID=HWE,Number=A,Type=Float,Description="HWE test (PMID:15789306); 1=good, 0=bad">
+##INFO=<ID=ExcHet,Number=A,Type=Float,Description="Test excess heterozygosity; 1=good, 0=bad">
+##FORMAT=<ID=VAF,Number=A,Type=Float,Description="The fraction of reads with alternate allele (nALT/nSumAll)">
+##FORMAT=<ID=VAF1,Number=1,Type=Float,Description="The fraction of reads with alternate alleles (nSumALT/nSumAll)">
+##bcftools_pluginVersion=1.19+htslib-1.19
+##bcftools_pluginCommand=plugin fill-tags; Date=Fri Feb 23 09:37:53 2024
+##bcftools_annotateVersion=1.19+htslib-1.19
+##bcftools_annotateCommand=annotate -a 00-All.vcf.gz -c ID -o test.annotated.vcf.gz chr6.process.vcf.gz; Date=Mon Feb 26 10:22:52 2024
+##bcftools_viewVersion=1.17+htslib-1.17
+##bcftools_viewCommand=view --force-samples -S samples_id.txt test.vcf; Date=Wed Feb 28 11:47:16 2024
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	NA06985	NA06986	NA06994
+6	63979	rs561313667	C	T	100	PASS	AC=1;AF=0.0666933;AN=6;NS=2504;DP=10676;EAS_AF=0.0069;AMR_AF=0.1037;AFR_AF=0.0605;EUR_AF=0.1044;SAS_AF=0.0716;AA=.|||;VT=SNP;F_MISSING=0;MAF=0.0666933;AC_Het=304;AC_Hom=30;AC_Hemi=0;HWE=0.199849;ExcHet=0.916352	GT	0|0	0|0	1|0
+6	63980	rs530120680	A	G	100	PASS	AC=1;AF=0.0706869;AN=6;NS=2504;DP=10357;EAS_AF=0.0069;AMR_AF=0.1052;AFR_AF=0.0749;EUR_AF=0.1044;SAS_AF=0.0716;AA=.|||;VT=SNP;F_MISSING=0;MAF=0.0706869;AC_Het=324;AC_Hom=30;AC_Hemi=0;HWE=0.445087;ExcHet=0.823138	GT	0|0	0|0	1|0
+6	100112	rs546455495	C	A	100	PASS	AC=0;AF=0.0169728;AN=6;NS=2504;DP=4571;EAS_AF=0.0119;AMR_AF=0.0187;AFR_AF=0.0325;EUR_AF=0.004;SAS_AF=0.0133;AA=c|||;VT=SNP;F_MISSING=0;MAF=0.0169728;AC_Het=77;AC_Hom=8;AC_Hemi=0;HWE=0.0050405;ExcHet=0.999408	GT	0|0	0|0	0|0
+6	100114	rs566451461	C	A	100	PASS	AC=0;AF=0.0169728;AN=6;NS=2504;DP=4424;EAS_AF=0.0119;AMR_AF=0.0187;AFR_AF=0.0325;EUR_AF=0.004;SAS_AF=0.0133;AA=a|||;VT=SNP;F_MISSING=0;MAF=0.0169728;AC_Het=77;AC_Hom=8;AC_Hemi=0;HWE=0.0050405;ExcHet=0.999408	GT	0|0	0|0	0|0
+6	100116	rs181241136	C	A	100	PASS	AC=0;AF=0.0714856;AN=6;NS=2504;DP=4503;EAS_AF=0.0198;AMR_AF=0.0504;AFR_AF=0.1853;EUR_AF=0.0258;SAS_AF=0.0327;AA=a|||;VT=SNP;F_MISSING=0;MAF=0.0714856;AC_Het=268;AC_Hom=90;AC_Hemi=0;HWE=2.16284e-15;ExcHet=1	GT	0|0	0|0	0|0
+6	117271	rs2258313	A	G	100	PASS	AC=0;AF=0.0255591;AN=6;NS=2504;DP=8529;EAS_AF=0.004;AMR_AF=0.0058;AFR_AF=0.09;EUR_AF=0;SAS_AF=0.001;AA=a|||;VT=SNP;F_MISSING=0;MAF=0.0255591;AC_Het=104;AC_Hom=24;AC_Hemi=0;HWE=2.87953e-08;ExcHet=1	GT	0|0	0|0	0|0
+6	143500	rs375376040	C	T	100	PASS	AC=0;AF=0.100839;AN=6;NS=2504;DP=3934;EAS_AF=0.0724;AMR_AF=0.0389;AFR_AF=0.2814;EUR_AF=0.0189;SAS_AF=0.0143;AA=t|||;VT=SNP;F_MISSING=0;MAF=0.100839;AC_Het=397;AC_Hom=108;AC_Hemi=0;HWE=1.37895e-08;ExcHet=1	GT	0|0	0|0	0|0
+6	144397	rs546367294	T	A	100	PASS	AC=0;AF=0.0107827;AN=6;NS=2504;DP=12696;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0348;EUR_AF=0;SAS_AF=0.0041;AA=t|||;VT=SNP;F_MISSING=0;MAF=0.0107827;AC_Het=52;AC_Hom=2;AC_Hemi=0;HWE=0.250863;ExcHet=0.967826	GT	0|0	0|0	0|0
+6	144398	rs562984996	C	G	100	PASS	AC=0;AF=0.0107827;AN=6;NS=2504;DP=12449;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0348;EUR_AF=0;SAS_AF=0.0041;AA=c|||;VT=SNP;F_MISSING=0;MAF=0.0107827;AC_Het=52;AC_Hom=2;AC_Hemi=0;HWE=0.250863;ExcHet=0.967826	GT	0|0	0|0	0|0
+6	145008	rs531933208	C	A	100	PASS	AC=0;AF=0.0169728;AN=6;NS=2504;DP=6521;EAS_AF=0.001;AMR_AF=0.0029;AFR_AF=0.062;EUR_AF=0;SAS_AF=0;AA=c|||;VT=SNP;F_MISSING=0;MAF=0.0169728;AC_Het=69;AC_Hom=16;AC_Hemi=0;HWE=2.67786e-07;ExcHet=1	GT	0|0	0|0	0|0
+6	147596	rs6922869	T	C	100	PASS	AC=3;AF=0.509385;AN=6;NS=2504;DP=9658;EAS_AF=0.4405;AMR_AF=0.562;AFR_AF=0.1664;EUR_AF=0.7992;SAS_AF=0.7086;AA=t|||;VT=SNP;F_MISSING=0;MAF=0.490615;AC_Het=861;AC_Hom=1690;AC_Hemi=0;HWE=0;ExcHet=1	GT	0|1	0|0	1|1
+6	147651	rs529613262	A	C	100	PASS	AC=0;AF=0.0355431;AN=6;NS=2504;DP=6849;EAS_AF=0;AMR_AF=0.0101;AFR_AF=0.1293;EUR_AF=0;SAS_AF=0;AA=a|||;VT=SNP;F_MISSING=0;MAF=0.0355431;AC_Het=144;AC_Hom=34;AC_Hemi=0;HWE=4.39373e-09;ExcHet=1	GT	0|0	0|0	0|0
+6	147891	rs200160087	C	T	100	PASS	AC=0;AF=0.0972444;AN=6;NS=2504;DP=17880;EAS_AF=0.2758;AMR_AF=0.0706;AFR_AF=0.0424;EUR_AF=0.0179;SAS_AF=0.0879;AA=c|||;VT=SNP;F_MISSING=0;MAF=0.0972444;AC_Het=421;AC_Hom=66;AC_Hemi=0;HWE=0.03972;ExcHet=0.984788	GT	0|0	0|0	0|0
+6	148039	rs12195140	T	C	100	PASS	AC=3;AF=0.605631;AN=6;NS=2504;DP=8884;EAS_AF=0.7163;AMR_AF=0.634;AFR_AF=0.2042;EUR_AF=0.8171;SAS_AF=0.7965;AA=t|||;VT=SNP;F_MISSING=0;MAF=0.394369;AC_Het=725;AC_Hom=2308;AC_Hemi=0;HWE=0;ExcHet=1	GT	0|1	0|0	1|1
+6	149691	rs73719522	C	T	100	PASS	AC=0;AF=0.101038;AN=6;NS=2504;DP=9406;EAS_AF=0.1845;AMR_AF=0.1916;AFR_AF=0.0386;EUR_AF=0.005;SAS_AF=0.1339;AA=c|||;VT=SNP;F_MISSING=0;MAF=0.101038;AC_Het=352;AC_Hom=154;AC_Hemi=0;HWE=3.50991e-22;ExcHet=1	GT	0|0	0|0	0|0
+6	149778	rs371285253	A	C	100	PASS	AC=0;AF=0.0129792;AN=6;NS=2504;DP=10003;EAS_AF=0.0645;AMR_AF=0;AFR_AF=0;EUR_AF=0;SAS_AF=0;AA=a|||;VT=SNP;F_MISSING=0;MAF=0.0129792;AC_Het=53;AC_Hom=12;AC_Hemi=0;HWE=2.10701e-06;ExcHet=1	GT	0|0	0|0	0|0
+6	149901	rs9393087	T	C	100	PASS	AC=0;AF=0.107428;AN=6;NS=2504;DP=13281;EAS_AF=0.1895;AMR_AF=0.1931;AFR_AF=0.0567;EUR_AF=0.005;SAS_AF=0.136;AA=t|||;VT=SNP;F_MISSING=0;MAF=0.107428;AC_Het=380;AC_Hom=158;AC_Hemi=0;HWE=8.78417e-20;ExcHet=1	GT	0|0	0|0	0|0
+6	150279	rs34229051	C	T	100	PASS	AC=0;AF=0.109026;AN=6;NS=2504;DP=10150;EAS_AF=0.3522;AMR_AF=0.0764;AFR_AF=0.0166;EUR_AF=0.0209;SAS_AF=0.0971;AA=c|||;VT=SNP;F_MISSING=0;MAF=0.109026;AC_Het=388;AC_Hom=158;AC_Hemi=0;HWE=6.81588e-19;ExcHet=1	GT	0|0	0|0	0|0
+6	151275	rs7751743	T	G	100	PASS	AC=0;AF=0.0389377;AN=6;NS=2504;DP=17247;EAS_AF=0;AMR_AF=0.0173;AFR_AF=0.1384;EUR_AF=0;SAS_AF=0;AA=t|||;VT=SNP;F_MISSING=0;MAF=0.0389377;AC_Het=169;AC_Hom=26;AC_Hemi=0;HWE=6.57279e-05;ExcHet=0.999986	GT	0|0	0|0	0|0
+6	151489	rs6925051	A	T	100	PASS	AC=2;AF=0.465256;AN=6;NS=2504;DP=12164;EAS_AF=0.3571;AMR_AF=0.5159;AFR_AF=0.1793;EUR_AF=0.7276;SAS_AF=0.6575;AA=a|||;VT=SNP;F_MISSING=0;MAF=0.465256;AC_Het=938;AC_Hom=1392;AC_Hemi=0;HWE=2.71497e-35;ExcHet=1	GT	0|0	0|0	1|1
+6	151826	rs376719055	G	A	100	PASS	AC=0;AF=0.014377;AN=6;NS=2504;DP=15240;EAS_AF=0;AMR_AF=0.0029;AFR_AF=0.053;EUR_AF=0;SAS_AF=0;AA=g|||;VT=SNP;F_MISSING=0;MAF=0.014377;AC_Het=68;AC_Hom=4;AC_Hemi=0;HWE=0.0911885;ExcHet=0.986445	GT	0|0	0|0	0|0
+6	155685	rs369981620	C	T	100	PASS	AC=0;AF=0.0373403;AN=6;NS=2504;DP=9426;EAS_AF=0;AMR_AF=0.0173;AFR_AF=0.1324;EUR_AF=0;SAS_AF=0;AA=c|||;VT=SNP;F_MISSING=0;MAF=0.0373403;AC_Het=161;AC_Hom=26;AC_Hemi=0;HWE=2.63339e-05;ExcHet=0.999995	GT	0|0	0|0	0|0
+6	155815	rs7774353	T	C	100	PASS	AC=3;AF=0.71266;AN=6;NS=2504;DP=10706;EAS_AF=0.7758;AMR_AF=0.7378;AFR_AF=0.5106;EUR_AF=0.8231;SAS_AF=0.7894;AA=t|||;VT=SNP;F_MISSING=0;MAF=0.28734;AC_Het=893;AC_Hom=2676;AC_Hemi=0;HWE=1.93074e-10;ExcHet=1	GT	0|1	0|0	1|1
+6	156003	rs35385584	T	C	100	PASS	AC=1;AF=0.0285543;AN=6;NS=2504;DP=14436;EAS_AF=0;AMR_AF=0.0403;AFR_AF=0.0045;EUR_AF=0.0865;SAS_AF=0.0225;AA=t|||;VT=SNP;F_MISSING=0;MAF=0.0285543;AC_Het=129;AC_Hom=14;AC_Hemi=0;HWE=0.00356233;ExcHet=0.999251	GT	0|1	0|0	0|0
+6	156100	rs6911933	A	G	100	PASS	AC=3;AF=0.692891;AN=6;NS=2504;DP=6213;EAS_AF=0.8879;AMR_AF=0.804;AFR_AF=0.2254;EUR_AF=0.8141;SAS_AF=0.9202;AA=g|||;VT=SNP;F_MISSING=0;MAF=0.307109;AC_Het=542;AC_Hom=2928;AC_Hemi=0;HWE=0;ExcHet=1	GT	0|1	0|0	1|1
+6	158317	rs139678597	C	T	100	PASS	AC=0;AF=0.0209665;AN=6;NS=2504;DP=19442;EAS_AF=0;AMR_AF=0.0086;AFR_AF=0.0749;EUR_AF=0;SAS_AF=0;AA=c|||;VT=SNP;F_MISSING=0;MAF=0.0209665;AC_Het=99;AC_Hom=6;AC_Hemi=0;HWE=0.0937724;ExcHet=0.977818	GT	0|0	0|0	0|0
+6	159457	rs28802019	C	T	100	PASS	AC=0;AF=0.0726837;AN=6;NS=2504;DP=12068;EAS_AF=0.0575;AMR_AF=0.1124;AFR_AF=0.0719;EUR_AF=0.003;SAS_AF=0.1329;AA=c|||;VT=SNP;F_MISSING=0;MAF=0.0726837;AC_Het=298;AC_Hom=66;AC_Hemi=0;HWE=2.80727e-07;ExcHet=1	GT	0|0	0|0	0|0
+6	159659	rs112637559	G	A	100	PASS	AC=0;AF=0.0121805;AN=6;NS=2504;DP=17723;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0446;EUR_AF=0.001;SAS_AF=0;AA=g|||;VT=SNP;F_MISSING=0;MAF=0.0121805;AC_Het=61;AC_Hom=0;AC_Hemi=0;HWE=1;ExcHet=0.690808	GT	0|0	0|0	0|0
+6	162190	rs12524185	G	A	100	PASS	AC=0;AF=0.0547125;AN=6;NS=2504;DP=10900;EAS_AF=0.0565;AMR_AF=0.1023;AFR_AF=0.0076;EUR_AF=0.003;SAS_AF=0.136;AA=g|||;VT=SNP;F_MISSING=0;MAF=0.0547125;AC_Het=218;AC_Hom=56;AC_Hemi=0;HWE=2.3383e-10;ExcHet=1	GT	0|0	0|0	0|0
+6	162479	rs12524231	G	A	100	PASS	AC=0;AF=0.0547125;AN=6;NS=2504;DP=10951;EAS_AF=0.0565;AMR_AF=0.1023;AFR_AF=0.0076;EUR_AF=0.003;SAS_AF=0.136;AA=g|||;VT=SNP;F_MISSING=0;MAF=0.0547125;AC_Het=218;AC_Hom=56;AC_Hemi=0;HWE=2.3383e-10;ExcHet=1	GT	0|0	0|0	0|0
+6	162699	rs9378592	A	C	100	PASS	AC=0;AF=0.145367;AN=6;NS=2504;DP=11528;EAS_AF=0.4821;AMR_AF=0.1427;AFR_AF=0.0136;EUR_AF=0.0199;SAS_AF=0.1074;AA=a|||;VT=SNP;F_MISSING=0;MAF=0.145367;AC_Het=402;AC_Hom=326;AC_Hemi=0;HWE=0;ExcHet=1	GT	0|0	0|0	0|0
+6	162705	rs112875224	A	G	100	PASS	AC=0;AF=0.0197684;AN=6;NS=2504;DP=11469;EAS_AF=0;AMR_AF=0.0072;AFR_AF=0.0711;EUR_AF=0;SAS_AF=0;AA=a|||;VT=SNP;F_MISSING=0;MAF=0.0197684;AC_Het=93;AC_Hom=6;AC_Hemi=0;HWE=0.0709716;ExcHet=0.985114	GT	0|0	0|0	0|0
+6	164417	rs112146737	G	T	100	PASS	AC=0;AF=0.0195687;AN=6;NS=2504;DP=10491;EAS_AF=0;AMR_AF=0.0072;AFR_AF=0.0703;EUR_AF=0;SAS_AF=0;AA=g|||;VT=SNP;F_MISSING=0;MAF=0.0195687;AC_Het=92;AC_Hom=6;AC_Hemi=0;HWE=0.0675725;ExcHet=0.98612	GT	0|0	0|0	0|0
+6	164674	rs9405442	A	G	100	PASS	AC=0;AF=0.145567;AN=6;NS=2504;DP=10742;EAS_AF=0.4821;AMR_AF=0.1427;AFR_AF=0.0144;EUR_AF=0.0199;SAS_AF=0.1074;AA=a|||;VT=SNP;F_MISSING=0;MAF=0.145567;AC_Het=401;AC_Hom=328;AC_Hemi=0;HWE=0;ExcHet=1	GT	0|0	0|0	0|0
+6	166638	rs11242666	A	C	100	PASS	AC=0;AF=0.0117812;AN=6;NS=2504;DP=1792;EAS_AF=0;AMR_AF=0.0029;AFR_AF=0.0431;EUR_AF=0;SAS_AF=0;AA=a|||;VT=SNP;F_MISSING=0;MAF=0.0117812;AC_Het=51;AC_Hom=8;AC_Hemi=0;HWE=0.000302566;ExcHet=0.999984	GT	0|0	0|0	0|0
+6	169141	rs6596790	T	C	100	PASS	AC=0;AF=0.0738818;AN=6;NS=2504;DP=11392;EAS_AF=0.0714;AMR_AF=0.111;AFR_AF=0.0688;EUR_AF=0.004;SAS_AF=0.1288;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0738818;AC_Het=304;AC_Hom=66;AC_Hemi=0;HWE=1.02701e-06;ExcHet=1	GT	0|0	0|0	0|0
+6	172043	rs9391910	A	G	100	PASS	AC=1;AF=0.262181;AN=6;NS=2504;DP=4203;EAS_AF=0.1032;AMR_AF=0.1873;AFR_AF=0.3593;EUR_AF=0.2674;SAS_AF=0.3425;AA=a|||;VT=SNP;F_MISSING=0;MAF=0.262181;AC_Het=679;AC_Hom=634;AC_Hemi=0;HWE=0;ExcHet=1	GT	0|0	0|0	0|1
+6	174097	rs1576697	C	T	100	PASS	AC=0;AF=0.0221645;AN=6;NS=2504;DP=7984;EAS_AF=0;AMR_AF=0.0115;AFR_AF=0.0772;EUR_AF=0;SAS_AF=0.001;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0221645;AC_Het=89;AC_Hom=22;AC_Hemi=0;HWE=1.29787e-08;ExcHet=1	GT	0|0	0|0	0|0
+6	174433	rs4959524	T	C	100	PASS	AC=0;AF=0.0672923;AN=6;NS=2504;DP=3600;EAS_AF=0.0268;AMR_AF=0.0476;AFR_AF=0.1452;EUR_AF=0.0417;SAS_AF=0.044;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0672923;AC_Het=275;AC_Hom=62;AC_Hemi=0;HWE=7.72891e-08;ExcHet=1	GT	0|0	0|0	0|0
+6	174798	rs58926352	T	C	100	PASS	AC=0;AF=0.0303514;AN=6;NS=2504;DP=9271;EAS_AF=0.0337;AMR_AF=0.0331;AFR_AF=0.0673;EUR_AF=0.006;SAS_AF=0;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0303514;AC_Het=144;AC_Hom=8;AC_Hemi=0;HWE=0.288533;ExcHet=0.923311	GT	0|0	0|0	0|0
+6	175506	rs375389448	G	T	100	PASS	AC=0;AF=0.0123802;AN=6;NS=2504;DP=4369;EAS_AF=0.0337;AMR_AF=0.0303;AFR_AF=0.0008;EUR_AF=0.006;SAS_AF=0;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0123802;AC_Het=60;AC_Hom=2;AC_Hemi=0;HWE=0.31771;ExcHet=0.946353	GT	0|0	0|0	0|0
+6	175606	rs375316898	G	C	100	PASS	AC=0;AF=0.0157748;AN=6;NS=2504;DP=4554;EAS_AF=0;AMR_AF=0.0086;AFR_AF=0.0552;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0157748;AC_Het=71;AC_Hom=8;AC_Hemi=0;HWE=0.00293204;ExcHet=0.999707	GT	0|0	0|0	0|0
+6	177050	rs17132995	G	T	100	PASS	AC=0;AF=0.184105;AN=6;NS=2504;DP=4939;EAS_AF=0.4831;AMR_AF=0.1744;AFR_AF=0.0923;EUR_AF=0.0209;SAS_AF=0.1748;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.184105;AC_Het=484;AC_Hom=438;AC_Hemi=0;HWE=0;ExcHet=1	GT	0|0	0|0	0|0
+6	177807	rs12055869	C	A	100	PASS	AC=0;AF=0.184505;AN=6;NS=2504;DP=7105;EAS_AF=0.4831;AMR_AF=0.1744;AFR_AF=0.093;EUR_AF=0.0209;SAS_AF=0.1759;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.184505;AC_Het=486;AC_Hom=438;AC_Hemi=0;HWE=0;ExcHet=1	GT	0|0	0|0	0|0
+6	177899	rs4959534	A	G	100	PASS	AC=0;AF=0.310503;AN=6;NS=2504;DP=4223;EAS_AF=0.4524;AMR_AF=0.2291;AFR_AF=0.4796;EUR_AF=0.0885;SAS_AF=0.2219;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.310503;AC_Het=745;AC_Hom=810;AC_Hemi=0;HWE=0;ExcHet=1	GT	0|0	0|0	0|0
+6	177934	rs9502868	C	T	100	PASS	AC=0;AF=0.0219649;AN=6;NS=2504;DP=6773;EAS_AF=0;AMR_AF=0.0101;AFR_AF=0.0779;EUR_AF=0;SAS_AF=0;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0219649;AC_Het=104;AC_Hom=6;AC_Hemi=0;HWE=0.116001;ExcHet=0.969856	GT	0|0	0|0	0|0
+6	177945	rs12210656	G	A	100	PASS	AC=0;AF=0.0425319;AN=6;NS=2504;DP=7505;EAS_AF=0;AMR_AF=0.0317;AFR_AF=0.0348;EUR_AF=0.0915;SAS_AF=0.0542;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0425319;AC_Het=131;AC_Hom=82;AC_Hemi=0;HWE=8.26619e-32;ExcHet=1	GT	0|0	0|0	0|0
+6	178267	rs115660815	G	A	100	PASS	AC=0;AF=0.0455272;AN=6;NS=2504;DP=8887;EAS_AF=0;AMR_AF=0.0187;AFR_AF=0.1619;EUR_AF=0;SAS_AF=0.001;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0455272;AC_Het=188;AC_Hom=40;AC_Hemi=0;HWE=7.26103e-08;ExcHet=1	GT	0|0	0|0	0|0
+6	178430	rs9501704	T	C	100	PASS	AC=0;AF=0.061901;AN=6;NS=2504;DP=9871;EAS_AF=0;AMR_AF=0.0187;AFR_AF=0.2247;EUR_AF=0;SAS_AF=0;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.061901;AC_Het=230;AC_Hom=80;AC_Hemi=0;HWE=1.89548e-16;ExcHet=1	GT	0|0	0|0	0|0
+6	180881	rs9501705	T	G	100	PASS	AC=0;AF=0.0670926;AN=6;NS=2504;DP=8196;EAS_AF=0;AMR_AF=0.0202;AFR_AF=0.2436;EUR_AF=0;SAS_AF=0;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0670926;AC_Het=252;AC_Hom=84;AC_Hemi=0;HWE=2.47257e-15;ExcHet=1	GT	0|0	0|0	0|0
+6	180959	rs1535051	A	C	100	PASS	AC=0;AF=0.373602;AN=6;NS=2504;DP=5377;EAS_AF=0.4841;AMR_AF=0.2781;AFR_AF=0.6157;EUR_AF=0.1243;SAS_AF=0.2566;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.373602;AC_Het=805;AC_Hom=1066;AC_Hemi=0;HWE=0;ExcHet=1	GT	0|0	0|0	0|0
+6	181348	rs12660307	T	C	100	PASS	AC=0;AF=0.0573083;AN=6;NS=2504;DP=9896;EAS_AF=0.0228;AMR_AF=0.0447;AFR_AF=0.1725;EUR_AF=0.004;SAS_AF=0.001;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0573083;AC_Het=239;AC_Hom=48;AC_Hemi=0;HWE=8.25413e-07;ExcHet=1	GT	0|0	0|0	0|0
+6	183946	rs9501709	C	T	100	PASS	AC=0;AF=0.0706869;AN=6;NS=2504;DP=5036;EAS_AF=0;AMR_AF=0.0202;AFR_AF=0.2572;EUR_AF=0;SAS_AF=0;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0706869;AC_Het=250;AC_Hom=104;AC_Hemi=0;HWE=1.66195e-21;ExcHet=1	GT	0|0	0|0	0|0
+6	185729	rs73719551	A	G	100	PASS	AC=0;AF=0.0507189;AN=6;NS=2504;DP=6104;EAS_AF=0;AMR_AF=0.0101;AFR_AF=0.1868;EUR_AF=0;SAS_AF=0;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0507189;AC_Het=174;AC_Hom=80;AC_Hemi=0;HWE=1.4852e-23;ExcHet=1	GT	0|0	0|0	0|0
+6	186117	rs73719552	C	T	100	PASS	AC=0;AF=0.0373403;AN=6;NS=2504;DP=9854;EAS_AF=0.001;AMR_AF=0.0086;AFR_AF=0.1362;EUR_AF=0;SAS_AF=0;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0373403;AC_Het=153;AC_Hom=34;AC_Hemi=0;HWE=2.15091e-08;ExcHet=1	GT	0|0	0|0	0|0
+6	186143	rs369195645	G	T	100	PASS	AC=0;AF=0.0121805;AN=6;NS=2504;DP=9708;EAS_AF=0.0347;AMR_AF=0.0274;AFR_AF=0.0008;EUR_AF=0.006;SAS_AF=0;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0121805;AC_Het=59;AC_Hom=2;AC_Hemi=0;HWE=0.309192;ExcHet=0.949437	GT	0|0	0|0	0|0
+6	186676	rs9328043	G	A	100	PASS	AC=0;AF=0.0235623;AN=6;NS=2504;DP=13848;EAS_AF=0;AMR_AF=0.0101;AFR_AF=0.084;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0235623;AC_Het=110;AC_Hom=8;AC_Hemi=0;HWE=0.0471302;ExcHet=0.988822	GT	0|0	0|0	0|0
+6	186795	rs73719553	A	G	100	PASS	AC=0;AF=0.0407348;AN=6;NS=2504;DP=10459;EAS_AF=0;AMR_AF=0.0101;AFR_AF=0.149;EUR_AF=0;SAS_AF=0;AA=a|||;VT=SNP;F_MISSING=0;MAF=0.0407348;AC_Het=150;AC_Hom=54;AC_Hemi=0;HWE=2.52216e-16;ExcHet=1	GT	0|0	0|0	0|0
+6	186825	rs9328044	C	T	100	PASS	AC=0;AF=0.023762;AN=6;NS=2504;DP=9954;EAS_AF=0;AMR_AF=0.0101;AFR_AF=0.0847;EUR_AF=0;SAS_AF=0;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.023762;AC_Het=111;AC_Hom=8;AC_Hemi=0;HWE=0.0496631;ExcHet=0.988013	GT	0|0	0|0	0|0
+6	186889	rs9328045	A	T	100	PASS	AC=0;AF=0.0640974;AN=6;NS=2504;DP=9701;EAS_AF=0;AMR_AF=0.0202;AFR_AF=0.2322;EUR_AF=0;SAS_AF=0;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0640974;AC_Het=239;AC_Hom=82;AC_Hemi=0;HWE=4.28087e-16;ExcHet=1	GT	0|0	0|0	0|0
+6	186928	rs73719554	C	T	100	PASS	AC=0;AF=0.0483227;AN=6;NS=2504;DP=10242;EAS_AF=0;AMR_AF=0.0187;AFR_AF=0.1717;EUR_AF=0;SAS_AF=0.002;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0483227;AC_Het=188;AC_Hom=54;AC_Hemi=0;HWE=2.59219e-12;ExcHet=1	GT	0|0	0|0	0|0
+6	186929	rs73719555	A	G	100	PASS	AC=0;AF=0.0613019;AN=6;NS=2504;DP=10255;EAS_AF=0.0347;AMR_AF=0.0476;AFR_AF=0.174;EUR_AF=0.007;SAS_AF=0.002;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0613019;AC_Het=251;AC_Hom=56;AC_Hemi=0;HWE=5.50174e-08;ExcHet=1	GT	0|0	0|0	0|0
+6	188536	rs113349238	C	G	100	PASS	AC=0;AF=0.019369;AN=6;NS=2504;DP=2010;EAS_AF=0;AMR_AF=0.0043;AFR_AF=0.0711;EUR_AF=0;SAS_AF=0;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.019369;AC_Het=75;AC_Hom=22;AC_Hemi=0;HWE=5.83439e-10;ExcHet=1	GT	0|0	0|0	0|0
+6	188937	rs10155688	G	A	100	PASS	AC=0;AF=0.0479233;AN=6;NS=2504;DP=8298;EAS_AF=0.0159;AMR_AF=0.013;AFR_AF=0.149;EUR_AF=0.006;SAS_AF=0.0123;AA=g|||;VT=SNP;F_MISSING=0;MAF=0.0479233;AC_Het=194;AC_Hom=46;AC_Hemi=0;HWE=3.00573e-09;ExcHet=1	GT	0|0	0|0	0|0
+6	188969	rs1986818	T	G	100	PASS	AC=1;AF=0.159145;AN=6;NS=2504;DP=9240;EAS_AF=0.0952;AMR_AF=0.1254;AFR_AF=0.2428;EUR_AF=0.1551;SAS_AF=0.1401;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.159145;AC_Het=593;AC_Hom=204;AC_Hemi=0;HWE=5.50456e-08;ExcHet=1	GT	0|0	0|0	1|0
+6	189140	rs764802	C	T	100	PASS	AC=0;AF=0.0974441;AN=6;NS=2504;DP=11506;EAS_AF=0.3661;AMR_AF=0.1167;AFR_AF=0.0015;EUR_AF=0.0099;SAS_AF=0.0266;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0974441;AC_Het=256;AC_Hom=232;AC_Hemi=0;HWE=0;ExcHet=1	GT	0|0	0|0	0|0
+6	192106	rs12191783	G	A	100	PASS	AC=3;AF=0.193091;AN=6;NS=2504;DP=10946;EAS_AF=0.0952;AMR_AF=0.1686;AFR_AF=0.326;EUR_AF=0.174;SAS_AF=0.1513;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.193091;AC_Het=619;AC_Hom=348;AC_Hemi=0;HWE=1.51257e-22;ExcHet=1	GT	1|1	1|0	0|0
+6	192157	rs13213346	A	G	100	PASS	AC=4;AF=0.652356;AN=6;NS=2504;DP=10899;EAS_AF=0.3571;AMR_AF=0.585;AFR_AF=0.7163;EUR_AF=0.8509;SAS_AF=0.7137;AA=a|||;VT=SNP;F_MISSING=0;MAF=0.347644;AC_Het=689;AC_Hom=2578;AC_Hemi=0;HWE=0;ExcHet=1	GT	0|0	1|1	1|1
+6	192181	rs61430413	A	G	100	PASS	AC=0;AF=0.145367;AN=6;NS=2504;DP=10977;EAS_AF=0;AMR_AF=0.0677;AFR_AF=0.4539;EUR_AF=0.0646;SAS_AF=0.0164;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.145367;AC_Het=390;AC_Hom=338;AC_Hemi=0;HWE=0;ExcHet=1	GT	0|0	0|0	0|0
+6	202452	rs7766035	C	T	100	PASS	AC=0;AF=0.0503195;AN=6;NS=2504;DP=23370;EAS_AF=0;AMR_AF=0.0389;AFR_AF=0.1127;EUR_AF=0.0606;SAS_AF=0.0153;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0503195;AC_Het=230;AC_Hom=22;AC_Hemi=0;HWE=0.0581592;ExcHet=0.978325	GT	0|0	0|0	0|0
+6	202468	rs115587699	G	A	100	PASS	AC=0;AF=0.0163738;AN=6;NS=2504;DP=23317;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.059;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0163738;AC_Het=76;AC_Hom=6;AC_Hemi=0;HWE=0.0273604;ExcHet=0.99613	GT	0|0	0|0	0|0
+6	202648	rs73716605	T	C	100	PASS	AC=0;AF=0.0111821;AN=6;NS=2504;DP=22548;EAS_AF=0;AMR_AF=0.0043;AFR_AF=0.0401;EUR_AF=0;SAS_AF=0;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0111821;AC_Het=54;AC_Hom=2;AC_Hemi=0;HWE=0.267257;ExcHet=0.963127	GT	0|0	0|0	0|0
+6	202777	rs12206347	C	T	100	PASS	AC=1;AF=0.0239617;AN=6;NS=2504;DP=22490;EAS_AF=0;AMR_AF=0.0216;AFR_AF=0.0061;EUR_AF=0.0596;SAS_AF=0.0378;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0239617;AC_Het=116;AC_Hom=4;AC_Hemi=0;HWE=0.652625;ExcHet=0.830695	GT	0|1	0|0	0|0
+6	203249	rs1002064	A	G	100	PASS	AC=0;AF=0.0355431;AN=6;NS=2504;DP=21180;EAS_AF=0;AMR_AF=0.013;AFR_AF=0.1278;EUR_AF=0;SAS_AF=0;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0355431;AC_Het=152;AC_Hom=26;AC_Hemi=0;HWE=8.67999e-06;ExcHet=0.999999	GT	0|0	0|0	0|0
+6	203254	rs72650628	G	A	100	PASS	AC=0;AF=0.0169728;AN=6;NS=2504;DP=21035;EAS_AF=0.0843;AMR_AF=0;AFR_AF=0;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0169728;AC_Het=75;AC_Hom=10;AC_Hemi=0;HWE=0.000592365;ExcHet=0.999945	GT	0|0	0|0	0|0
+6	203397	rs11757325	C	T	100	PASS	AC=1;AF=0.0225639;AN=6;NS=2504;DP=20093;EAS_AF=0;AMR_AF=0.0807;AFR_AF=0.0045;EUR_AF=0.0408;SAS_AF=0.0102;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0225639;AC_Het=109;AC_Hom=4;AC_Hemi=0;HWE=0.36236;ExcHet=0.869237	GT	0|0	0|0	0|1
+6	203722	rs80014302	T	G	100	PASS	AC=1;AF=0.0241613;AN=6;NS=2504;DP=21521;EAS_AF=0;AMR_AF=0.0216;AFR_AF=0.0061;EUR_AF=0.0606;SAS_AF=0.0378;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0241613;AC_Het=117;AC_Hom=4;AC_Hemi=0;HWE=0.655313;ExcHet=0.824733	GT	0|1	0|0	0|0
+6	203845	rs9502952	G	C	100	PASS	AC=0;AF=0.0636981;AN=6;NS=2504;DP=19855;EAS_AF=0;AMR_AF=0.0202;AFR_AF=0.23;EUR_AF=0;SAS_AF=0.001;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0636981;AC_Het=237;AC_Hom=82;AC_Hemi=0;HWE=2.62214e-16;ExcHet=1	GT	0|0	0|0	0|0
+6	203878	rs9392298	C	T	100	PASS	AC=0;AF=0.246206;AN=6;NS=2504;DP=21068;EAS_AF=0.4554;AMR_AF=0.2133;AFR_AF=0.3313;EUR_AF=0.0676;SAS_AF=0.1227;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.246206;AC_Het=829;AC_Hom=404;AC_Hemi=0;HWE=1.18856e-07;ExcHet=1	GT	0|0	0|0	0|0
+6	203909	rs9392299	A	G	100	PASS	AC=0;AF=0.244209;AN=6;NS=2504;DP=22355;EAS_AF=0.4593;AMR_AF=0.2133;AFR_AF=0.3192;EUR_AF=0.0686;SAS_AF=0.1237;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.244209;AC_Het=829;AC_Hom=394;AC_Hemi=0;HWE=4.37109e-07;ExcHet=1	GT	0|0	0|0	0|0
+6	204031	rs80324517	G	A	100	PASS	AC=1;AF=0.0241613;AN=6;NS=2504;DP=21756;EAS_AF=0;AMR_AF=0.0216;AFR_AF=0.0061;EUR_AF=0.0606;SAS_AF=0.0378;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0241613;AC_Het=117;AC_Hom=4;AC_Hemi=0;HWE=0.655313;ExcHet=0.824733	GT	0|1	0|0	0|0
+6	204072	rs9405486	G	T	100	PASS	AC=0;AF=0.239018;AN=6;NS=2504;DP=22263;EAS_AF=0.4563;AMR_AF=0.2089;AFR_AF=0.3071;EUR_AF=0.0676;SAS_AF=0.1207;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.239018;AC_Het=795;AC_Hom=402;AC_Hemi=0;HWE=6.06872e-10;ExcHet=1	GT	0|0	0|0	0|0
+6	204484	rs78179779	G	A	100	PASS	AC=1;AF=0.0790735;AN=6;NS=2504;DP=22175;EAS_AF=0.0714;AMR_AF=0.072;AFR_AF=0.1415;EUR_AF=0.0457;SAS_AF=0.0419;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0790735;AC_Het=342;AC_Hom=54;AC_Hemi=0;HWE=0.00356138;ExcHet=0.99877	GT	0|0	1|0	0|0
+6	204909	rs7762550	G	T	100	PASS	AC=2;AF=0.442292;AN=6;NS=2504;DP=20536;EAS_AF=0.5238;AMR_AF=0.3357;AFR_AF=0.8154;EUR_AF=0.1779;SAS_AF=0.2014;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.442292;AC_Het=899;AC_Hom=1316;AC_Hemi=0;HWE=1.63532e-42;ExcHet=1	GT	0|1	1|0	0|0
+6	205213	rs2066406	C	T	100	PASS	AC=0;AF=0.198083;AN=6;NS=2504;DP=18597;EAS_AF=0.4534;AMR_AF=0.1801;AFR_AF=0.2005;EUR_AF=0.0398;SAS_AF=0.1074;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.198083;AC_Het=682;AC_Hom=310;AC_Hemi=0;HWE=6.99182e-12;ExcHet=1	GT	0|0	0|0	0|0
+6	205610	rs1418708	G	A	100	PASS	AC=1;AF=0.359425;AN=6;NS=2504;DP=19717;EAS_AF=0.62;AMR_AF=0.2507;AFR_AF=0.469;EUR_AF=0.1352;SAS_AF=0.2505;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.359425;AC_Het=976;AC_Hom=824;AC_Hemi=0;HWE=2.52914e-14;ExcHet=1	GT	0|1	0|0	0|0
+6	205696	rs73356162	T	C	100	PASS	AC=0;AF=0.142572;AN=6;NS=2504;DP=18083;EAS_AF=0;AMR_AF=0.0951;AFR_AF=0.3986;EUR_AF=0.0974;SAS_AF=0.0235;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.142572;AC_Het=476;AC_Hom=238;AC_Hemi=0;HWE=7.46221e-24;ExcHet=1	GT	0|0	0|0	0|0
+6	205800	rs1418707	A	G	100	PASS	AC=1;AF=0.222843;AN=6;NS=2504;DP=18528;EAS_AF=0.0744;AMR_AF=0.1643;AFR_AF=0.472;EUR_AF=0.2008;SAS_AF=0.1033;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.222843;AC_Het=714;AC_Hom=402;AC_Hemi=0;HWE=1.56691e-17;ExcHet=1	GT	0|0	1|0	0|0
+6	205878	rs1418706	A	G	100	PASS	AC=0;AF=0.163938;AN=6;NS=2504;DP=21046;EAS_AF=0.13;AMR_AF=0.0965;AFR_AF=0.1785;EUR_AF=0.1581;SAS_AF=0.2331;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.163938;AC_Het=681;AC_Hom=140;AC_Hemi=0;HWE=0.715323;ExcHet=0.686403	GT	0|0	0|0	0|0
+6	205933	rs1418705	C	T	100	PASS	AC=1;AF=0.0309505;AN=6;NS=2504;DP=20817;EAS_AF=0;AMR_AF=0.0303;AFR_AF=0.0061;EUR_AF=0.0785;SAS_AF=0.0481;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0309505;AC_Het=143;AC_Hom=12;AC_Hemi=0;HWE=0.029978;ExcHet=0.991269	GT	0|1	0|0	0|0
+6	205935	rs1418704	C	T	100	PASS	AC=1;AF=0.0307508;AN=6;NS=2504;DP=20958;EAS_AF=0;AMR_AF=0.0288;AFR_AF=0.0061;EUR_AF=0.0785;SAS_AF=0.0481;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0307508;AC_Het=142;AC_Hom=12;AC_Hemi=0;HWE=0.0283331;ExcHet=0.99186	GT	0|1	0|0	0|0
+6	205947	rs4282439	C	A	100	PASS	AC=1;AF=0.0315495;AN=6;NS=2504;DP=20780;EAS_AF=0;AMR_AF=0.0288;AFR_AF=0.0061;EUR_AF=0.0805;SAS_AF=0.0501;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0315495;AC_Het=144;AC_Hom=14;AC_Hemi=0;HWE=0.0107214;ExcHet=0.997196	GT	0|1	0|0	0|0
+6	205988	rs12212152	C	T	100	PASS	AC=1;AF=0.0489217;AN=6;NS=2504;DP=20192;EAS_AF=0.001;AMR_AF=0.0403;AFR_AF=0.0371;EUR_AF=0.0974;SAS_AF=0.0706;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0489217;AC_Het=225;AC_Hom=20;AC_Hemi=0;HWE=0.0859447;ExcHet=0.966443	GT	0|1	0|0	0|0
+6	206015	rs12208195	G	T	100	PASS	AC=2;AF=0.225839;AN=6;NS=2504;DP=19696;EAS_AF=0.2411;AMR_AF=0.1556;AFR_AF=0.2693;EUR_AF=0.2197;SAS_AF=0.2076;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.225839;AC_Het=875;AC_Hom=256;AC_Hemi=0;HWE=0.954482;ExcHet=0.542123	GT	0|1	1|0	0|0
+6	206092	rs2057082	G	A	100	PASS	AC=2;AF=0.397165;AN=6;NS=2504;DP=18941;EAS_AF=0.5675;AMR_AF=0.3012;AFR_AF=0.4607;EUR_AF=0.2575;SAS_AF=0.3476;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.397165;AC_Het=1103;AC_Hom=886;AC_Hemi=0;HWE=6.1559e-05;ExcHet=0.999975	GT	0|1	1|0	0|0
+6	206313	rs11961507	T	C	100	PASS	AC=2;AF=0.164337;AN=6;NS=2504;DP=20902;EAS_AF=0.0774;AMR_AF=0.1254;AFR_AF=0.3026;EUR_AF=0.1402;SAS_AF=0.1196;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.164337;AC_Het=637;AC_Hom=186;AC_Hemi=0;HWE=0.000346029;ExcHet=0.999872	GT	0|1	1|0	0|0
+6	206332	rs80135912	G	A	100	PASS	AC=0;AF=0.0660942;AN=6;NS=2504;DP=20911;EAS_AF=0.1627;AMR_AF=0.0029;AFR_AF=0.0552;EUR_AF=0;SAS_AF=0.0941;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0660942;AC_Het=285;AC_Hom=46;AC_Hemi=0;HWE=0.000466655;ExcHet=0.999869	GT	0|0	0|0	0|0
+6	206385	rs78068562	G	T	100	PASS	AC=1;AF=0.129992;AN=6;NS=2504;DP=19796;EAS_AF=0.0744;AMR_AF=0.1398;AFR_AF=0.1475;EUR_AF=0.1819;SAS_AF=0.1033;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.129992;AC_Het=543;AC_Hom=108;AC_Hemi=0;HWE=0.041939;ExcHet=0.9827	GT	0|0	1|0	0|0
+6	206505	rs12213817	C	T	100	PASS	AC=1;AF=0.0275559;AN=6;NS=2504;DP=17556;EAS_AF=0;AMR_AF=0.0231;AFR_AF=0.0061;EUR_AF=0.0736;SAS_AF=0.0409;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0275559;AC_Het=134;AC_Hom=4;AC_Hemi=0;HWE=0.71337;ExcHet=0.707965	GT	0|1	0|0	0|0
+6	206506	rs111675345	G	A	100	PASS	AC=0;AF=0.0157748;AN=6;NS=2504;DP=17486;EAS_AF=0;AMR_AF=0.0072;AFR_AF=0.056;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0157748;AC_Het=75;AC_Hom=4;AC_Hemi=0;HWE=0.124884;ExcHet=0.977555	GT	0|0	0|0	0|0
+6	206528	rs6920539	A	G	100	PASS	AC=0;AF=0.177316;AN=6;NS=2504;DP=18109;EAS_AF=0.1875;AMR_AF=0.0591;AFR_AF=0.3578;EUR_AF=0.0755;SAS_AF=0.1115;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.177316;AC_Het=628;AC_Hom=260;AC_Hemi=0;HWE=2.73178e-11;ExcHet=1	GT	0|0	0|0	0|0
+6	206599	rs9502959	C	T	100	PASS	AC=2;AF=0.613419;AN=6;NS=2504;DP=20002;EAS_AF=0.7669;AMR_AF=0.4337;AFR_AF=0.8759;EUR_AF=0.3926;SAS_AF=0.455;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.386581;AC_Het=946;AC_Hom=2126;AC_Hemi=0;HWE=3.11079e-24;ExcHet=1	GT	0|1	1|0	0|0
+6	206712	rs6926256	T	C	100	PASS	AC=0;AF=0.13758;AN=6;NS=2504;DP=20068;EAS_AF=0;AMR_AF=0.0591;AFR_AF=0.4312;EUR_AF=0.0616;SAS_AF=0.0164;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.13758;AC_Het=423;AC_Hom=266;AC_Hemi=0;HWE=3.67081e-37;ExcHet=1	GT	0|0	0|0	0|0
+6	206860	rs12213999	C	T	100	PASS	AC=1;AF=0.0349441;AN=6;NS=2504;DP=17196;EAS_AF=0;AMR_AF=0.0245;AFR_AF=0.0333;EUR_AF=0.0736;SAS_AF=0.0409;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0349441;AC_Het=169;AC_Hom=6;AC_Hemi=0;HWE=1;ExcHet=0.637962	GT	0|1	0|0	0|0
+6	207276	rs112839665	C	A	100	PASS	AC=0;AF=0.0179712;AN=6;NS=2504;DP=19112;EAS_AF=0;AMR_AF=0.0072;AFR_AF=0.0643;EUR_AF=0;SAS_AF=0;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0179712;AC_Het=84;AC_Hom=6;AC_Hemi=0;HWE=0.0442902;ExcHet=0.992377	GT	0|0	0|0	0|0
+6	207651	rs113614945	G	A	100	PASS	AC=1;AF=0.028155;AN=6;NS=2504;DP=16412;EAS_AF=0;AMR_AF=0.0231;AFR_AF=0.0061;EUR_AF=0.0765;SAS_AF=0.0409;AA=g|||;VT=SNP;F_MISSING=0;MAF=0.028155;AC_Het=137;AC_Hom=4;AC_Hemi=0;HWE=1;ExcHet=0.684832	GT	0|1	0|0	0|0
+6	207808	rs146763461	G	A	100	PASS	AC=0;AF=0.0175719;AN=6;NS=2504;DP=10694;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0635;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0175719;AC_Het=78;AC_Hom=10;AC_Hemi=0;HWE=0.000822439;ExcHet=0.999917	GT	0|0	0|0	0|0
+6	207855	rs111259828	G	C	100	PASS	AC=0;AF=0.0846645;AN=6;NS=2504;DP=11885;EAS_AF=0;AMR_AF=0.0461;AFR_AF=0.2375;EUR_AF=0.0616;SAS_AF=0.0164;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0846645;AC_Het=330;AC_Hom=94;AC_Hemi=0;HWE=7.19735e-11;ExcHet=1	GT	0|0	0|0	0|0
+6	208304	rs79232348	A	C	100	PASS	AC=0;AF=0.0748802;AN=6;NS=2504;DP=19096;EAS_AF=0.1954;AMR_AF=0.0043;AFR_AF=0.0605;EUR_AF=0.005;SAS_AF=0.092;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0748802;AC_Het=311;AC_Hom=64;AC_Hemi=0;HWE=3.88425e-06;ExcHet=0.999999	GT	0|0	0|0	0|0
+6	208346	rs111619508	T	C	100	PASS	AC=1;AF=0.0269569;AN=6;NS=2504;DP=19821;EAS_AF=0;AMR_AF=0.0231;AFR_AF=0.0061;EUR_AF=0.0706;SAS_AF=0.0409;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0269569;AC_Het=135;AC_Hom=0;AC_Hemi=0;HWE=0.260686;ExcHet=0.156267	GT	0|1	0|0	0|0
+6	208360	rs59998992	G	C	100	PASS	AC=1;AF=0.0267572;AN=6;NS=2504;DP=19278;EAS_AF=0;AMR_AF=0.0231;AFR_AF=0.0061;EUR_AF=0.0716;SAS_AF=0.0389;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0267572;AC_Het=132;AC_Hom=2;AC_Hemi=0;HWE=1;ExcHet=0.462637	GT	0|1	0|0	0|0
+6	208822	rs17806289	C	A	100	PASS	AC=1;AF=0.0894569;AN=6;NS=2504;DP=21845;EAS_AF=0.0754;AMR_AF=0.1254;AFR_AF=0.0053;EUR_AF=0.1769;SAS_AF=0.1022;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0894569;AC_Het=376;AC_Hom=72;AC_Hemi=0;HWE=0.000302666;ExcHet=0.999907	GT	0|0	1|0	0|0
+6	209117	rs17744451	A	G	100	PASS	AC=1;AF=0.0221645;AN=6;NS=2504;DP=20144;EAS_AF=0;AMR_AF=0.0187;AFR_AF=0.0045;EUR_AF=0.0706;SAS_AF=0.0215;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0221645;AC_Het=103;AC_Hom=8;AC_Hemi=0;HWE=0.0319666;ExcHet=0.993328	GT	0|1	0|0	0|0
+6	209159	rs11242709	C	T	100	PASS	AC=1;AF=0.169529;AN=6;NS=2504;DP=19955;EAS_AF=0.2639;AMR_AF=0.1297;AFR_AF=0.0855;EUR_AF=0.2286;SAS_AF=0.1534;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.169529;AC_Het=693;AC_Hom=156;AC_Hemi=0;HWE=0.394319;ExcHet=0.82622	GT	0|1	0|0	0|0
+6	209462	rs17133789	T	G	100	PASS	AC=0;AF=0.33147;AN=6;NS=2504;DP=21798;EAS_AF=0.6944;AMR_AF=0.3026;AFR_AF=0.2057;EUR_AF=0.1779;SAS_AF=0.3057;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.33147;AC_Het=902;AC_Hom=758;AC_Hemi=0;HWE=2.15561e-20;ExcHet=1	GT	0|0	0|0	0|0
+6	209512	rs77291951	C	G	100	PASS	AC=0;AF=0.0109824;AN=6;NS=2504;DP=21712;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0408;EUR_AF=0;SAS_AF=0;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0109824;AC_Het=53;AC_Hom=2;AC_Hemi=0;HWE=0.259029;ExcHet=0.96553	GT	0|0	0|0	0|0
+6	209977	rs79283275	T	A	100	PASS	AC=0;AF=0.024361;AN=6;NS=2504;DP=21597;EAS_AF=0;AMR_AF=0.0086;AFR_AF=0.0877;EUR_AF=0;SAS_AF=0;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.024361;AC_Het=106;AC_Hom=16;AC_Hemi=0;HWE=7.83473e-05;ExcHet=0.99999	GT	0|0	0|0	0|0
+6	209980	rs17133787	T	C	100	PASS	AC=2;AF=0.349641;AN=6;NS=2504;DP=21491;EAS_AF=0.5516;AMR_AF=0.2406;AFR_AF=0.1188;EUR_AF=0.3091;SAS_AF=0.5726;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.349641;AC_Het=951;AC_Hom=800;AC_Hemi=0;HWE=2.39909e-16;ExcHet=1	GT	0|0	0|1	0|1
+6	210023	rs9405140	G	A	100	PASS	AC=6;AF=0.721845;AN=6;NS=2504;DP=20357;EAS_AF=0.6022;AMR_AF=0.7997;AFR_AF=0.6422;EUR_AF=0.8042;SAS_AF=0.8129;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.278155;AC_Het=989;AC_Hom=2626;AC_Hemi=0;HWE=0.425811;ExcHet=0.811454	GT	1|1	1|1	1|1
+6	210389	rs80067053	T	G	100	PASS	AC=0;AF=0.0167732;AN=6;NS=2504;DP=19942;EAS_AF=0;AMR_AF=0.0187;AFR_AF=0.0015;EUR_AF=0.0547;SAS_AF=0.0143;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0167732;AC_Het=80;AC_Hom=4;AC_Hemi=0;HWE=0.152638;ExcHet=0.96895	GT	0|0	0|0	0|0
+6	210623	rs74691055	C	G	100	PASS	AC=0;AF=0.0209665;AN=6;NS=2504;DP=20669;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0756;EUR_AF=0;SAS_AF=0.001;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0209665;AC_Het=97;AC_Hom=8;AC_Hemi=0;HWE=0.0221821;ExcHet=0.995883	GT	0|0	0|0	0|0
+6	210660	rs75465367	G	A	100	PASS	AC=1;AF=0.0279553;AN=6;NS=2504;DP=21230;EAS_AF=0;AMR_AF=0.0245;AFR_AF=0.0061;EUR_AF=0.0746;SAS_AF=0.0409;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0279553;AC_Het=136;AC_Hom=4;AC_Hemi=0;HWE=0.72128;ExcHet=0.692609	GT	0|1	0|0	0|0
+6	210815	rs9502968	A	T	100	PASS	AC=0;AF=0.109225;AN=6;NS=2504;DP=22184;EAS_AF=0;AMR_AF=0.0504;AFR_AF=0.3298;EUR_AF=0.0606;SAS_AF=0.0153;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.109225;AC_Het=381;AC_Hom=166;AC_Hemi=0;HWE=2.13678e-21;ExcHet=1	GT	0|0	0|0	0|0
+6	210832	rs71548189	G	A	100	PASS	AC=0;AF=0.157149;AN=6;NS=2504;DP=22252;EAS_AF=0.246;AMR_AF=0.0937;AFR_AF=0.1445;EUR_AF=0.1312;SAS_AF=0.1544;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.157149;AC_Het=649;AC_Hom=138;AC_Hemi=0;HWE=0.290516;ExcHet=0.877538	GT	0|0	0|0	0|0
+6	210836	rs71548190	C	T	100	PASS	AC=0;AF=0.155551;AN=6;NS=2504;DP=22036;EAS_AF=0.246;AMR_AF=0.0922;AFR_AF=0.1384;EUR_AF=0.1322;SAS_AF=0.1544;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.155551;AC_Het=641;AC_Hom=138;AC_Hemi=0;HWE=0.196312;ExcHet=0.912632	GT	0|0	0|0	0|0
+6	210911	rs111408476	C	T	100	PASS	AC=1;AF=0.0279553;AN=6;NS=2504;DP=19474;EAS_AF=0;AMR_AF=0.0245;AFR_AF=0.0061;EUR_AF=0.0755;SAS_AF=0.0399;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0279553;AC_Het=136;AC_Hom=4;AC_Hemi=0;HWE=0.72128;ExcHet=0.692609	GT	0|1	0|0	0|0
+6	210917	rs9392309	A	G	100	PASS	AC=0;AF=0.183906;AN=6;NS=2504;DP=19149;EAS_AF=0.4256;AMR_AF=0.1686;AFR_AF=0.2065;EUR_AF=0.004;SAS_AF=0.1002;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.183906;AC_Het=641;AC_Hom=280;AC_Hemi=0;HWE=2.36433e-12;ExcHet=1	GT	0|0	0|0	0|0
+6	211182	rs60181389	C	T	100	PASS	AC=0;AF=0.14976;AN=6;NS=2504;DP=20502;EAS_AF=0.244;AMR_AF=0.0908;AFR_AF=0.118;EUR_AF=0.1322;SAS_AF=0.1554;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.14976;AC_Het=620;AC_Hom=130;AC_Hemi=0;HWE=0.181604;ExcHet=0.928246	GT	0|0	0|0	0|0
+6	211215	rs17133783	C	T	100	PASS	AC=0;AF=0.0173722;AN=6;NS=2504;DP=20337;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0628;EUR_AF=0;SAS_AF=0;AA=c|||;VT=SNP;F_MISSING=0;MAF=0.0173722;AC_Het=81;AC_Hom=6;AC_Hemi=0;HWE=0.0372481;ExcHet=0.994029	GT	0|0	0|0	0|0
+6	211531	rs79483475	T	C	100	PASS	AC=0;AF=0.0215655;AN=6;NS=2504;DP=18072;EAS_AF=0;AMR_AF=0.0101;AFR_AF=0.0764;EUR_AF=0;SAS_AF=0;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0215655;AC_Het=100;AC_Hom=8;AC_Hemi=0;HWE=0.0267346;ExcHet=0.994733	GT	0|0	0|0	0|0
+6	211765	rs7748430	C	T	100	PASS	AC=0;AF=0.0836661;AN=6;NS=2504;DP=17127;EAS_AF=0;AMR_AF=0.0418;AFR_AF=0.2534;EUR_AF=0.0427;SAS_AF=0.0123;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0836661;AC_Het=327;AC_Hom=92;AC_Hemi=0;HWE=1.11136e-10;ExcHet=1	GT	0|0	0|0	0|0
+6	211783	rs6596834	A	C	100	PASS	AC=0;AF=0.523762;AN=6;NS=2504;DP=17281;EAS_AF=0.6438;AMR_AF=0.3689;AFR_AF=0.8616;EUR_AF=0.2753;SAS_AF=0.3088;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.476238;AC_Het=943;AC_Hom=1680;AC_Hemi=0;HWE=7.26809e-35;ExcHet=1	GT	0|0	0|0	0|0
+6	211833	rs72650629	A	T	100	PASS	AC=0;AF=0.130791;AN=6;NS=2504;DP=18003;EAS_AF=0.4296;AMR_AF=0.147;AFR_AF=0.0159;EUR_AF=0.004;SAS_AF=0.0971;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.130791;AC_Het=435;AC_Hom=220;AC_Hemi=0;HWE=7.94894e-26;ExcHet=1	GT	0|0	0|0	0|0
+6	211941	rs7756332	A	G	100	PASS	AC=0;AF=0.504992;AN=6;NS=2504;DP=19609;EAS_AF=0.6815;AMR_AF=0.3602;AFR_AF=0.7542;EUR_AF=0.2863;SAS_AF=0.3139;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.495008;AC_Het=1021;AC_Hom=1508;AC_Hemi=0;HWE=2.14202e-20;ExcHet=1	GT	0|0	0|0	0|0
+6	212001	rs73716620	G	A	100	PASS	AC=0;AF=0.107827;AN=6;NS=2504;DP=21001;EAS_AF=0.0754;AMR_AF=0.1052;AFR_AF=0.1339;EUR_AF=0.1441;SAS_AF=0.0706;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.107827;AC_Het=470;AC_Hom=70;AC_Hemi=0;HWE=0.21309;ExcHet=0.907118	GT	0|0	0|0	0|0
+6	212006	rs6596835	T	C	100	PASS	AC=0;AF=0.516174;AN=6;NS=2504;DP=21000;EAS_AF=0.6756;AMR_AF=0.3602;AFR_AF=0.7943;EUR_AF=0.2903;SAS_AF=0.319;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.483826;AC_Het=1015;AC_Hom=1570;AC_Hemi=0;HWE=4.05568e-21;ExcHet=1	GT	0|0	0|0	0|0
+6	212085	rs112557246	A	T	100	PASS	AC=0;AF=0.0117812;AN=6;NS=2504;DP=18680;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0439;EUR_AF=0;SAS_AF=0;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0117812;AC_Het=55;AC_Hom=4;AC_Hemi=0;HWE=0.0447447;ExcHet=0.995617	GT	0|0	0|0	0|0
+6	212339	rs35417033	A	T	100	PASS	AC=0;AF=0.16254;AN=6;NS=2504;DP=22503;EAS_AF=0.246;AMR_AF=0.1052;AFR_AF=0.1346;EUR_AF=0.1491;SAS_AF=0.1687;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.16254;AC_Het=670;AC_Hom=144;AC_Hemi=0;HWE=0.378901;ExcHet=0.827283	GT	0|0	0|0	0|0
+6	212403	rs35552466	T	C	100	PASS	AC=0;AF=0.192093;AN=6;NS=2504;DP=21400;EAS_AF=0.249;AMR_AF=0.1167;AFR_AF=0.2383;EUR_AF=0.1491;SAS_AF=0.1687;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.192093;AC_Het=760;AC_Hom=202;AC_Hemi=0;HWE=0.273589;ExcHet=0.880935	GT	0|0	0|0	0|0
+6	212548	rs6930285	T	C	100	PASS	AC=0;AF=0.506789;AN=6;NS=2504;DP=21024;EAS_AF=0.6746;AMR_AF=0.3588;AFR_AF=0.7685;EUR_AF=0.2893;SAS_AF=0.3088;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.493211;AC_Het=1030;AC_Hom=1508;AC_Hemi=0;HWE=6.01108e-19;ExcHet=1	GT	0|0	0|0	0|0
+6	212570	rs9502975	A	G	100	PASS	AC=0;AF=0.0399361;AN=6;NS=2504;DP=20943;EAS_AF=0;AMR_AF=0.0173;AFR_AF=0.1422;EUR_AF=0;SAS_AF=0;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0399361;AC_Het=176;AC_Hom=24;AC_Hemi=0;HWE=0.000453989;ExcHet=0.999887	GT	0|0	0|0	0|0
+6	212595	rs6899567	G	A	100	PASS	AC=0;AF=0.128594;AN=6;NS=2504;DP=20393;EAS_AF=0;AMR_AF=0.0591;AFR_AF=0.3994;EUR_AF=0.0586;SAS_AF=0.0164;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.128594;AC_Het=428;AC_Hom=216;AC_Hemi=0;HWE=5.90256e-26;ExcHet=1	GT	0|0	0|0	0|0
+6	213042	rs6904679	G	C	100	PASS	AC=0;AF=0.120407;AN=6;NS=2504;DP=9746;EAS_AF=0.2103;AMR_AF=0.0865;AFR_AF=0.0348;EUR_AF=0.1352;SAS_AF=0.1524;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.120407;AC_Het=497;AC_Hom=106;AC_Hemi=0;HWE=0.00242953;ExcHet=0.999078	GT	0|0	0|0	0|0
+6	213417	rs113099991	A	T	100	PASS	AC=0;AF=0.0173722;AN=6;NS=2504;DP=20713;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0628;EUR_AF=0;SAS_AF=0;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0173722;AC_Het=83;AC_Hom=4;AC_Hemi=0;HWE=0.170703;ExcHet=0.962752	GT	0|0	0|0	0|0
+6	213426	rs6596836	T	C	100	PASS	AC=0;AF=0.495607;AN=6;NS=2504;DP=20408;EAS_AF=0.6369;AMR_AF=0.3458;AFR_AF=0.7776;EUR_AF=0.2734;SAS_AF=0.3037;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.495607;AC_Het=1012;AC_Hom=1470;AC_Hemi=0;HWE=6.71435e-22;ExcHet=1	GT	0|0	0|0	0|0
+6	213470	rs6596837	G	A	100	PASS	AC=0;AF=0.149161;AN=6;NS=2504;DP=19297;EAS_AF=0.2123;AMR_AF=0.0922;AFR_AF=0.1399;EUR_AF=0.1342;SAS_AF=0.1524;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.149161;AC_Het=621;AC_Hom=126;AC_Hemi=0;HWE=0.269803;ExcHet=0.890809	GT	0|0	0|0	0|0
+6	213499	rs9502978	C	T	100	PASS	AC=0;AF=0.0403355;AN=6;NS=2504;DP=19942;EAS_AF=0;AMR_AF=0.0173;AFR_AF=0.143;EUR_AF=0;SAS_AF=0.001;AA=c|||;VT=SNP;F_MISSING=0;MAF=0.0403355;AC_Het=178;AC_Hom=24;AC_Hemi=0;HWE=0.000547049;ExcHet=0.999861	GT	0|0	0|0	0|0
+6	213735	rs7759200	C	T	100	PASS	AC=0;AF=0.0830671;AN=6;NS=2504;DP=19321;EAS_AF=0;AMR_AF=0.0461;AFR_AF=0.2345;EUR_AF=0.0586;SAS_AF=0.0153;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0830671;AC_Het=322;AC_Hom=94;AC_Hemi=0;HWE=1.68234e-11;ExcHet=1	GT	0|0	0|0	0|0
+6	213738	rs114478662	T	G	100	PASS	AC=0;AF=0.0199681;AN=6;NS=2504;DP=19127;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0719;EUR_AF=0;SAS_AF=0.001;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0199681;AC_Het=92;AC_Hom=8;AC_Hemi=0;HWE=0.015949;ExcHet=0.997333	GT	0|0	0|0	0|0
+6	213782	rs7771527	T	C	100	PASS	AC=0;AF=0.508387;AN=6;NS=2504;DP=19350;EAS_AF=0.6409;AMR_AF=0.3501;AFR_AF=0.8222;EUR_AF=0.2724;SAS_AF=0.3027;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.491613;AC_Het=970;AC_Hom=1576;AC_Hemi=0;HWE=1.59224e-29;ExcHet=1	GT	0|0	0|0	0|0
+6	213867	rs75356128	C	A	100	PASS	AC=0;AF=0.0177716;AN=6;NS=2504;DP=19438;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0643;EUR_AF=0;SAS_AF=0;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0177716;AC_Het=81;AC_Hom=8;AC_Hemi=0;HWE=0.00703577;ExcHet=0.999085	GT	0|0	0|0	0|0
+6	213940	rs7767042	A	G	100	PASS	AC=0;AF=0.502995;AN=6;NS=2504;DP=19966;EAS_AF=0.6369;AMR_AF=0.3487;AFR_AF=0.8048;EUR_AF=0.2744;SAS_AF=0.3016;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.497005;AC_Het=981;AC_Hom=1538;AC_Hemi=0;HWE=1.60252e-27;ExcHet=1	GT	0|0	0|0	0|0
+6	213983	rs9502979	G	T	100	PASS	AC=0;AF=0.169928;AN=6;NS=2504;DP=20209;EAS_AF=0.4276;AMR_AF=0.1643;AFR_AF=0.1664;EUR_AF=0.004;SAS_AF=0.0838;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.169928;AC_Het=609;AC_Hom=242;AC_Hemi=0;HWE=6.50602e-11;ExcHet=1	GT	0|0	0|0	0|0
+6	214006	rs73716621	C	T	100	PASS	AC=0;AF=0.0159744;AN=6;NS=2504;DP=20807;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.059;EUR_AF=0;SAS_AF=0.001;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0159744;AC_Het=74;AC_Hom=6;AC_Hemi=0;HWE=0.0240039;ExcHet=0.996779	GT	0|0	0|0	0|0
+6	214028	rs7775775	T	G	100	PASS	AC=0;AF=0.323682;AN=6;NS=2504;DP=20757;EAS_AF=0.2113;AMR_AF=0.1816;AFR_AF=0.6112;EUR_AF=0.2714;SAS_AF=0.2055;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.323682;AC_Het=941;AC_Hom=680;AC_Hemi=0;HWE=2.41248e-12;ExcHet=1	GT	0|0	0|0	0|0
+6	214342	rs61026336	C	T	100	PASS	AC=0;AF=0.128395;AN=6;NS=2504;DP=18181;EAS_AF=0.1994;AMR_AF=0.0908;AFR_AF=0.0734;EUR_AF=0.1352;SAS_AF=0.1493;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.128395;AC_Het=539;AC_Hom=104;AC_Hemi=0;HWE=0.0603687;ExcHet=0.975634	GT	0|0	0|0	0|0
+6	214859	rs114533147	G	A	100	PASS	AC=0;AF=0.0201677;AN=6;NS=2504;DP=24251;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0726;EUR_AF=0;SAS_AF=0.001;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0201677;AC_Het=93;AC_Hom=8;AC_Hemi=0;HWE=0.01707;ExcHet=0.997084	GT	0|0	0|0	0|0
+6	215423	rs11970426	G	A	100	PASS	AC=0;AF=0.152157;AN=6;NS=2504;DP=21023;EAS_AF=0.2024;AMR_AF=0.1052;AFR_AF=0.1415;EUR_AF=0.1481;SAS_AF=0.1524;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.152157;AC_Het=638;AC_Hom=124;AC_Hemi=0;HWE=0.535359;ExcHet=0.763604	GT	0|0	0|0	0|0
+6	215515	rs114416397	T	G	100	PASS	AC=0;AF=0.0119808;AN=6;NS=2504;DP=19298;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0446;EUR_AF=0;SAS_AF=0;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0119808;AC_Het=56;AC_Hom=4;AC_Hemi=0;HWE=0.0475956;ExcHet=0.995168	GT	0|0	0|0	0|0
+6	215551	rs115062628	A	T	100	PASS	AC=0;AF=0.0111821;AN=6;NS=2504;DP=21643;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0416;EUR_AF=0;SAS_AF=0;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0111821;AC_Het=52;AC_Hom=4;AC_Hemi=0;HWE=0.0368726;ExcHet=0.996768	GT	0|0	0|0	0|0
+6	216150	rs733065	G	A	100	PASS	AC=0;AF=0.184105;AN=6;NS=2504;DP=20369;EAS_AF=0.4256;AMR_AF=0.1643;AFR_AF=0.2179;EUR_AF=0.004;SAS_AF=0.089;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.184105;AC_Het=658;AC_Hom=264;AC_Hemi=0;HWE=2.2672e-09;ExcHet=1	GT	0|0	0|0	0|0
+6	216399	rs112139601	T	C	100	PASS	AC=0;AF=0.0489217;AN=6;NS=2504;DP=17214;EAS_AF=0;AMR_AF=0.0086;AFR_AF=0.18;EUR_AF=0;SAS_AF=0.001;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0489217;AC_Het=187;AC_Hom=58;AC_Hemi=0;HWE=9.11483e-14;ExcHet=1	GT	0|0	0|0	0|0
+6	217020	rs58565989	C	T	100	PASS	AC=0;AF=0.0175719;AN=6;NS=2504;DP=13612;EAS_AF=0;AMR_AF=0.0043;AFR_AF=0.0635;EUR_AF=0;SAS_AF=0.001;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0175719;AC_Het=82;AC_Hom=6;AC_Hemi=0;HWE=0.039499;ExcHet=0.993514	GT	0|0	0|0	0|0
+6	217062	rs72833501	C	T	100	PASS	AC=0;AF=0.0271566;AN=6;NS=2504;DP=15085;EAS_AF=0;AMR_AF=0.0303;AFR_AF=0.0091;EUR_AF=0.0586;SAS_AF=0.045;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0271566;AC_Het=134;AC_Hom=2;AC_Hemi=0;HWE=1;ExcHet=0.44632	GT	0|0	0|0	0|0
+6	217201	rs4959585	G	A	100	PASS	AC=0;AF=0.0499201;AN=6;NS=2504;DP=17524;EAS_AF=0.0427;AMR_AF=0.0605;AFR_AF=0.0197;EUR_AF=0.0805;SAS_AF=0.0593;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0499201;AC_Het=234;AC_Hom=16;AC_Hemi=0;HWE=0.400295;ExcHet=0.834478	GT	0|0	0|0	0|0
+6	217307	rs761392	C	A	100	PASS	AC=0;AF=0.0239617;AN=6;NS=2504;DP=19975;EAS_AF=0.0694;AMR_AF=0.0692;AFR_AF=0.0015;EUR_AF=0;SAS_AF=0;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0239617;AC_Het=114;AC_Hom=6;AC_Hemi=0;HWE=0.169305;ExcHet=0.947707	GT	0|0	0|0	0|0
+6	217334	rs7741853	C	T	100	PASS	AC=0;AF=0.250599;AN=6;NS=2504;DP=20628;EAS_AF=0.3095;AMR_AF=0.1816;AFR_AF=0.4493;EUR_AF=0.0785;SAS_AF=0.1472;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.250599;AC_Het=813;AC_Hom=442;AC_Hemi=0;HWE=3.3148e-11;ExcHet=1	GT	0|0	0|0	0|0
+6	217391	rs113848918	T	A	100	PASS	AC=0;AF=0.0241613;AN=6;NS=2504;DP=21218;EAS_AF=0;AMR_AF=0.0101;AFR_AF=0.0862;EUR_AF=0;SAS_AF=0;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0241613;AC_Het=113;AC_Hom=8;AC_Hemi=0;HWE=0.0550222;ExcHet=0.986254	GT	0|0	0|0	0|0
+6	217498	rs73716623	T	C	100	PASS	AC=0;AF=0.0189696;AN=6;NS=2504;DP=22980;EAS_AF=0;AMR_AF=0.0029;AFR_AF=0.0703;EUR_AF=0;SAS_AF=0;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0189696;AC_Het=91;AC_Hom=4;AC_Hemi=0;HWE=0.223649;ExcHet=0.941959	GT	0|0	0|0	0|0
+6	217820	rs67073775	A	C	100	PASS	AC=0;AF=0.154153;AN=6;NS=2504;DP=23020;EAS_AF=0.4187;AMR_AF=0.1527;AFR_AF=0.1036;EUR_AF=0.005;SAS_AF=0.1043;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.154153;AC_Het=546;AC_Hom=226;AC_Hemi=0;HWE=2.85511e-14;ExcHet=1	GT	0|0	0|0	0|0
+6	218354	rs145115341	C	T	100	PASS	AC=0;AF=0.0113818;AN=6;NS=2504;DP=16898;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0424;EUR_AF=0;SAS_AF=0;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0113818;AC_Het=55;AC_Hom=2;AC_Hemi=0;HWE=0.275544;ExcHet=0.960615	GT	0|0	0|0	0|0
+6	218386	rs1418703	C	T	100	PASS	AC=0;AF=0.0982428;AN=6;NS=2504;DP=16294;EAS_AF=0.2004;AMR_AF=0.0764;AFR_AF=0.1036;EUR_AF=0;SAS_AF=0.1022;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0982428;AC_Het=414;AC_Hom=78;AC_Hemi=0;HWE=0.00148071;ExcHet=0.999447	GT	0|0	0|0	0|0
+6	218544	rs77685612	G	A	100	PASS	AC=0;AF=0.0315495;AN=6;NS=2504;DP=19981;EAS_AF=0.1071;AMR_AF=0.0677;AFR_AF=0.0015;EUR_AF=0;SAS_AF=0.001;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0315495;AC_Het=136;AC_Hom=22;AC_Hemi=0;HWE=2.28834e-05;ExcHet=0.999996	GT	0|0	0|0	0|0
+6	218806	rs9501748	G	A	100	PASS	AC=0;AF=0.0323482;AN=6;NS=2504;DP=16247;EAS_AF=0;AMR_AF=0.0101;AFR_AF=0.1172;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0323482;AC_Het=134;AC_Hom=28;AC_Hemi=0;HWE=1.30708e-07;ExcHet=1	GT	0|0	0|0	0|0
+6	218815	rs75607457	G	A	100	PASS	AC=0;AF=0.120407;AN=6;NS=2504;DP=14620;EAS_AF=0.2024;AMR_AF=0.0821;AFR_AF=0.1831;EUR_AF=0;SAS_AF=0.1022;AA=g|||;VT=SNP;F_MISSING=0;MAF=0.120407;AC_Het=491;AC_Hom=112;AC_Hemi=0;HWE=0.000433866;ExcHet=0.999856	GT	0|0	0|0	0|0
+6	218860	rs73356191	G	A	100	PASS	AC=0;AF=0.120008;AN=6;NS=2504;DP=16564;EAS_AF=0.2014;AMR_AF=0.0821;AFR_AF=0.1823;EUR_AF=0;SAS_AF=0.1022;AA=g|||;VT=SNP;F_MISSING=0;MAF=0.120008;AC_Het=489;AC_Hom=112;AC_Hemi=0;HWE=0.000304757;ExcHet=0.999882	GT	0|0	0|0	0|0
+6	218937	rs73356194	G	A	100	PASS	AC=0;AF=0.0978435;AN=6;NS=2504;DP=18210;EAS_AF=0.2014;AMR_AF=0.0764;AFR_AF=0.1014;EUR_AF=0;SAS_AF=0.1022;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0978435;AC_Het=412;AC_Hom=78;AC_Hemi=0;HWE=0.00137312;ExcHet=0.999536	GT	0|0	0|0	0|0
+6	219299	rs12204071	A	C	100	PASS	AC=0;AF=0.0265575;AN=6;NS=2504;DP=19400;EAS_AF=0;AMR_AF=0.0303;AFR_AF=0.0091;EUR_AF=0.0567;SAS_AF=0.044;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0265575;AC_Het=133;AC_Hom=0;AC_Hemi=0;HWE=0.420143;ExcHet=0.165191	GT	0|0	0|0	0|0
+6	219382	rs6924095	A	C	100	PASS	AC=0;AF=0.0838658;AN=6;NS=2504;DP=18449;EAS_AF=0;AMR_AF=0.0202;AFR_AF=0.3064;EUR_AF=0;SAS_AF=0.001;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0838658;AC_Het=298;AC_Hom=122;AC_Hemi=0;HWE=1.00777e-20;ExcHet=1	GT	0|0	0|0	0|0
+6	219437	rs6941950	G	C	100	PASS	AC=0;AF=0.0413339;AN=6;NS=2504;DP=19205;EAS_AF=0;AMR_AF=0.0187;AFR_AF=0.1467;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0413339;AC_Het=181;AC_Hom=26;AC_Hemi=0;HWE=0.000230774;ExcHet=0.999943	GT	0|0	0|0	0|0
+6	219603	rs75024099	C	T	100	PASS	AC=0;AF=0.0535144;AN=6;NS=2504;DP=23181;EAS_AF=0.124;AMR_AF=0.0029;AFR_AF=0;EUR_AF=0.005;SAS_AF=0.1391;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0535144;AC_Het=242;AC_Hom=26;AC_Hemi=0;HWE=0.0284858;ExcHet=0.989606	GT	0|0	0|0	0|0
+6	219872	rs62388697	C	T	100	PASS	AC=1;AF=0.0225639;AN=6;NS=2504;DP=18208;EAS_AF=0.001;AMR_AF=0.0403;AFR_AF=0.0038;EUR_AF=0.0686;SAS_AF=0.0102;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0225639;AC_Het=105;AC_Hom=8;AC_Hemi=0;HWE=0.0358601;ExcHet=0.992229	GT	0|0	1|0	0|0
+6	220026	rs6596839	T	C	100	PASS	AC=1;AF=0.589657;AN=6;NS=2504;DP=14519;EAS_AF=0.6319;AMR_AF=0.4452;AFR_AF=0.9342;EUR_AF=0.34;SAS_AF=0.4397;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.410343;AC_Het=929;AC_Hom=2024;AC_Hemi=0;HWE=1.80514e-31;ExcHet=1	GT	0|0	0|0	1|0
+6	220116	rs12214775	G	A	100	PASS	AC=0;AF=0.0203674;AN=6;NS=2504;DP=15379;EAS_AF=0.001;AMR_AF=0.0216;AFR_AF=0.0038;EUR_AF=0.0497;SAS_AF=0.0317;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0203674;AC_Het=102;AC_Hom=0;AC_Hemi=0;HWE=0.624907;ExcHet=0.34997	GT	0|0	0|0	0|0
+6	220381	rs56242396	A	T	100	PASS	AC=0;AF=0.128794;AN=6;NS=2504;DP=15703;EAS_AF=0.2748;AMR_AF=0.085;AFR_AF=0.146;EUR_AF=0.0099;SAS_AF=0.1084;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.128794;AC_Het=517;AC_Hom=128;AC_Hemi=0;HWE=0.00016239;ExcHet=0.999951	GT	0|0	0|0	0|0
+6	220549	rs6932895	C	T	100	PASS	AC=1;AF=0.513179;AN=6;NS=2504;DP=14627;EAS_AF=0.4831;AMR_AF=0.3098;AFR_AF=0.9274;EUR_AF=0.2366;SAS_AF=0.4131;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.486821;AC_Het=886;AC_Hom=1684;AC_Hemi=0;HWE=0;ExcHet=1	GT	0|0	0|0	1|0
+6	220685	rs78703384	G	C	100	PASS	AC=0;AF=0.0225639;AN=6;NS=2504;DP=18077;EAS_AF=0;AMR_AF=0.0043;AFR_AF=0.0825;EUR_AF=0;SAS_AF=0.001;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0225639;AC_Het=99;AC_Hom=14;AC_Hemi=0;HWE=0.000200701;ExcHet=0.999975	GT	0|0	0|0	0|0
+6	220909	rs6916597	G	A	100	PASS	AC=0;AF=0.0295527;AN=6;NS=2504;DP=17464;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.1082;EUR_AF=0;SAS_AF=0.001;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0295527;AC_Het=128;AC_Hom=20;AC_Hemi=0;HWE=4.06674e-05;ExcHet=0.999994	GT	0|0	0|0	0|0
+6	221146	rs9501753	G	A	100	PASS	AC=0;AF=0.0297524;AN=6;NS=2504;DP=21269;EAS_AF=0.001;AMR_AF=0.0058;AFR_AF=0.1082;EUR_AF=0;SAS_AF=0.001;AA=g|||;VT=SNP;F_MISSING=0;MAF=0.0297524;AC_Het=129;AC_Hom=20;AC_Hemi=0;HWE=4.58667e-05;ExcHet=0.999993	GT	0|0	0|0	0|0
+6	221192	rs72833502	G	A	100	PASS	AC=0;AF=0.0307508;AN=6;NS=2504;DP=21056;EAS_AF=0.001;AMR_AF=0.0317;AFR_AF=0.0106;EUR_AF=0.0646;SAS_AF=0.0532;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0307508;AC_Het=150;AC_Hom=4;AC_Hemi=0;HWE=1;ExcHet=0.579286	GT	0|0	0|0	0|0
+6	221322	rs34184773	C	T	100	PASS	AC=0;AF=0.0305511;AN=6;NS=2504;DP=18079;EAS_AF=0.001;AMR_AF=0.0432;AFR_AF=0.0061;EUR_AF=0.0934;SAS_AF=0.0204;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0305511;AC_Het=139;AC_Hom=14;AC_Hemi=0;HWE=0.00758315;ExcHet=0.99815	GT	0|0	0|0	0|0
+6	221360	rs12189848	G	T	100	PASS	AC=0;AF=0.0307508;AN=6;NS=2504;DP=18335;EAS_AF=0.001;AMR_AF=0.0317;AFR_AF=0.0106;EUR_AF=0.0646;SAS_AF=0.0532;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0307508;AC_Het=150;AC_Hom=4;AC_Hemi=0;HWE=1;ExcHet=0.579286	GT	0|0	0|0	0|0
+6	221515	rs12195328	C	T	100	PASS	AC=0;AF=0.0309505;AN=6;NS=2504;DP=21168;EAS_AF=0.001;AMR_AF=0.0317;AFR_AF=0.0106;EUR_AF=0.0646;SAS_AF=0.0542;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0309505;AC_Het=149;AC_Hom=6;AC_Hemi=0;HWE=0.514533;ExcHet=0.786342	GT	0|0	0|0	0|0
+6	221828	rs11963083	C	T	100	PASS	AC=0;AF=0.0994409;AN=6;NS=2504;DP=19905;EAS_AF=0.1835;AMR_AF=0.0836;AFR_AF=0.1097;EUR_AF=0.0099;SAS_AF=0.1022;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0994409;AC_Het=428;AC_Hom=70;AC_Hemi=0;HWE=0.0254414;ExcHet=0.989653	GT	0|0	0|0	0|0
+6	222345	rs76143320	G	A	100	PASS	AC=0;AF=0.0247604;AN=6;NS=2504;DP=19861;EAS_AF=0;AMR_AF=0.013;AFR_AF=0.0719;EUR_AF=0.0199;SAS_AF=0;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0247604;AC_Het=124;AC_Hom=0;AC_Hemi=0;HWE=0.403648;ExcHet=0.209835	GT	0|0	0|0	0|0
+6	222601	rs6916016	T	C	100	PASS	AC=0;AF=0.267772;AN=6;NS=2504;DP=19641;EAS_AF=0.2808;AMR_AF=0.1571;AFR_AF=0.5174;EUR_AF=0.0964;SAS_AF=0.1718;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.267772;AC_Het=851;AC_Hom=490;AC_Hemi=0;HWE=5.72477e-11;ExcHet=1	GT	0|0	0|0	0|0
+6	222602	rs56110505	G	A	100	PASS	AC=0;AF=0.110623;AN=6;NS=2504;DP=19623;EAS_AF=0.1835;AMR_AF=0.085;AFR_AF=0.1483;EUR_AF=0.0099;SAS_AF=0.1063;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.110623;AC_Het=470;AC_Hom=84;AC_Hemi=0;HWE=0.0250197;ExcHet=0.990259	GT	0|0	0|0	0|0
+6	222630	rs12201576	T	G	100	PASS	AC=0;AF=0.0305511;AN=6;NS=2504;DP=19864;EAS_AF=0.001;AMR_AF=0.0317;AFR_AF=0.0106;EUR_AF=0.0636;SAS_AF=0.0532;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0305511;AC_Het=149;AC_Hom=4;AC_Hemi=0;HWE=1;ExcHet=0.587607	GT	0|0	0|0	0|0
+6	223000	rs2143737	T	C	100	PASS	AC=0;AF=0.104832;AN=6;NS=2504;DP=19294;EAS_AF=0.2758;AMR_AF=0.0793;AFR_AF=0.0567;EUR_AF=0.0099;SAS_AF=0.1094;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.104832;AC_Het=419;AC_Hom=106;AC_Hemi=0;HWE=6.03509e-07;ExcHet=1	GT	0|0	0|0	0|0
+6	223039	rs2143738	T	C	100	PASS	AC=0;AF=0.284944;AN=6;NS=2504;DP=19440;EAS_AF=0.2808;AMR_AF=0.1744;AFR_AF=0.5741;EUR_AF=0.0964;SAS_AF=0.1708;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.284944;AC_Het=855;AC_Hom=572;AC_Hemi=0;HWE=1.92198e-15;ExcHet=1	GT	0|0	0|0	0|0
+6	223174	rs2143739	A	G	100	PASS	AC=1;AF=0.168331;AN=6;NS=2504;DP=16458;EAS_AF=0.2788;AMR_AF=0.1254;AFR_AF=0.1657;EUR_AF=0.0954;SAS_AF=0.1636;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.168331;AC_Het=673;AC_Hom=170;AC_Hemi=0;HWE=0.045756;ExcHet=0.98011	GT	0|0	0|0	1|0
+6	223268	rs72835304	C	T	100	PASS	AC=0;AF=0.0305511;AN=6;NS=2504;DP=19756;EAS_AF=0.001;AMR_AF=0.0317;AFR_AF=0.0106;EUR_AF=0.0636;SAS_AF=0.0532;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0305511;AC_Het=149;AC_Hom=4;AC_Hemi=0;HWE=1;ExcHet=0.587607	GT	0|0	0|0	0|0
+6	223315	rs2179753	T	A	100	PASS	AC=0;AF=0.0409345;AN=6;NS=2504;DP=20849;EAS_AF=0.1171;AMR_AF=0.0735;AFR_AF=0.0242;EUR_AF=0.001;SAS_AF=0.0031;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0409345;AC_Het=175;AC_Hom=30;AC_Hemi=0;HWE=9.92952e-06;ExcHet=0.999998	GT	0|0	0|0	0|0
+6	223418	rs17133761	G	A	100	PASS	AC=0;AF=0.0195687;AN=6;NS=2504;DP=21475;EAS_AF=0;AMR_AF=0.0043;AFR_AF=0.0719;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0195687;AC_Het=88;AC_Hom=10;AC_Hemi=0;HWE=0.00222298;ExcHet=0.999713	GT	0|0	0|0	0|0
+6	223506	rs72650630	A	G	100	PASS	AC=0;AF=0.0135783;AN=6;NS=2504;DP=22819;EAS_AF=0.0675;AMR_AF=0;AFR_AF=0;EUR_AF=0;SAS_AF=0;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0135783;AC_Het=54;AC_Hom=14;AC_Hemi=0;HWE=1.65345e-07;ExcHet=1	GT	0|0	0|0	0|0
+6	223584	rs11964365	C	A	100	PASS	AC=0;AF=0.276558;AN=6;NS=2504;DP=21772;EAS_AF=0.4792;AMR_AF=0.2046;AFR_AF=0.1596;EUR_AF=0.1968;SAS_AF=0.3589;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.276558;AC_Het=913;AC_Hom=472;AC_Hemi=0;HWE=1.08385e-05;ExcHet=0.999996	GT	0|0	0|0	0|0
+6	223787	rs4959592	G	A	100	PASS	AC=1;AF=0.0217652;AN=6;NS=2504;DP=22826;EAS_AF=0.004;AMR_AF=0.0403;AFR_AF=0.0023;EUR_AF=0.0487;SAS_AF=0.0256;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0217652;AC_Het=105;AC_Hom=4;AC_Hemi=0;HWE=0.329819;ExcHet=0.888682	GT	0|0	0|0	1|0
+6	224069	rs76009404	T	C	100	PASS	AC=0;AF=0.0427316;AN=6;NS=2504;DP=22430;EAS_AF=0.1071;AMR_AF=0.0029;AFR_AF=0;EUR_AF=0.005;SAS_AF=0.1012;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0427316;AC_Het=190;AC_Hom=24;AC_Hemi=0;HWE=0.00156187;ExcHet=0.999548	GT	0|0	0|0	0|0
+6	224181	rs56227808	A	G	100	PASS	AC=0;AF=0.0375399;AN=6;NS=2504;DP=22372;EAS_AF=0;AMR_AF=0.0101;AFR_AF=0.1369;EUR_AF=0;SAS_AF=0;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0375399;AC_Het=166;AC_Hom=22;AC_Hemi=0;HWE=0.000578044;ExcHet=0.999862	GT	0|0	0|0	0|0
+6	224210	rs79356130	A	G	100	PASS	AC=0;AF=0.0111821;AN=6;NS=2504;DP=22697;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0393;EUR_AF=0;SAS_AF=0;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0111821;AC_Het=56;AC_Hom=0;AC_Hemi=0;HWE=1;ExcHet=0.732743	GT	0|0	0|0	0|0
+6	224445	rs6596841	A	G	100	PASS	AC=1;AF=0.547125;AN=6;NS=2504;DP=17670;EAS_AF=0.4921;AMR_AF=0.3501;AFR_AF=0.9236;EUR_AF=0.334;SAS_AF=0.454;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.452875;AC_Het=920;AC_Hom=1820;AC_Hemi=0;HWE=1.53747e-38;ExcHet=1	GT	0|0	0|0	1|0
+6	224547	rs75806406	G	T	100	PASS	AC=1;AF=0.0213658;AN=6;NS=2504;DP=20160;EAS_AF=0.004;AMR_AF=0.0375;AFR_AF=0.0068;EUR_AF=0.0427;SAS_AF=0.0256;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0213658;AC_Het=103;AC_Hom=4;AC_Hemi=0;HWE=0.313836;ExcHet=0.897692	GT	0|0	0|0	1|0
+6	224646	rs13195872	T	C	100	PASS	AC=0;AF=0.180112;AN=6;NS=2504;DP=20242;EAS_AF=0.1905;AMR_AF=0.1326;AFR_AF=0.2065;EUR_AF=0.1829;SAS_AF=0.1646;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.180112;AC_Het=728;AC_Hom=174;AC_Hemi=0;HWE=0.417591;ExcHet=0.80544	GT	0|0	0|0	0|0
+6	224664	rs6596842	A	C	100	PASS	AC=0;AF=0.0225639;AN=6;NS=2504;DP=19918;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0847;EUR_AF=0;SAS_AF=0;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0225639;AC_Het=101;AC_Hom=12;AC_Hemi=0;HWE=0.00136968;ExcHet=0.999799	GT	0|0	0|0	0|0
+6	224716	rs12195797	G	A	100	PASS	AC=0;AF=0.023762;AN=6;NS=2504;DP=20837;EAS_AF=0.0139;AMR_AF=0.0187;AFR_AF=0.0091;EUR_AF=0.0388;SAS_AF=0.0419;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.023762;AC_Het=117;AC_Hom=2;AC_Hemi=0;HWE=1;ExcHet=0.58782	GT	0|0	0|0	0|0
+6	224755	rs6940742	G	A	100	PASS	AC=1;AF=0.0626997;AN=6;NS=2504;DP=20832;EAS_AF=0.006;AMR_AF=0.0548;AFR_AF=0.1331;EUR_AF=0.0606;SAS_AF=0.0337;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0626997;AC_Het=286;AC_Hom=28;AC_Hemi=0;HWE=0.170252;ExcHet=0.938604	GT	0|0	0|0	1|0
+6	224822	rs192927573	C	T	100	PASS	AC=0;AF=0.0271566;AN=6;NS=2504;DP=20494;EAS_AF=0.0496;AMR_AF=0.0029;AFR_AF=0.0325;EUR_AF=0.004;SAS_AF=0.0378;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0271566;AC_Het=126;AC_Hom=10;AC_Hemi=0;HWE=0.0344777;ExcHet=0.990976	GT	0|0	0|0	0|0
+6	224900	rs73716626	A	G	100	PASS	AC=0;AF=0.0111821;AN=6;NS=2504;DP=20565;EAS_AF=0;AMR_AF=0.0043;AFR_AF=0.0401;EUR_AF=0;SAS_AF=0;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0111821;AC_Het=52;AC_Hom=4;AC_Hemi=0;HWE=0.0368726;ExcHet=0.996768	GT	0|0	0|0	0|0
+6	225044	rs727056	C	T	100	PASS	AC=1;AF=0.53754;AN=6;NS=2504;DP=22743;EAS_AF=0.4871;AMR_AF=0.3444;AFR_AF=0.9092;EUR_AF=0.328;SAS_AF=0.4397;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.46246;AC_Het=938;AC_Hom=1754;AC_Hemi=0;HWE=3.96119e-35;ExcHet=1	GT	0|0	0|0	1|0
+6	225085	rs147139781	G	T	100	PASS	AC=0;AF=0.0173722;AN=6;NS=2504;DP=22490;EAS_AF=0;AMR_AF=0.0072;AFR_AF=0.062;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0173722;AC_Het=83;AC_Hom=4;AC_Hemi=0;HWE=0.170703;ExcHet=0.962752	GT	0|0	0|0	0|0
+6	225191	rs3734778	C	A	100	PASS	AC=0;AF=0.034345;AN=6;NS=2504;DP=20789;EAS_AF=0.0139;AMR_AF=0.0331;AFR_AF=0.0106;EUR_AF=0.0686;SAS_AF=0.0532;AA=c|||;VT=SNP;F_MISSING=0;MAF=0.034345;AC_Het=166;AC_Hom=6;AC_Hemi=0;HWE=1;ExcHet=0.662005	GT	0|0	0|0	0|0
+6	225420	rs3734779	G	A	100	PASS	AC=0;AF=0.0866613;AN=6;NS=2504;DP=21043;EAS_AF=0.2768;AMR_AF=0.0778;AFR_AF=0.0061;EUR_AF=0.001;SAS_AF=0.0941;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0866613;AC_Het=330;AC_Hom=104;AC_Hemi=0;HWE=5.09985e-13;ExcHet=1	GT	0|0	0|0	0|0
+6	225667	rs4959597	G	A	100	PASS	AC=1;AF=0.08127;AN=6;NS=2504;DP=17539;EAS_AF=0.006;AMR_AF=0.072;AFR_AF=0.1536;EUR_AF=0.0984;SAS_AF=0.0501;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.08127;AC_Het=361;AC_Hom=46;AC_Hemi=0;HWE=0.106068;ExcHet=0.964897	GT	0|0	0|0	1|0
+6	226015	rs2235872	A	C	100	PASS	AC=1;AF=0.195887;AN=6;NS=2504;DP=18495;EAS_AF=0.2917;AMR_AF=0.1556;AFR_AF=0.2519;EUR_AF=0.1044;SAS_AF=0.1442;AA=a|||;VT=SNP;F_MISSING=0;MAF=0.195887;AC_Het=759;AC_Hom=222;AC_Hemi=0;HWE=0.0655342;ExcHet=0.974184	GT	0|0	0|0	1|0
+6	226046	rs116674012	T	C	100	PASS	AC=0;AF=0.0577077;AN=6;NS=2504;DP=18105;EAS_AF=0;AMR_AF=0.0216;AFR_AF=0.2073;EUR_AF=0;SAS_AF=0;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0577077;AC_Het=243;AC_Hom=46;AC_Hemi=0;HWE=4.0134e-06;ExcHet=0.999999	GT	0|0	0|0	0|0
+6	226232	rs2235873	C	T	100	PASS	AC=1;AF=0.178115;AN=6;NS=2504;DP=16690;EAS_AF=0.2361;AMR_AF=0.1542;AFR_AF=0.23;EUR_AF=0.1014;SAS_AF=0.1442;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.178115;AC_Het=714;AC_Hom=178;AC_Hemi=0;HWE=0.194601;ExcHet=0.91559	GT	0|0	0|0	1|0
+6	226284	rs2235874	C	G	100	PASS	AC=1;AF=0.558107;AN=6;NS=2504;DP=18845;EAS_AF=0.4921;AMR_AF=0.3559;AFR_AF=0.9402;EUR_AF=0.3588;SAS_AF=0.4581;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.441893;AC_Het=927;AC_Hom=1868;AC_Hemi=0;HWE=6.53465e-36;ExcHet=1	GT	0|0	0|0	1|0
+6	226417	rs17133754	G	T	100	PASS	AC=0;AF=0.0974441;AN=6;NS=2504;DP=22414;EAS_AF=0.2768;AMR_AF=0.0778;AFR_AF=0.0477;EUR_AF=0.001;SAS_AF=0.093;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0974441;AC_Het=382;AC_Hom=106;AC_Hemi=0;HWE=3.99548e-09;ExcHet=1	GT	0|0	0|0	0|0
+6	226715	rs976993	A	G	100	PASS	AC=1;AF=0.107228;AN=6;NS=2504;DP=19409;EAS_AF=0.006;AMR_AF=0.0778;AFR_AF=0.2428;EUR_AF=0.1024;SAS_AF=0.0542;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.107228;AC_Het=437;AC_Hom=100;AC_Hemi=0;HWE=3.71627e-05;ExcHet=0.999988	GT	0|0	0|0	1|0
+6	227053	rs2092586	T	C	100	PASS	AC=1;AF=0.201078;AN=6;NS=2504;DP=20488;EAS_AF=0.0069;AMR_AF=0.1081;AFR_AF=0.5605;EUR_AF=0.1262;SAS_AF=0.0583;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.201078;AC_Het=541;AC_Hom=466;AC_Hemi=0;HWE=0;ExcHet=1	GT	0|0	0|0	1|0
+6	227162	rs114523320	T	C	100	PASS	AC=0;AF=0.0123802;AN=6;NS=2504;DP=21619;EAS_AF=0;AMR_AF=0.0029;AFR_AF=0.0454;EUR_AF=0;SAS_AF=0;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0123802;AC_Het=62;AC_Hom=0;AC_Hemi=0;HWE=1;ExcHet=0.68229	GT	0|0	0|0	0|0
+6	227205	rs2092587	A	G	100	PASS	AC=1;AF=0.380192;AN=6;NS=2504;DP=21514;EAS_AF=0.3998;AMR_AF=0.2983;AFR_AF=0.6112;EUR_AF=0.2028;SAS_AF=0.2883;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.380192;AC_Het=1052;AC_Hom=852;AC_Hemi=0;HWE=6.9183e-08;ExcHet=1	GT	0|0	0|0	1|0
+6	227241	rs75119260	T	C	100	PASS	AC=0;AF=0.0611022;AN=6;NS=2504;DP=22395;EAS_AF=0.001;AMR_AF=0.062;AFR_AF=0.0545;EUR_AF=0.1282;SAS_AF=0.0624;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0611022;AC_Het=282;AC_Hom=24;AC_Hemi=0;HWE=0.380012;ExcHet=0.865077	GT	0|0	0|0	0|0
+6	227271	rs12209177	A	T	100	PASS	AC=0;AF=0.0377396;AN=6;NS=2504;DP=22007;EAS_AF=0.0139;AMR_AF=0.0346;AFR_AF=0.0257;EUR_AF=0.0656;SAS_AF=0.0521;AA=N|||;VT=SNP;F_MISSING=0;MAF=0.0377396;AC_Het=183;AC_Hom=6;AC_Hemi=0;HWE=1;ExcHet=0.521872	GT	0|0	0|0	0|0
+6	227277	rs78379809	T	C	100	PASS	AC=0;AF=0.0640974;AN=6;NS=2504;DP=21760;EAS_AF=0.1002;AMR_AF=0.0144;AFR_AF=0.0779;EUR_AF=0.0089;SAS_AF=0.1002;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0640974;AC_Het=295;AC_Hom=26;AC_Hemi=0;HWE=0.401643;ExcHet=0.859484	GT	0|0	0|0	0|0
+6	227293	rs2092588	C	T	100	PASS	AC=0;AF=0.175519;AN=6;NS=2504;DP=22277;EAS_AF=0.3462;AMR_AF=0.1081;AFR_AF=0.1831;EUR_AF=0.0447;SAS_AF=0.1718;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.175519;AC_Het=657;AC_Hom=222;AC_Hemi=0;HWE=6.42987e-06;ExcHet=0.999998	GT	0|0	0|0	0|0
+6	227296	rs2092589	G	C	100	PASS	AC=0;AF=0.177117;AN=6;NS=2504;DP=22273;EAS_AF=0.3462;AMR_AF=0.1138;AFR_AF=0.1861;EUR_AF=0.0447;SAS_AF=0.1718;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.177117;AC_Het=663;AC_Hom=224;AC_Hemi=0;HWE=1.02251e-05;ExcHet=0.999997	GT	0|0	0|0	0|0
+6	227301	rs116375606	C	T	100	PASS	AC=0;AF=0.0157748;AN=6;NS=2504;DP=22103;EAS_AF=0.0069;AMR_AF=0.0072;AFR_AF=0.0446;EUR_AF=0;SAS_AF=0.0082;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0157748;AC_Het=79;AC_Hom=0;AC_Hemi=0;HWE=1;ExcHet=0.535241	GT	0|0	0|0	0|0
+6	227361	rs115774404	A	G	100	PASS	AC=0;AF=0.0155751;AN=6;NS=2504;DP=23377;EAS_AF=0;AMR_AF=0.0043;AFR_AF=0.0567;EUR_AF=0;SAS_AF=0;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0155751;AC_Het=74;AC_Hom=4;AC_Hemi=0;HWE=0.119697;ExcHet=0.979037	GT	0|0	0|0	0|0
+6	227385	rs2092590	A	G	100	PASS	AC=0;AF=0.0854633;AN=6;NS=2504;DP=23891;EAS_AF=0.2798;AMR_AF=0.0764;AFR_AF=0.0045;EUR_AF=0.001;SAS_AF=0.0879;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0854633;AC_Het=330;AC_Hom=98;AC_Hemi=0;HWE=1.02433e-11;ExcHet=1	GT	0|0	0|0	0|0
+6	227476	rs73358071	G	A	100	PASS	AC=0;AF=0.0163738;AN=6;NS=2504;DP=21783;EAS_AF=0;AMR_AF=0.0029;AFR_AF=0.0598;EUR_AF=0.001;SAS_AF=0;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0163738;AC_Het=78;AC_Hom=4;AC_Hemi=0;HWE=0.141177;ExcHet=0.97264	GT	0|0	0|0	0|0
+6	227545	rs148119375	C	G	100	PASS	AC=0;AF=0.0151757;AN=6;NS=2504;DP=20715;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0567;EUR_AF=0;SAS_AF=0;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0151757;AC_Het=74;AC_Hom=2;AC_Hemi=0;HWE=0.438881;ExcHet=0.890305	GT	0|0	0|0	0|0
+6	227615	rs74826726	G	A	100	PASS	AC=0;AF=0.0802716;AN=6;NS=2504;DP=21635;EAS_AF=0.252;AMR_AF=0.0764;AFR_AF=0.0038;EUR_AF=0.001;SAS_AF=0.091;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0802716;AC_Het=314;AC_Hom=88;AC_Hemi=0;HWE=7.9735e-11;ExcHet=1	GT	0|0	0|0	0|0
+6	227639	rs9328069	A	G	100	PASS	AC=0;AF=0.411342;AN=6;NS=2504;DP=21849;EAS_AF=0.4702;AMR_AF=0.2507;AFR_AF=0.6104;EUR_AF=0.2247;SAS_AF=0.3875;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.411342;AC_Het=1094;AC_Hom=966;AC_Hemi=0;HWE=1.09325e-06;ExcHet=1	GT	0|0	0|0	0|0
+6	227685	rs6915641	G	A	100	PASS	AC=0;AF=0.0241613;AN=6;NS=2504;DP=21984;EAS_AF=0;AMR_AF=0.0144;AFR_AF=0.0696;EUR_AF=0.0189;SAS_AF=0;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0241613;AC_Het=121;AC_Hom=0;AC_Hemi=0;HWE=0.40164;ExcHet=0.226373	GT	0|0	0|0	0|0
+6	227752	rs742767	C	A	100	PASS	AC=0;AF=0.140775;AN=6;NS=2504;DP=24130;EAS_AF=0.2768;AMR_AF=0.0865;AFR_AF=0.2073;EUR_AF=0.001;SAS_AF=0.093;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.140775;AC_Het=531;AC_Hom=174;AC_Hemi=0;HWE=7.28559e-09;ExcHet=1	GT	0|0	0|0	0|0
+6	227920	rs742768	A	G	100	PASS	AC=0;AF=0.236422;AN=6;NS=2504;DP=20991;EAS_AF=0.3611;AMR_AF=0.1888;AFR_AF=0.1702;EUR_AF=0.2157;SAS_AF=0.2526;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.236422;AC_Het=866;AC_Hom=318;AC_Hemi=0;HWE=0.0355002;ExcHet=0.984455	GT	0|0	0|0	0|0
+6	228002	rs114198048	C	T	100	PASS	AC=0;AF=0.0197684;AN=6;NS=2504;DP=21158;EAS_AF=0;AMR_AF=0.0029;AFR_AF=0.0734;EUR_AF=0;SAS_AF=0;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0197684;AC_Het=97;AC_Hom=2;AC_Hemi=0;HWE=1;ExcHet=0.747546	GT	0|0	0|0	0|0
+6	228060	rs73716676	G	C	100	PASS	AC=0;AF=0.0115815;AN=6;NS=2504;DP=21616;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0431;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0115815;AC_Het=54;AC_Hom=4;AC_Hemi=0;HWE=0.0420083;ExcHet=0.996032	GT	0|0	0|0	0|0
+6	228215	rs78337378	G	A	100	PASS	AC=0;AF=0.0417332;AN=6;NS=2504;DP=20600;EAS_AF=0.0952;AMR_AF=0.0043;AFR_AF=0.0023;EUR_AF=0.0089;SAS_AF=0.1002;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0417332;AC_Het=191;AC_Hom=18;AC_Hemi=0;HWE=0.0380577;ExcHet=0.989865	GT	0|0	0|0	0|0
+6	228257	rs9501765	G	A	100	PASS	AC=0;AF=0.0391374;AN=6;NS=2504;DP=18776;EAS_AF=0;AMR_AF=0.0101;AFR_AF=0.1422;EUR_AF=0;SAS_AF=0.001;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0391374;AC_Het=158;AC_Hom=38;AC_Hemi=0;HWE=2.0555e-09;ExcHet=1	GT	0|0	0|0	0|0
+6	228345	rs12212839	T	G	100	PASS	AC=0;AF=0.127596;AN=6;NS=2504;DP=21453;EAS_AF=0.1101;AMR_AF=0.049;AFR_AF=0.1952;EUR_AF=0.0845;SAS_AF=0.1544;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.127596;AC_Het=559;AC_Hom=80;AC_Hemi=0;HWE=1;ExcHet=0.491518	GT	0|0	0|0	0|0
+6	228404	rs114053587	C	T	100	PASS	AC=0;AF=0.0159744;AN=6;NS=2504;DP=22491;EAS_AF=0;AMR_AF=0.0159;AFR_AF=0.0023;EUR_AF=0.0209;SAS_AF=0.046;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0159744;AC_Het=76;AC_Hom=4;AC_Hemi=0;HWE=0.130193;ExcHet=0.975996	GT	0|0	0|0	0|0
+6	228704	rs148432359	T	C	100	PASS	AC=0;AF=0.0127796;AN=6;NS=2504;DP=15980;EAS_AF=0.0109;AMR_AF=0.0749;AFR_AF=0.0008;EUR_AF=0;SAS_AF=0;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0127796;AC_Het=58;AC_Hom=6;AC_Hemi=0;HWE=0.00699973;ExcHet=0.999421	GT	0|0	0|0	0|0
+6	228876	rs371571085	G	T	100	PASS	AC=1;AF=0.334065;AN=6;NS=2504;DP=15652;EAS_AF=0.1984;AMR_AF=0.1758;AFR_AF=0.6346;EUR_AF=0.2256;SAS_AF=0.2914;AA=g|||;VT=SNP;F_MISSING=0;MAF=0.334065;AC_Het=955;AC_Hom=718;AC_Hemi=0;HWE=1.49295e-12;ExcHet=1	GT	0|0	0|0	1|0
+6	228878	rs201989287	G	T	100	PASS	AC=1;AF=0.388179;AN=6;NS=2504;DP=15894;EAS_AF=0.2937;AMR_AF=0.2435;AFR_AF=0.6619;EUR_AF=0.2535;SAS_AF=0.3569;AA=N|||;VT=SNP;F_MISSING=0;MAF=0.388179;AC_Het=1154;AC_Hom=790;AC_Hemi=0;HWE=0.140854;ExcHet=0.93821	GT	0|0	0|0	1|0
+6	228880	rs548559281	T	G	100	PASS	AC=0;AF=0.0183706;AN=6;NS=2504;DP=15921;EAS_AF=0.0079;AMR_AF=0.0072;AFR_AF=0.0507;EUR_AF=0.0109;SAS_AF=0.001;AA=t|||;VT=SNP;F_MISSING=0;MAF=0.0183706;AC_Het=90;AC_Hom=2;AC_Hemi=0;HWE=0.573212;ExcHet=0.796978	GT	0|0	0|0	0|0
+6	228918	rs12203577	G	A	100	PASS	AC=0;AF=0.0391374;AN=6;NS=2504;DP=15765;EAS_AF=0.0248;AMR_AF=0.0548;AFR_AF=0.0106;EUR_AF=0.0666;SAS_AF=0.0532;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0391374;AC_Het=188;AC_Hom=8;AC_Hemi=0;HWE=0.791167;ExcHet=0.666261	GT	0|0	0|0	0|0
+6	229169	rs17133744	G	A	100	PASS	AC=1;AF=0.276757;AN=6;NS=2504;DP=17554;EAS_AF=0.1855;AMR_AF=0.1513;AFR_AF=0.4365;EUR_AF=0.2276;SAS_AF=0.2945;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.276757;AC_Het=950;AC_Hom=436;AC_Hemi=0;HWE=0.00941252;ExcHet=0.996076	GT	0|0	0|0	1|0
+6	229191	rs12210260	C	A	100	PASS	AC=1;AF=0.402157;AN=6;NS=2504;DP=17338;EAS_AF=0.2123;AMR_AF=0.2334;AFR_AF=0.7436;EUR_AF=0.3002;SAS_AF=0.3609;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.402157;AC_Het=1000;AC_Hom=1014;AC_Hemi=0;HWE=2.64089e-17;ExcHet=1	GT	0|0	0|0	1|0
+6	229202	rs56291689	C	T	100	PASS	AC=1;AF=0.0950479;AN=6;NS=2504;DP=17292;EAS_AF=0.0069;AMR_AF=0.0749;AFR_AF=0.1967;EUR_AF=0.1044;SAS_AF=0.0532;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0950479;AC_Het=410;AC_Hom=66;AC_Hemi=0;HWE=0.019692;ExcHet=0.992381	GT	0|0	0|0	1|0
+6	229318	rs12213088	A	G	100	PASS	AC=0;AF=0.0339457;AN=6;NS=2504;DP=18222;EAS_AF=0.0139;AMR_AF=0.0331;AFR_AF=0.0113;EUR_AF=0.0656;SAS_AF=0.0532;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0339457;AC_Het=164;AC_Hom=6;AC_Hemi=0;HWE=0.762965;ExcHet=0.67776	GT	0|0	0|0	0|0
+6	229577	rs57498878	C	G	100	PASS	AC=0;AF=0.0830671;AN=6;NS=2504;DP=19456;EAS_AF=0.0248;AMR_AF=0.0476;AFR_AF=0.2632;EUR_AF=0.0089;SAS_AF=0.001;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0830671;AC_Het=352;AC_Hom=64;AC_Hemi=0;HWE=0.000336675;ExcHet=0.999881	GT	0|0	0|0	0|0
+6	229646	rs12214922	T	C	100	PASS	AC=0;AF=0.109625;AN=6;NS=2504;DP=17580;EAS_AF=0.2401;AMR_AF=0.1124;AFR_AF=0.0545;EUR_AF=0.0427;SAS_AF=0.1166;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.109625;AC_Het=439;AC_Hom=110;AC_Hemi=0;HWE=2.76978e-06;ExcHet=0.999999	GT	0|0	0|0	0|0
+6	229667	rs6915606	T	C	100	PASS	AC=0;AF=0.327276;AN=6;NS=2504;DP=16923;EAS_AF=0.38;AMR_AF=0.1643;AFR_AF=0.5038;EUR_AF=0.1561;SAS_AF=0.3262;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.327276;AC_Het=961;AC_Hom=678;AC_Hemi=0;HWE=1.89509e-10;ExcHet=1	GT	0|0	0|0	0|0
+6	229669	rs12205264	G	C	100	PASS	AC=0;AF=0.0485224;AN=6;NS=2504;DP=16910;EAS_AF=0.119;AMR_AF=0.0331;AFR_AF=0.0098;EUR_AF=0.0278;SAS_AF=0.0603;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0485224;AC_Het=209;AC_Hom=34;AC_Hemi=0;HWE=4.66895e-05;ExcHet=0.999988	GT	0|0	0|0	0|0
+6	229729	rs6910499	A	G	100	PASS	AC=1;AF=0.534345;AN=6;NS=2504;DP=17793;EAS_AF=0.4891;AMR_AF=0.3213;AFR_AF=0.9266;EUR_AF=0.3022;SAS_AF=0.4407;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.465655;AC_Het=946;AC_Hom=1730;AC_Hemi=0;HWE=1.02951e-33;ExcHet=1	GT	0|0	0|0	1|0
+6	229752	rs12210593	C	T	100	PASS	AC=0;AF=0.0395367;AN=6;NS=2504;DP=18696;EAS_AF=0.0258;AMR_AF=0.0548;AFR_AF=0.0113;EUR_AF=0.0656;SAS_AF=0.0542;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0395367;AC_Het=188;AC_Hom=10;AC_Hemi=0;HWE=0.59183;ExcHet=0.808305	GT	0|0	0|0	0|0
+6	229883	rs60946302	A	G	100	PASS	AC=0;AF=0.0858626;AN=6;NS=2504;DP=19317;EAS_AF=0.2768;AMR_AF=0.0764;AFR_AF=0.0053;EUR_AF=0.001;SAS_AF=0.092;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0858626;AC_Het=328;AC_Hom=102;AC_Hemi=0;HWE=9.43329e-13;ExcHet=1	GT	0|0	0|0	0|0
+6	229974	rs17133738	C	T	100	PASS	AC=0;AF=0.146565;AN=6;NS=2504;DP=19446;EAS_AF=0.2778;AMR_AF=0.0994;AFR_AF=0.2156;EUR_AF=0.0099;SAS_AF=0.092;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.146565;AC_Het=568;AC_Hom=166;AC_Hemi=0;HWE=9.40415e-06;ExcHet=0.999997	GT	0|0	0|0	0|0
+6	229975	rs6928296	G	A	100	PASS	AC=0;AF=0.0295527;AN=6;NS=2504;DP=19388;EAS_AF=0;AMR_AF=0.0072;AFR_AF=0.1074;EUR_AF=0;SAS_AF=0.001;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0295527;AC_Het=124;AC_Hom=24;AC_Hemi=0;HWE=8.48557e-07;ExcHet=1	GT	0|0	0|0	0|0
+6	229984	rs59867427	T	C	100	PASS	AC=0;AF=0.0852636;AN=6;NS=2504;DP=19008;EAS_AF=0.2778;AMR_AF=0.0764;AFR_AF=0.0023;EUR_AF=0.001;SAS_AF=0.092;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0852636;AC_Het=325;AC_Hom=102;AC_Hemi=0;HWE=5.18178e-13;ExcHet=1	GT	0|0	0|0	0|0
+6	230007	rs4959609	C	A	100	PASS	AC=1;AF=0.294928;AN=6;NS=2504;DP=18465;EAS_AF=0.1855;AMR_AF=0.1556;AFR_AF=0.5053;EUR_AF=0.2266;SAS_AF=0.2924;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.294928;AC_Het=941;AC_Hom=536;AC_Hemi=0;HWE=1.87895e-06;ExcHet=0.999999	GT	0|0	0|0	1|0
+6	230188	rs567820108	C	T	100	PASS	AC=0;AF=0.0133786;AN=6;NS=2504;DP=17367;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0499;EUR_AF=0;SAS_AF=0;AA=-|||;VT=SNP;F_MISSING=0;MAF=0.0133786;AC_Het=67;AC_Hom=0;AC_Hemi=0;HWE=1;ExcHet=0.639257	GT	0|0	0|0	0|0
+6	230200	rs535212781	C	T	100	PASS	AC=0;AF=0.0650958;AN=6;NS=2504;DP=17422;EAS_AF=0.0228;AMR_AF=0.0331;AFR_AF=0.1891;EUR_AF=0.0089;SAS_AF=0.0215;AA=-|||;VT=SNP;F_MISSING=0;MAF=0.0650958;AC_Het=294;AC_Hom=32;AC_Hemi=0;HWE=0.0970489;ExcHet=0.968293	GT	0|0	0|0	0|0
+6	230235	rs79505795	A	G	100	PASS	AC=0;AF=0.01877;AN=6;NS=2504;DP=18926;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0703;EUR_AF=0;SAS_AF=0;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.01877;AC_Het=84;AC_Hom=10;AC_Hemi=0;HWE=0.00151948;ExcHet=0.999822	GT	0|0	0|0	0|0
+6	230527	rs17839828	A	C	100	PASS	AC=0;AF=0.0982428;AN=6;NS=2504;DP=19172;EAS_AF=0.2778;AMR_AF=0.0778;AFR_AF=0.0484;EUR_AF=0.003;SAS_AF=0.093;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0982428;AC_Het=384;AC_Hom=108;AC_Hemi=0;HWE=1.50031e-09;ExcHet=1	GT	0|0	0|0	0|0
+6	230572	rs981596	A	G	100	PASS	AC=1;AF=0.23762;AN=6;NS=2504;DP=18714;EAS_AF=0.0913;AMR_AF=0.2378;AFR_AF=0.3064;EUR_AF=0.2684;SAS_AF=0.2638;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.23762;AC_Het=894;AC_Hom=296;AC_Hemi=0;HWE=0.473318;ExcHet=0.787289	GT	0|0	0|0	1|0
+6	230737	rs76437414	A	G	100	PASS	AC=0;AF=0.0794728;AN=6;NS=2504;DP=20098;EAS_AF=0.1101;AMR_AF=0.013;AFR_AF=0.1271;EUR_AF=0.0089;SAS_AF=0.1033;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0794728;AC_Het=340;AC_Hom=58;AC_Hemi=0;HWE=0.000872051;ExcHet=0.999714	GT	0|0	0|0	0|0
+6	230973	rs17806996	G	T	100	PASS	AC=0;AF=0.128195;AN=6;NS=2504;DP=17421;EAS_AF=0.0605;AMR_AF=0.1527;AFR_AF=0.087;EUR_AF=0.1769;SAS_AF=0.1861;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.128195;AC_Het=560;AC_Hom=82;AC_Hemi=0;HWE=1;ExcHet=0.535436	GT	0|0	0|0	0|0
+6	230991	rs117288938	T	C	100	PASS	AC=0;AF=0.0101837;AN=6;NS=2504;DP=19096;EAS_AF=0.0129;AMR_AF=0.0245;AFR_AF=0.0159;EUR_AF=0;SAS_AF=0;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0101837;AC_Het=51;AC_Hom=0;AC_Hemi=0;HWE=1;ExcHet=0.773221	GT	0|0	0|0	0|0
+6	231101	rs12198643	G	A	100	PASS	AC=1;AF=0.240216;AN=6;NS=2504;DP=15614;EAS_AF=0.0883;AMR_AF=0.2161;AFR_AF=0.3714;EUR_AF=0.2604;SAS_AF=0.2157;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.240216;AC_Het=863;AC_Hom=340;AC_Hemi=0;HWE=0.00613133;ExcHet=0.997651	GT	0|0	0|0	1|0
+6	231108	rs141130945	C	T	100	PASS	AC=0;AF=0.0277556;AN=6;NS=2504;DP=15401;EAS_AF=0.0139;AMR_AF=0.0259;AFR_AF=0.0151;EUR_AF=0.0567;SAS_AF=0.0307;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0277556;AC_Het=133;AC_Hom=6;AC_Hemi=0;HWE=0.439153;ExcHet=0.877398	GT	0|0	0|0	0|0
+6	231129	rs150298699	G	A	100	PASS	AC=0;AF=0.0946486;AN=6;NS=2504;DP=14474;EAS_AF=0.3175;AMR_AF=0.0807;AFR_AF=0.0023;EUR_AF=0.001;SAS_AF=0.0961;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0946486;AC_Het=362;AC_Hom=112;AC_Hemi=0;HWE=5.4984e-12;ExcHet=1	GT	0|0	0|0	0|0
+6	231133	rs113727148	G	A	100	PASS	AC=0;AF=0.102436;AN=6;NS=2504;DP=14171;EAS_AF=0.3175;AMR_AF=0.0836;AFR_AF=0.0287;EUR_AF=0.003;SAS_AF=0.0961;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.102436;AC_Het=397;AC_Hom=116;AC_Hemi=0;HWE=6.05669e-10;ExcHet=1	GT	0|0	0|0	0|0
+6	231146	rs9405515	C	A	100	PASS	AC=5;AF=0.410942;AN=6;NS=2504;DP=13962;EAS_AF=0.4841;AMR_AF=0.5879;AFR_AF=0.0446;EUR_AF=0.6362;SAS_AF=0.4734;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.410942;AC_Het=980;AC_Hom=1078;AC_Hemi=0;HWE=1.05425e-21;ExcHet=1	GT	1|1	1|1	0|1
+6	231158	rs13198692	A	G	100	PASS	AC=0;AF=0.161542;AN=6;NS=2504;DP=14060;EAS_AF=0.0546;AMR_AF=0.0591;AFR_AF=0.5159;EUR_AF=0.0199;SAS_AF=0.0112;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.161542;AC_Het=449;AC_Hom=360;AC_Hemi=0;HWE=0;ExcHet=1	GT	0|0	0|0	0|0
+6	231179	rs12206713	A	G	100	PASS	AC=0;AF=0.125599;AN=6;NS=2504;DP=13878;EAS_AF=0.0446;AMR_AF=0.0533;AFR_AF=0.2466;EUR_AF=0.0815;SAS_AF=0.1421;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.125599;AC_Het=519;AC_Hom=110;AC_Hemi=0;HWE=0.00619944;ExcHet=0.997565	GT	0|0	0|0	0|0
+6	231180	rs12198660	G	C	100	PASS	AC=0;AF=0.126398;AN=6;NS=2504;DP=13910;EAS_AF=0.0466;AMR_AF=0.0533;AFR_AF=0.2458;EUR_AF=0.0825;SAS_AF=0.1442;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.126398;AC_Het=523;AC_Hom=110;AC_Hemi=0;HWE=0.00848451;ExcHet=0.996712	GT	0|0	0|0	0|0
+6	231203	rs142166910	A	G	100	PASS	AC=0;AF=0.0101837;AN=6;NS=2504;DP=14115;EAS_AF=0.001;AMR_AF=0.0014;AFR_AF=0.0363;EUR_AF=0;SAS_AF=0.001;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0101837;AC_Het=47;AC_Hom=4;AC_Hemi=0;HWE=0.0259118;ExcHet=0.998143	GT	0|0	0|0	0|0
+6	231223	rs9378655	G	A	100	PASS	AC=3;AF=0.402356;AN=6;NS=2504;DP=13937;EAS_AF=0.498;AMR_AF=0.6196;AFR_AF=0.0991;EUR_AF=0.5875;SAS_AF=0.3691;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.402356;AC_Het=1033;AC_Hom=982;AC_Hemi=0;HWE=1.44064e-12;ExcHet=1	GT	1|1	1|0	0|0
+6	231232	rs184485383	C	T	100	PASS	AC=0;AF=0.0407348;AN=6;NS=2504;DP=14085;EAS_AF=0.0169;AMR_AF=0.0086;AFR_AF=0.1354;EUR_AF=0;SAS_AF=0.002;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0407348;AC_Het=170;AC_Hom=34;AC_Hemi=0;HWE=3.20602e-07;ExcHet=1	GT	0|0	0|0	0|0
+6	231234	rs148586553	T	C	100	PASS	AC=0;AF=0.0626997;AN=6;NS=2504;DP=13932;EAS_AF=0.0327;AMR_AF=0.0346;AFR_AF=0.1778;EUR_AF=0.007;SAS_AF=0.0153;AA=t|||;VT=SNP;F_MISSING=0;MAF=0.0626997;AC_Het=268;AC_Hom=46;AC_Hemi=0;HWE=9.60277e-05;ExcHet=0.999978	GT	0|0	0|0	0|0
+6	231281	rs73358086	G	A	100	PASS	AC=0;AF=0.168331;AN=6;NS=2504;DP=12445;EAS_AF=0.3175;AMR_AF=0.1297;AFR_AF=0.2057;EUR_AF=0.0368;SAS_AF=0.1268;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.168331;AC_Het=651;AC_Hom=192;AC_Hemi=0;HWE=0.000581948;ExcHet=0.999807	GT	0|0	0|0	0|0
+6	231351	rs12204143	C	T	100	PASS	AC=2;AF=0.572484;AN=6;NS=2504;DP=15026;EAS_AF=0.5546;AMR_AF=0.4006;AFR_AF=0.9418;EUR_AF=0.3101;SAS_AF=0.4836;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.427516;AC_Het=987;AC_Hom=1880;AC_Hemi=0;HWE=1.85564e-22;ExcHet=1	GT	0|0	0|1	1|0
+6	231355	rs113379202	A	G	100	PASS	AC=1;AF=0.0341454;AN=6;NS=2504;DP=15110;EAS_AF=0.0298;AMR_AF=0.0461;AFR_AF=0.0234;EUR_AF=0.0517;SAS_AF=0.0266;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0341454;AC_Het=163;AC_Hom=8;AC_Hemi=0;HWE=0.533822;ExcHet=0.837657	GT	0|0	1|0	0|0
+6	231374	rs13202779	T	C	100	PASS	AC=1;AF=0.110224;AN=6;NS=2504;DP=15520;EAS_AF=0.0308;AMR_AF=0.0965;AFR_AF=0.2095;EUR_AF=0.1372;SAS_AF=0.0399;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.110224;AC_Het=460;AC_Hom=92;AC_Hemi=0;HWE=0.00291002;ExcHet=0.999112	GT	0|1	0|0	0|0
+6	231464	rs113422373	C	A	100	PASS	AC=0;AF=0.0173722;AN=6;NS=2504;DP=18579;EAS_AF=0;AMR_AF=0.0029;AFR_AF=0.0643;EUR_AF=0;SAS_AF=0;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0173722;AC_Het=83;AC_Hom=4;AC_Hemi=0;HWE=0.170703;ExcHet=0.962752	GT	0|0	0|0	0|0
+6	231579	rs73358088	T	C	100	PASS	AC=0;AF=0.148962;AN=6;NS=2504;DP=16130;EAS_AF=0.2907;AMR_AF=0.1037;AFR_AF=0.2141;EUR_AF=0.001;SAS_AF=0.0992;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.148962;AC_Het=560;AC_Hom=186;AC_Hemi=0;HWE=2.41349e-08;ExcHet=1	GT	0|0	0|0	0|0
+6	231638	rs9503021	G	T	100	PASS	AC=1;AF=0.561102;AN=6;NS=2504;DP=17086;EAS_AF=0.5069;AMR_AF=0.3818;AFR_AF=0.9357;EUR_AF=0.336;SAS_AF=0.4693;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.438898;AC_Het=986;AC_Hom=1824;AC_Hemi=0;HWE=8.89026e-24;ExcHet=1	GT	0|0	0|0	1|0
+6	231878	rs72835315	T	C	100	PASS	AC=0;AF=0.0662939;AN=6;NS=2504;DP=19790;EAS_AF=0.0863;AMR_AF=0.0245;AFR_AF=0.0318;EUR_AF=0.0656;SAS_AF=0.1227;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0662939;AC_Het=308;AC_Hom=24;AC_Hemi=0;HWE=0.745593;ExcHet=0.699807	GT	0|0	0|0	0|0
+6	231934	rs9503022	T	C	100	PASS	AC=0;AF=0.0377396;AN=6;NS=2504;DP=19051;EAS_AF=0;AMR_AF=0.0086;AFR_AF=0.1377;EUR_AF=0;SAS_AF=0.001;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0377396;AC_Het=159;AC_Hom=30;AC_Hemi=0;HWE=1.19407e-06;ExcHet=1	GT	0|0	0|0	0|0
+6	232061	rs9501770	G	A	100	PASS	AC=0;AF=0.0277556;AN=6;NS=2504;DP=17526;EAS_AF=0;AMR_AF=0.0072;AFR_AF=0.1006;EUR_AF=0;SAS_AF=0.001;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0277556;AC_Het=123;AC_Hom=16;AC_Hemi=0;HWE=0.000507351;ExcHet=0.999913	GT	0|0	0|0	0|0
+6	232264	rs61363675	G	A	100	PASS	AC=0;AF=0.0169728;AN=6;NS=2504;DP=17651;EAS_AF=0;AMR_AF=0.0029;AFR_AF=0.0628;EUR_AF=0;SAS_AF=0;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0169728;AC_Het=83;AC_Hom=2;AC_Hemi=0;HWE=0.515738;ExcHet=0.841455	GT	0|0	0|0	0|0
+6	232290	rs7765514	C	T	100	PASS	AC=1;AF=0.552516;AN=6;NS=2504;DP=17291;EAS_AF=0.5069;AMR_AF=0.3847;AFR_AF=0.9092;EUR_AF=0.327;SAS_AF=0.4683;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.447484;AC_Het=1009;AC_Hom=1758;AC_Hemi=0;HWE=1.71488e-20;ExcHet=1	GT	0|0	0|0	1|0
+6	232535	rs2179754	T	C	100	PASS	AC=1;AF=0.551518;AN=6;NS=2504;DP=20210;EAS_AF=0.5169;AMR_AF=0.3674;AFR_AF=0.9062;EUR_AF=0.328;SAS_AF=0.4683;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.448482;AC_Het=1002;AC_Hom=1760;AC_Hemi=0;HWE=1.12112e-21;ExcHet=1	GT	0|0	0|0	1|0
+6	232716	rs9501772	G	A	100	PASS	AC=0;AF=0.0271566;AN=6;NS=2504;DP=22659;EAS_AF=0;AMR_AF=0.0072;AFR_AF=0.0983;EUR_AF=0;SAS_AF=0.001;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0271566;AC_Het=120;AC_Hom=16;AC_Hemi=0;HWE=0.000374285;ExcHet=0.999939	GT	0|0	0|0	0|0
+6	232895	rs78180236	C	T	100	PASS	AC=0;AF=0.0858626;AN=6;NS=2504;DP=22864;EAS_AF=0.1002;AMR_AF=0.013;AFR_AF=0.146;EUR_AF=0.007;SAS_AF=0.1227;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0858626;AC_Het=370;AC_Hom=60;AC_Hemi=0;HWE=0.00495258;ExcHet=0.998055	GT	0|0	0|0	0|0
+6	233229	rs76717143	C	T	100	PASS	AC=0;AF=0.0848642;AN=6;NS=2504;DP=19706;EAS_AF=0.1002;AMR_AF=0.013;AFR_AF=0.1422;EUR_AF=0.007;SAS_AF=0.1227;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0848642;AC_Het=367;AC_Hom=58;AC_Hemi=0;HWE=0.00931822;ExcHet=0.997318	GT	0|0	0|0	0|0
+6	233500	rs12202710	G	C	100	PASS	AC=0;AF=0.0411342;AN=6;NS=2504;DP=19641;EAS_AF=0.001;AMR_AF=0.0432;AFR_AF=0.0174;EUR_AF=0.0915;SAS_AF=0.0613;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0411342;AC_Het=196;AC_Hom=10;AC_Hemi=0;HWE=0.611015;ExcHet=0.75601	GT	0|0	0|0	0|0
+6	233501	rs9503024	G	T	100	PASS	AC=0;AF=0.0277556;AN=6;NS=2504;DP=19569;EAS_AF=0;AMR_AF=0.0072;AFR_AF=0.1006;EUR_AF=0;SAS_AF=0.001;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0277556;AC_Het=123;AC_Hom=16;AC_Hemi=0;HWE=0.000507351;ExcHet=0.999913	GT	0|0	0|0	0|0
+6	233648	rs74865759	G	A	100	PASS	AC=0;AF=0.0888578;AN=6;NS=2504;DP=15553;EAS_AF=0.2629;AMR_AF=0.0821;AFR_AF=0.0144;EUR_AF=0.0089;SAS_AF=0.0971;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0888578;AC_Het=359;AC_Hom=86;AC_Hemi=0;HWE=3.4179e-07;ExcHet=1	GT	0|0	0|0	0|0
+6	233675	rs62388698	G	A	100	PASS	AC=1;AF=0.0603035;AN=6;NS=2504;DP=15912;EAS_AF=0.003;AMR_AF=0.0533;AFR_AF=0.1006;EUR_AF=0.0984;SAS_AF=0.0307;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0603035;AC_Het=282;AC_Hom=20;AC_Hemi=0;HWE=0.723167;ExcHet=0.70411	GT	0|0	0|0	1|0
+6	233750	rs12212523	T	C	100	PASS	AC=1;AF=0.548922;AN=6;NS=2504;DP=17222;EAS_AF=0.4841;AMR_AF=0.3847;AFR_AF=0.913;EUR_AF=0.326;SAS_AF=0.4693;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.451078;AC_Het=1009;AC_Hom=1740;AC_Hemi=0;HWE=1.26351e-20;ExcHet=1	GT	0|0	0|0	1|0
+6	233823	rs75210336	T	C	100	PASS	AC=0;AF=0.0854633;AN=6;NS=2504;DP=13964;EAS_AF=0.2629;AMR_AF=0.0821;AFR_AF=0.0015;EUR_AF=0.0089;SAS_AF=0.0971;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0854633;AC_Het=342;AC_Hom=86;AC_Hemi=0;HWE=2.19081e-08;ExcHet=1	GT	0|0	0|0	0|0
+6	234143	rs147472063	C	T	100	PASS	AC=0;AF=0.0203674;AN=6;NS=2504;DP=15208;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0741;EUR_AF=0;SAS_AF=0;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.0203674;AC_Het=92;AC_Hom=10;AC_Hemi=0;HWE=0.00318465;ExcHet=0.999551	GT	0|0	0|0	0|0
+6	234343	rs139985432	G	T	100	PASS	AC=0;AF=0.0417332;AN=6;NS=2504;DP=19062;EAS_AF=0.001;AMR_AF=0.0447;AFR_AF=0.0197;EUR_AF=0.0895;SAS_AF=0.0624;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0417332;AC_Het=199;AC_Hom=10;AC_Hemi=0;HWE=0.620311;ExcHet=0.734786	GT	0|0	0|0	0|0
+6	234628	rs17133722	T	C	100	PASS	AC=0;AF=0.0854633;AN=6;NS=2504;DP=19971;EAS_AF=0.2629;AMR_AF=0.0821;AFR_AF=0.0015;EUR_AF=0.0089;SAS_AF=0.0971;AA=t|||;VT=SNP;F_MISSING=0;MAF=0.0854633;AC_Het=342;AC_Hom=86;AC_Hemi=0;HWE=2.19081e-08;ExcHet=1	GT	0|0	0|0	0|0
+6	234871	rs9328070	T	C	100	PASS	AC=1;AF=0.509585;AN=6;NS=2504;DP=20041;EAS_AF=0.4841;AMR_AF=0.3415;AFR_AF=0.8873;EUR_AF=0.2356;SAS_AF=0.4264;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.490415;AC_Het=972;AC_Hom=1580;AC_Hemi=0;HWE=3.95662e-29;ExcHet=1	GT	0|0	0|0	1|0
+6	235321	rs6919262	T	C	100	PASS	AC=1;AF=0.550319;AN=6;NS=2504;DP=19427;EAS_AF=0.4841;AMR_AF=0.3862;AFR_AF=0.9198;EUR_AF=0.327;SAS_AF=0.4652;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.449681;AC_Het=1004;AC_Hom=1752;AC_Hemi=0;HWE=1.79534e-21;ExcHet=1	GT	0|0	0|0	1|0
+6	235367	rs6919291	T	C	100	PASS	AC=1;AF=0.453275;AN=6;NS=2504;DP=17432;EAS_AF=0.4722;AMR_AF=0.3141;AFR_AF=0.7141;EUR_AF=0.2356;SAS_AF=0.4039;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.453275;AC_Het=1106;AC_Hom=1164;AC_Hemi=0;HWE=5.12908e-08;ExcHet=1	GT	0|0	0|0	1|0
+6	235499	rs140765731	A	G	100	PASS	AC=0;AF=0.0101837;AN=6;NS=2504;DP=16842;EAS_AF=0;AMR_AF=0.0014;AFR_AF=0.0378;EUR_AF=0;SAS_AF=0;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0101837;AC_Het=49;AC_Hom=2;AC_Hemi=0;HWE=0.226779;ExcHet=0.974088	GT	0|0	0|0	0|0
+6	235602	rs6914508	A	C	100	PASS	AC=1;AF=0.543131;AN=6;NS=2504;DP=18402;EAS_AF=0.4752;AMR_AF=0.3674;AFR_AF=0.9085;EUR_AF=0.327;SAS_AF=0.4663;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.456869;AC_Het=1010;AC_Hom=1710;AC_Hemi=0;HWE=7.16447e-21;ExcHet=1	GT	0|0	0|0	1|0
+6	235781	rs561291113	G	A	100	PASS	AC=0;AF=0.0499201;AN=6;NS=2504;DP=18908;EAS_AF=0.0179;AMR_AF=0.0288;AFR_AF=0.1339;EUR_AF=0.0089;SAS_AF=0.0266;AA=A|||;VT=SNP;F_MISSING=0;MAF=0.0499201;AC_Het=250;AC_Hom=0;AC_Hemi=0;HWE=0.00246704;ExcHet=0.00143883	GT	0|0	0|0	0|0
+6	235787	rs574780791	G	A	100	PASS	AC=0;AF=0.0473243;AN=6;NS=2504;DP=18739;EAS_AF=0.0149;AMR_AF=0.0303;AFR_AF=0.1263;EUR_AF=0.0129;SAS_AF=0.0215;AA=g|||;VT=SNP;F_MISSING=0;MAF=0.0473243;AC_Het=237;AC_Hom=0;AC_Hemi=0;HWE=0.00597321;ExcHet=0.00284142	GT	0|0	0|0	0|0
+6	235789	rs540456676	A	G	100	PASS	AC=0;AF=0.0473243;AN=6;NS=2504;DP=18696;EAS_AF=0.0159;AMR_AF=0.0303;AFR_AF=0.1271;EUR_AF=0.0119;SAS_AF=0.0204;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0473243;AC_Het=237;AC_Hom=0;AC_Hemi=0;HWE=0.00597321;ExcHet=0.00284142	GT	0|0	0|0	0|0
+6	235818	rs112446657	G	A	100	PASS	AC=1;AF=0.052516;AN=6;NS=2504;DP=17982;EAS_AF=0.0456;AMR_AF=0.0331;AFR_AF=0.1036;EUR_AF=0.0358;SAS_AF=0.0215;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.052516;AC_Het=251;AC_Hom=12;AC_Hemi=0;HWE=1;ExcHet=0.460511	GT	0|0	0|0	1|0
+6	235822	rs528211419	G	A	100	PASS	AC=1;AF=0.0119808;AN=6;NS=2504;DP=17697;EAS_AF=0.003;AMR_AF=0.0058;AFR_AF=0.031;EUR_AF=0.0099;SAS_AF=0.002;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0119808;AC_Het=60;AC_Hom=0;AC_Hemi=0;HWE=1;ExcHet=0.699288	GT	0|0	0|0	1|0
+6	236425	rs67031508	C	A	100	PASS	AC=1;AF=0.224241;AN=6;NS=2504;DP=18546;EAS_AF=0.1538;AMR_AF=0.1542;AFR_AF=0.2791;EUR_AF=0.2127;SAS_AF=0.2843;AA=C|||;VT=SNP;F_MISSING=0;MAF=0.224241;AC_Het=857;AC_Hom=266;AC_Hemi=0;HWE=0.421282;ExcHet=0.811463	GT	0|0	0|0	1|0
+6	236530	rs116400150	G	T	100	PASS	AC=0;AF=0.0207668;AN=6;NS=2504;DP=19855;EAS_AF=0;AMR_AF=0.0058;AFR_AF=0.0756;EUR_AF=0;SAS_AF=0;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.0207668;AC_Het=98;AC_Hom=6;AC_Hemi=0;HWE=0.0896815;ExcHet=0.979194	GT	0|0	0|0	0|0
+6	236731	rs6926102	T	C	100	PASS	AC=1;AF=0.34345;AN=6;NS=2504;DP=16370;EAS_AF=0.2728;AMR_AF=0.3285;AFR_AF=0.5628;EUR_AF=0.2545;SAS_AF=0.2219;AA=T|||;VT=SNP;F_MISSING=0;MAF=0.34345;AC_Het=1050;AC_Hom=670;AC_Hemi=0;HWE=0.000462817;ExcHet=0.99981	GT	0|0	0|0	1|0
+6	236908	rs6938839	G	A	100	PASS	AC=0;AF=0.0984425;AN=6;NS=2504;DP=18694;EAS_AF=0;AMR_AF=0.0331;AFR_AF=0.3555;EUR_AF=0;SAS_AF=0;AA=G|||;VT=SNP;F_MISSING=0;MAF=0.0984425;AC_Het=297;AC_Hom=196;AC_Hemi=0;HWE=5.91768e-42;ExcHet=1	GT	0|0	0|0	0|0

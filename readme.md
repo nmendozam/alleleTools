@@ -1,10 +1,11 @@
-This script is used to parse typing data and convert append it to a vcf file with snp data. This might be useful for calculating linkage disequilibrium between HLA alleles and SNPs in tagSNP selection and construction of imputation panels.
+This script is used to parse genotyping data and append it to a vcf file with snp data. This might be useful for calculating linkage disequilibrium between alleles and SNPs, tagSNP selection, and construction of imputation panels.
 
 # Getting started
 
 You can use conda to install the environment to be on se safe side.
 
 ```bash
+git clone https://github.com/nmendozam/alleles2vcf.git && cd alleles2vcf
 conda env create -f environment.yml
 ```
 
@@ -13,10 +14,13 @@ But in theory the only requirements are:
 - Python 3.6 or higher
 - pandas
 
-The sample file with HLA typing is taken from DOI: 10.1371/journal.pone.0097282. To run this script you need to download the file by executing the following command:
+# Usage
+
+The script requires three input files:
 
 ```bash
-wget http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/working/20140725_hla_genotypes/20140702_hla_diversity.txt
+conda activate vcf
+python main.py resources/hla_diversity.txt resources/gene_table.tsv resources/filtered.vcf
 ```
 
 # Input format
@@ -32,19 +36,21 @@ The input format is a tab-separated file, where the first column is the sample n
 
 ## Gene location list
 
-Additionally the script requires a list of gene locations. The file should be a tab-separated file formatted as follows:
+Additionally the script requires a list of gene locations. The file should be tab-separated with the following format:
 
 ```
-Gene	Start
-HFE	6:26087441
-HLA-A	6:29942554
+gene    start
+HFE    6:26087441
+HLA-A    6:29942554
 ```
 
-Where the first column is the gene name and the second column is (chromosome):(position). This position data can be found in [ensembl](https://www.ensembl.org/index.html) or [UCSC](https://genome.ucsc.edu/). However the sample file used in this repo was obtained from a post in [IPD-IMGT](https://www.ebi.ac.uk/ipd/imgt/hla/help/genomics.html)
+The first column is the gene name and the second column is (chromosome):(position). This position data can be found in [ensembl](https://www.ensembl.org/index.html) or [UCSC](https://genome.ucsc.edu/). The sample file used in this repo was obtained from a post in [IPD-IMGT](https://www.ebi.ac.uk/ipd/imgt/hla/help/genomics.html)
 
-## SNP data
+## VCF file
+
+It is required to filter the VCF file, so that it only contains the samples that were genotyped. Otherwise the concatenated alleles won't match the header.
 
 ```bash
 cut -d' ' -f1 20140702_hla_diversity.txt | tail -n +2 | tr -d '"' |uniq > samples_id.txt
-bcftools view -S samples_id.txt test.vcf > filtered.vcf
+bcftools view --force-samples -S samples_id.txt test.vcf > filtered.vcf
 ```

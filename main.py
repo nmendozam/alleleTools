@@ -1,3 +1,5 @@
+import sys
+
 import pandas as pd
 
 
@@ -42,7 +44,12 @@ def get_vcf_columns(vcf_file):
 
 
 if __name__ == "__main__":
-    genotypes = pd.read_csv("20140702_hla_diversity.txt", sep=" ")
+
+    genotype_file = sys.argv[1]  # First argument
+    gene_loci_file = sys.argv[2]  # Second argument
+    vcf_file = sys.argv[3]  # Third argument
+
+    genotypes = pd.read_csv(genotype_file, sep=" ")
 
     pairs = gene_pairs(genotypes.columns)
     genes = [item for t in pairs for item in t]
@@ -71,7 +78,7 @@ if __name__ == "__main__":
     # to match the base vcf file order.
     # e.g.:
     # CHROM  POS ID  REF  ALT  QUAL  FILTER  INFO  FORMAT  SAMPLE_ID. ...
-    gene_loci = pd.read_csv("gene_table.tsv", sep="\t")
+    gene_loci = pd.read_csv(gene_loci_file, sep="\t")
     # column start has chr:pos, divide that into two columns.
     gene_loci[["CHROM", "POS"]] = gene_loci["start"].str.split(":", expand=True)
     # cross gene from pre_vcf_alleles with gene_loci to get the position of each allele.
@@ -83,6 +90,9 @@ if __name__ == "__main__":
     vcf_alleles = vcf_alleles.drop(columns=["gene", "start"])
 
     # Sort columns to match the base vcf file order.
-    vcf_col = get_vcf_columns("filtered.vcf")
+    vcf_col = get_vcf_columns(vcf_file)
     vcf_col = [x for x in vcf_col if x in vcf_alleles.columns]
     vcf_alleles = vcf_alleles[vcf_col]
+
+    with open(vcf_file, "a") as f:
+        f.write(vcf_alleles.to_csv(index=False, sep="\t", header=False))
