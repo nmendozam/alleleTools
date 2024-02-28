@@ -19,9 +19,6 @@ The sample file with HLA typing is taken from DOI: 10.1371/journal.pone.0097282.
 wget http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/working/20140725_hla_genotypes/20140702_hla_diversity.txt
 ```
 
-> [!NOTE]
-> The file requires reformating in the column headers as explained in the input format section.
-
 # Input format
 
 ## Typing file
@@ -29,7 +26,7 @@ wget http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/working/20140725_hla_ge
 The input format is a tab-separated file, where the first column is the sample name and pairs of columns for each gene. The header gene name convention is "gene" + "gene.1". e.g.
 
 ```
-"id" "sbgroup" "HLA-A" "HLA-A.1"
+"id" "sbgroup" "A" "A.1"
 "sample1" "CEPH" "03:01" "02:01"
 ```
 
@@ -44,3 +41,10 @@ HLA-A	6:29942554
 ```
 
 Where the first column is the gene name and the second column is (chromosome):(position). This position data can be found in [ensembl](https://www.ensembl.org/index.html) or [UCSC](https://genome.ucsc.edu/). However the sample file used in this repo was obtained from a post in [IPD-IMGT](https://www.ebi.ac.uk/ipd/imgt/hla/help/genomics.html)
+
+## SNP data
+
+```bash
+cut -d' ' -f1 20140702_hla_diversity.txt | tail -n +2 | tr -d '"' |uniq > samples_id.txt
+bcftools view -S samples_id.txt test.vcf > filtered.vcf
+```
