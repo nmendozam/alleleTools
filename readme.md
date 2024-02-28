@@ -51,6 +51,6 @@ The first column is the gene name and the second column is (chromosome):(positio
 It is required to filter the VCF file, so that it only contains the samples that were genotyped. Otherwise the concatenated alleles won't match the header.
 
 ```bash
-cut -d' ' -f1 20140702_hla_diversity.txt | tail -n +2 | tr -d '"' |uniq > samples_id.txt
+cut -d' ' -f1 resources/hla_diversity.txt | tail -n +2 | tr -d '"' |uniq > samples_id.txt
 bcftools view --force-samples -S samples_id.txt test.vcf > filtered.vcf
 ```
