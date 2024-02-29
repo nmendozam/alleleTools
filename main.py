@@ -45,15 +45,9 @@ def get_vcf_columns(vcf_file):
 
 if __name__ == "__main__":
 
-    # genotype_file = sys.argv[1]  # First argument
-    # gene_loci_file = sys.argv[2]  # Second argument
-    # vcf_file = sys.argv[3]  # Third argument
-    genotype_file = "tsnp/20140702_hla_diversity.txt"
-    gene_loci_file = "resources/gene_table.tsv"
-    vcf_file = "tsnp/filtered.vcf"
-    # genotype_file = "resources/hla_diversity.txt"
-    # gene_loci_file = "resources/gene_table.tsv"
-    # vcf_file = "resources/filtered.vcf"
+    genotype_file = sys.argv[1]  # First argument
+    gene_loci_file = sys.argv[2]  # Second argument
+    vcf_file = sys.argv[3]  # Third argument
 
     genotypes = pd.read_csv(genotype_file, sep=" ")
 
