@@ -45,9 +45,15 @@ def get_vcf_columns(vcf_file):
 
 if __name__ == "__main__":
 
-    genotype_file = sys.argv[1]  # First argument
-    gene_loci_file = sys.argv[2]  # Second argument
-    vcf_file = sys.argv[3]  # Third argument
+    # genotype_file = sys.argv[1]  # First argument
+    # gene_loci_file = sys.argv[2]  # Second argument
+    # vcf_file = sys.argv[3]  # Third argument
+    genotype_file = "tsnp/20140702_hla_diversity.txt"
+    gene_loci_file = "resources/gene_table.tsv"
+    vcf_file = "tsnp/filtered.vcf"
+    # genotype_file = "resources/hla_diversity.txt"
+    # gene_loci_file = "resources/gene_table.tsv"
+    # vcf_file = "resources/filtered.vcf"
 
     genotypes = pd.read_csv(genotype_file, sep=" ")
 
@@ -63,8 +69,12 @@ if __name__ == "__main__":
     for pair in pairs:
         # Get the presence/absence of each allele in the samples.
         pairA, pairB = pair
-        pivotA = genotypes.pivot(index=pairA, columns="id", values=pairA).notna()
-        pivotB = genotypes.pivot(index=pairB, columns="id", values=pairB).notna()
+        pivotA = genotypes.pivot_table(
+            index=pairA, columns="id", values=pairB, aggfunc="sum"
+        ).notna()
+        pivotB = genotypes.pivot_table(
+            index=pairB, columns="id", values=pairA, aggfunc="sum"
+        ).notna()
         allele_codes = diploid_notation(pivotA, pivotB)
         # Add gene name to the index
         allele_codes.index = "HLA_" + pair[0] + "_" + allele_codes.index
@@ -84,7 +94,7 @@ if __name__ == "__main__":
     # cross gene from pre_vcf_alleles with gene_loci to get the position of each allele.
     vcf_alleles = pre_vcf_alleles.merge(gene_loci, how="left", on="gene")
     vcf_alleles = vcf_alleles.assign(
-        REF="A", ALT="T", QUAL=".", FILTER="PASS", INFO="", FORMAT="GT"
+        REF="A", ALT="T", QUAL=".", FILTER="PASS", INFO=".", FORMAT="GT"
     )
     # Remove gene columns and rename
     vcf_alleles = vcf_alleles.drop(columns=["gene", "start"])
