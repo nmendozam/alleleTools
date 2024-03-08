@@ -17,17 +17,28 @@ def read_vcf(file_name):
     a table were the row indexes are the allele names
     and the column names are the sample names
     """
-    df = pd.read_csv(file_name, sep="\t", on_bad_lines="warn")
-    # Use alleles as index
-    df["ID"] = df["ID"].str.replace("HLA_", "")
-    df.set_index("ID", inplace=True)
-    # Drop non sample columns
-    df.drop(
-        ["#CHROM", "POS", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT"],
-        axis=1,
-        inplace=True,
-    )
-    return df
+    last_pos = 0
+    with open(file_name, "r") as f:
+        # Skip the header
+        while True:
+            line = f.readline()
+            if line.startswith("#CHROM"):
+                break
+            last_pos = f.tell()
+    with open(file_name, "r") as f:
+        # Read the rest of the file
+        f.seek(last_pos)
+        df = pd.read_csv(f, sep="\t", on_bad_lines="warn")
+        # Use alleles as index
+        df["ID"] = df["ID"].str.replace("HLA_", "")
+        df.set_index("ID", inplace=True)
+        # Drop non sample columns
+        df.drop(
+            ["#CHROM", "POS", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT"],
+            axis=1,
+            inplace=True,
+        )
+        return df
 
 
 class AlleleList:
@@ -98,7 +109,7 @@ class AlleleList:
             n: int number of alleles to return
         """
         # 1. Apply filter
-        mask, pattern = filter
+        mask, pattern = filter.value
         has_passed_filter = (
             alleles.GT.str.contains(pattern)
             if mask
