@@ -85,7 +85,18 @@ class AlleleList:
         HETEROZYGOUS = (False, "0\|0")
         UNCERTAIN = (True, "0\|0")
 
-    def _get_ploidy_alleles(self, alleles, filter, n=1):
+    def _get_ploidy_alleles(
+        self, alleles: pd.DataFrame, filter: _ploidy_filter, n: int = 1
+    ):
+        """
+        Gets the n highest resolution alleles that have passed the filter.
+        args:
+            alleles: data frame with the allele codes as index and the
+                columns GT, DS, AB
+            filter: tuple of mask (get values that do or don't match the
+                pattern) and pattern (substring to match)
+            n: int number of alleles to return
+        """
         # 1. Apply filter
         mask, pattern = filter
         has_passed_filter = (
