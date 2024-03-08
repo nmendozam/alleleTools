@@ -25,7 +25,6 @@ def read_vcf(file_name):
             if line.startswith("#CHROM"):
                 break
             last_pos = f.tell()
-    with open(file_name, "r") as f:
         # Read the rest of the file
         f.seek(last_pos)
         df = pd.read_csv(f, sep="\t", on_bad_lines="warn")
