@@ -1,4 +1,4 @@
-This script is used to parse genotyping data and append it to a vcf file with snp data. This might be useful for calculating linkage disequilibrium between alleles and SNPs, tagSNP selection, and construction of imputation panels.
+This repo has a collection of scripts to convert files from genotyping to vcf and back. `main.py` parses .tsv files with genotyping data and appends it to a vcf file. `vcf2alleles.py` does the opposite, it extracts the genotyping data from a vcf file and writes it to a .tsv file. The output of the latter is compatible with [pyHLA](https://github.com/felixfan/PyHLA). While the output of the former might be useful for calculating linkage disequilibrium between alleles and SNPs, tagSNP selection, and construction of imputation panels compatible with VCF files.
 
 # Getting started
 
@@ -12,7 +12,7 @@ conda env create -f environment.yml
 But in theory the only requirements are:
 
 - Python 3.6 or higher
-- pandas
+- pandas 2.0.3
 
 # Usage
 
