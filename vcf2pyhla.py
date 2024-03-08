@@ -1,6 +1,5 @@
 import argparse
-import re
-from collections import defaultdict
+from enum import Enum
 from typing import List
 
 import pandas as pd
@@ -80,6 +79,29 @@ class AlleleList:
     def _get_genes(self, alleles: pd.Series):
         return alleles.str.extract(r"([A-Z0-1]+?)\*")[0]
 
+    # enum of filter to get alleles by ploidy
+    class _ploidy_filter(Enum):
+        HOMOZYGOUS = (True, "1\|1")
+        HETEROZYGOUS = (False, "0\|0")
+        UNCERTAIN = (True, "0\|0")
+
+    def _get_ploidy_alleles(self, alleles, filter, n=1):
+        # 1. Apply filter
+        mask, pattern = filter
+        has_passed_filter = (
+            alleles.GT.str.contains(pattern)
+            if mask
+            else ~alleles.GT.str.contains(pattern)
+        )
+        filtered = alleles.loc[has_passed_filter]
+        # 2. Get high resolution alleles
+        is_high_res = self._find_high_res(filtered.index.values.tolist())
+        high_res = filtered.loc[is_high_res]
+        # 3. Get the n alleles with the highest dosages + AB probability
+        high_res["DS_AB"] = high_res["DS"] + high_res["AB"]
+
+        return high_res.nlargest(1, columns="DS_AB")
+
     def sort_and_fill(self):
         results = list()
         genes = self.df.index.get_level_values("gene").unique()
@@ -88,32 +110,24 @@ class AlleleList:
             alleles = self.df.loc[[gene]].reset_index(level=0)
 
             if any(alleles.is_homozygous):
-                # 1. get only homozygous flag 1|1
-                homozygous = alleles.loc[alleles.is_homozygous]
-                # 2. get the highest resolution
-                homozygous = homozygous.loc[
-                    self._find_high_res(homozygous.index.values.tolist())
-                ]
+                # If the gene is homozygous, get the allele
+                homozygous = self._get_ploidy_alleles(
+                    alleles, self._ploidy_filter.HOMOZYGOUS
+                )
                 to_append = homozygous.index.tolist() * 2
-            else:  # is hetereozygous
-                # 1. remove all 0|0
-                heterozygous = alleles.loc[~alleles.GT.str.contains("0\|0")]
-                # 2. Get high resolution alleles
-                heterozygous = heterozygous.loc[
-                    self._find_high_res(heterozygous.index.values.tolist())
-                ]
-                # 3. Get the two with the highest dosages + AB probability
-                heterozygous["DS_AB"] = heterozygous["DS"] + heterozygous["AB"]
-                heterozygous = heterozygous.nlargest(2, columns="DS_AB")
-                if len(heterozygous) == 1:
-                    # 4. If there is only one high resolution allele, find the next highest resolution 0|0
-                    hetero_low = alleles.loc[alleles.GT.str.contains("0\|0")]
-                    hetero_low = hetero_low.loc[
-                        self._find_high_res(hetero_low.index.values.tolist())
-                    ]
-                    # 5. Get the highest dosage + AB probability from posible alleles
-                    hetero_low["DS_AB"] = hetero_low["DS"] + hetero_low["AB"]
-                    hetero_low = hetero_low.nlargest(1, columns="DS_AB")
+            else:  # is heterozygous
+                # Get the two highest resolution alleles
+                heterozygous = self._get_ploidy_alleles(
+                    alleles, self._ploidy_filter.HETEROZYGOUS, n=2
+                )
+                if len(heterozygous == 2):
+                    to_append = heterozygous.index.tolist()
+                elif len(heterozygous) == 1:
+                    # If there is only one allele, look for the second most probable
+                    # from the uncertain alleles
+                    hetero_low = self._get_ploidy_alleles(
+                        alleles, self._ploidy_filter.UNCERTAIN
+                    )
 
                     # from str to output dosage and AB
                     hetero_low_str = hetero_low.apply(
@@ -121,8 +135,18 @@ class AlleleList:
                     )
 
                     to_append = heterozygous.index.tolist() + [hetero_low_str.iloc[0]]
-                elif len(heterozygous == 2):
-                    to_append = heterozygous.index.tolist()
+                elif len(heterozygous) == 0:
+                    # If there is no heterozygous alleles, look for the two most probable
+                    hetero_low = self._get_ploidy_alleles(
+                        alleles, self._ploidy_filter.UNCERTAIN, n=2
+                    )
+
+                    # from str to output dosage and AB
+                    hetero_low_str = hetero_low.apply(
+                        lambda row: f"{row.name}({row['DS']}/{row['AB']})", axis=1
+                    )
+
+                    to_append = hetero_low_str.tolist()
                 else:
                     to_append = ["NA", "NA"]
 
