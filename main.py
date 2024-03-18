@@ -75,8 +75,8 @@ if __name__ == "__main__":
         allele_codes.index.name = "ID"
         allele_codes = allele_codes.reset_index()
         # add column with gene name
-        allele_codes["gene"] = "HLA-" + pair[0]
-    pre_vcf_alleles = pd.concat([pre_vcf_alleles, allele_codes], axis=1)
+        allele_codes["gene"] = "HLA-" + pairA
+        pre_vcf_alleles = pd.concat([pre_vcf_alleles, allele_codes])
 
     # Now we add the leading columns and sort the samples (also in columns)
     # to match the base vcf file order.
