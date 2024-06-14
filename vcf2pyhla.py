@@ -6,8 +6,7 @@ import pandas as pd
 
 """
 To generate the input file from the imputation run this command
-> grep "#CHR" IMPUTED.vcf > HLA.vcf
-> grep "HLA_" IMPUTED.vcf >> HLA.vcf
+> bcftools view --include 'ID~"HLA"' IMPUTED.vcf > HLA.vcf
 """
 
 
@@ -31,18 +30,22 @@ def read_vcf(file_name):
         # Use alleles as index
         df["ID"] = df["ID"].str.replace("HLA_", "")
         df.set_index("ID", inplace=True)
+
+        # Get the format of each allele
+        format = df["FORMAT"].str.split(":", expand=True).iloc[0].tolist()
+
         # Drop non sample columns
         df.drop(
             ["#CHROM", "POS", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT"],
             axis=1,
             inplace=True,
         )
-        return df
+        return df, format
 
 
 class AlleleList:
-    def __init__(self, alleles: pd.DataFrame) -> None:
-        self.df = self._parse_vcf_info(alleles)
+    def __init__(self, alleles: pd.DataFrame, formats: pd.DataFrame) -> None:
+        self.df = self._parse_vcf_info(alleles, formats)
 
         self.df["is_homozygous"] = self.df.GT.str.contains("1\|1")
 
@@ -51,7 +54,7 @@ class AlleleList:
             ["gene", "allele"]
         )
 
-    def _parse_vcf_info(self, alleles):
+    def _parse_vcf_info(self, alleles, formats):
         """
         This function takes a pandas series with info fields from a vcf file
         and the allele codes as index. It returns a data frame with the
@@ -62,11 +65,13 @@ class AlleleList:
         GT is a string and the other four are floats
         """
         # Extract the genotype, dosage and ploidy likelihoods
-        pattern = r"(?P<GT>[^:]*):(?P<DS>[^:]*):(?P<AA>[^,]*),(?P<AB>[^,]*),(?P<BB>.*)"
-        info_df = alleles.str.extract(pattern)
+        info_df = alleles.str.split(":", expand=True)
+        info_df.columns = formats
+
+        float_cols = ["DS", "AA", "AB", "BB"]
 
         # Convert columns to the correct data type
-        for col in ["DS", "AA", "AB", "BB"]:
+        for col in set(formats).intersection(float_cols):
             info_df[col] = info_df[col].astype(float)
 
         return info_df
@@ -87,7 +92,7 @@ class AlleleList:
         return high_res
 
     def _get_genes(self, alleles: pd.Series):
-        return alleles.str.extract(r"([A-Z0-1]+?)\*")[0]
+        return alleles.str.extract(r"([A-Z0-9]+)")[0]
 
     # enum of filter to get alleles by ploidy
     class _ploidy_filter(Enum):
@@ -119,9 +124,12 @@ class AlleleList:
         is_high_res = self._find_high_res(filtered.index.values.tolist())
         high_res = filtered.loc[is_high_res]
         # 3. Get the n alleles with the highest dosages + AB probability
-        high_res["DS_AB"] = high_res["DS"] + high_res["AB"]
+        if "AB" in high_res and "DS" in high_res:
+            high_res["score"] = high_res["DS"] + high_res["AB"]
+        else:
+            high_res["score"] = 1
 
-        return high_res.nlargest(1, columns="DS_AB")
+        return high_res.nlargest(1, columns="score")
 
     def sort_and_fill(self):
         results = list()
@@ -151,9 +159,10 @@ class AlleleList:
                     )
 
                     # from str to output dosage and AB
-                    hetero_low_str = hetero_low.apply(
-                        lambda row: f"{row.name}({row['DS']}/{row['AB']})", axis=1
-                    )
+                    if "DS" in hetero_low:
+                        hetero_low_str = hetero_low.apply(
+                            lambda row: f"{row.name}({row['DS']}/{row['AB']})", axis=1
+                        )
 
                     to_append = heterozygous.index.tolist() + [hetero_low_str.iloc[0]]
                 elif len(heterozygous) == 0:
@@ -163,11 +172,12 @@ class AlleleList:
                     )
 
                     # from str to output dosage and AB
-                    hetero_low_str = hetero_low.apply(
-                        lambda row: f"{row.name}({row['DS']}/{row['AB']})", axis=1
-                    )
+                    if "DS" in hetero_low:
+                        hetero_low_str = hetero_low.apply(
+                            lambda row: f"{row.name}({row['DS']}/{row['AB']})", axis=1
+                        )
 
-                    to_append = hetero_low_str.tolist()
+                        to_append = hetero_low_str.tolist()
                 else:
                     to_append = ["NA", "NA"]
 
@@ -177,14 +187,29 @@ class AlleleList:
 
 
 def get_true_alleles(vcf):
-    vcf = read_vcf(vcf)
-    true_alleles = dict()
-    for sample in vcf.columns:
+    genotypes, format = read_vcf(vcf)
+    df = pd.DataFrame()
+    for sample in genotypes.columns:
         # Get the list of alleles for that column(sample)
-        alleles = vcf.loc[~vcf[sample].str.contains("0\|0:0:1,0,0", na=False), sample]
+        alleles = genotypes.loc[
+            ~genotypes[sample].str.contains("0\|0:0:1,0,0", na=False), sample
+        ]
 
-        true_alleles[sample] = AlleleList(alleles).sort_and_fill()
-    return true_alleles
+        allele_list = AlleleList(alleles, format).sort_and_fill()
+        genes, alleles = zip(*[x.split("_") for x in allele_list])
+
+        # Add _1 to duplicate genes
+        genes_columns = list()
+        for gene in genes:
+            if gene in genes_columns:
+                gene += "_1"
+            genes_columns.append(gene)
+
+        # Add the alleles to the data frame
+        row = pd.DataFrame(alleles, index=genes_columns, columns=[sample]).transpose()
+        df = pd.concat([df, row])
+
+    return df
 
 
 if __name__ == "__main__":
@@ -201,8 +226,11 @@ if __name__ == "__main__":
         phe.set_index("IID", inplace=True)
 
     true_alleles = get_true_alleles(args.vcf)
-    for key in true_alleles:
-        phenotype = 1
-        if args.phe:
-            phenotype = int(phe.loc[[key]].LLI)
-        print(key, phenotype, "\t".join(true_alleles[key]), sep="\t")
+    # sort the columns
+    true_alleles = true_alleles.reindex(sorted(true_alleles.columns), axis=1)
+    # add phenotype column if provided
+    if args.phe:
+        print("This part of the code need to be tested")
+        true_alleles = true_alleles.join(phe.LLI)
+
+    true_alleles.to_csv("output.pyhla", sep="\t", index=True, na_rep="NA")

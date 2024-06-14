@@ -1,6 +1,7 @@
 import sys
 
 import pandas as pd
+import numpy as np
 
 
 def diploid_notation(pairA, pairB):
@@ -13,7 +14,11 @@ def diploid_notation(pairA, pairB):
     pairA = pairA.astype(int).rename_axis("id")
     pairB = pairB.astype(int).mul(2).rename_axis("id")
     group = pd.concat([pairA, pairB]).groupby("id").sum()
-    return group.replace({0: "0|0", 1: "1|0", 2: "0|1", 3: "1|1"})
+    group = group.replace({0: "0|0", 1: "1|0", 2: "0|1", 3: "1|1"})
+    # Add gene name to the index
+    group.index = group.index.str.replace("*", "_")
+    group.index.name = "ID"
+    return group.reset_index()
 
 
 def gene_pairs(lst):
@@ -70,12 +75,8 @@ if __name__ == "__main__":
             index=pairB, columns="id", values=pairA, aggfunc="sum"
         ).notna()
         allele_codes = diploid_notation(pivotA, pivotB)
-        # Add gene name to the index
-        allele_codes.index = "HLA_" + pair[0] + "_" + allele_codes.index
-        allele_codes.index.name = "ID"
-        allele_codes = allele_codes.reset_index()
         # add column with gene name
-        allele_codes["gene"] = "HLA-" + pairA
+        allele_codes["gene"] = pairA
         pre_vcf_alleles = pd.concat([pre_vcf_alleles, allele_codes])
 
     # Now we add the leading columns and sort the samples (also in columns)
@@ -87,6 +88,7 @@ if __name__ == "__main__":
     gene_loci[["CHROM", "POS"]] = gene_loci["start"].str.split(":", expand=True)
     # cross gene from pre_vcf_alleles with gene_loci to get the position of each allele.
     vcf_alleles = pre_vcf_alleles.merge(gene_loci, how="left", on="gene")
+    vcf_alleles = vcf_alleles[vcf_alleles["POS"].notna()]
     vcf_alleles = vcf_alleles.assign(
         REF="A", ALT="T", QUAL=".", FILTER="PASS", INFO=".", FORMAT="GT"
     )
@@ -97,6 +99,7 @@ if __name__ == "__main__":
     vcf_col = get_vcf_columns(vcf_file)
     vcf_col = [x for x in vcf_col if x in vcf_alleles.columns]
     vcf_alleles = vcf_alleles[vcf_col]
+    vcf_alleles.fillna("0|0", inplace=True)
 
     with open(vcf_file, "a") as f:
         f.write(vcf_alleles.to_csv(index=False, sep="\t", header=False))
