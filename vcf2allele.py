@@ -218,6 +218,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("vcf", type=str, help="input vcf file name")
     parser.add_argument("--phe", type=str, help="input phe file name", default="")
+    parser.add_argument("--out", type=str, help="name of the output file", default="output.pyhla")
 
     args = parser.parse_args()
 
@@ -233,4 +234,4 @@ if __name__ == "__main__":
         print("This part of the code need to be tested")
         true_alleles = true_alleles.join(phe.LLI)
 
-    true_alleles.to_csv("output.pyhla", sep="\t", index=True, na_rep="NA")
+    true_alleles.to_csv(args.out, sep="\t", index=True, na_rep="NA")
