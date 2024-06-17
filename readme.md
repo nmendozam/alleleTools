@@ -2,6 +2,7 @@ This repo has a collection of scripts to convert files from genotyping to vcf an
 
 - `allele2vcf.py` parses .tsv files with genotyping data and appends it to a vcf file.
 - `vcf2alleles.py` does the opposite, it extracts the genotyping data from a vcf file and writes it to a .tsv file.
+- `allele_resolution.sh` normalizes alleles to a uniform resolution across all input files (.tsv).
 
 The output of the latter is compatible with [pyHLA](https://github.com/felixfan/PyHLA) and [PyPop](http://pypop.org/index.html). While the output of the former might be useful for calculating linkage disequilibrium between alleles and SNPs, tagSNP selection, and construction of imputation panels compatible with VCF files.
 
@@ -21,7 +22,7 @@ The output of the latter is compatible with [pyHLA](https://github.com/felixfan/
             <li><a href="#template-vcf-file">Template VCF File</a></li>
         </ul>
         <li><a href="#convert-vcf-to-genotype-table">Convert VCF to Genotype Table</a></li>
-        <li><a href="#">Convert VCF to Genotype Table</a></li>
+        <li><a href="#normalizing-allele-resolutions">Normalizing Allele Resolutions</a></li>
       </ul>
     </li>
   </ol>
