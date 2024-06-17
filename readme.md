@@ -1,11 +1,38 @@
-This repo has a collection of scripts to convert files from genotyping to vcf and back. `allele2vcf.py` parses .tsv files with genotyping data and appends it to a vcf file. `vcf2alleles.py` does the opposite, it extracts the genotyping data from a vcf file and writes it to a .tsv file. The output of the latter is compatible with [pyHLA](https://github.com/felixfan/PyHLA) and [PyPop](http://pypop.org/index.html). While the output of the former might be useful for calculating linkage disequilibrium between alleles and SNPs, tagSNP selection, and construction of imputation panels compatible with VCF files.
+This repo has a collection of scripts to convert files from genotyping to vcf and back.
+
+- `allele2vcf.py` parses .tsv files with genotyping data and appends it to a vcf file.
+- `vcf2alleles.py` does the opposite, it extracts the genotyping data from a vcf file and writes it to a .tsv file.
+
+The output of the latter is compatible with [pyHLA](https://github.com/felixfan/PyHLA) and [PyPop](http://pypop.org/index.html). While the output of the former might be useful for calculating linkage disequilibrium between alleles and SNPs, tagSNP selection, and construction of imputation panels compatible with VCF files.
+
+<!-- TABLE OF CONTENTS -->
+<details>
+    <summary style="font-size: 24px; font-weight: bold;">Table of Contents</summary>
+    <!-- Your content here -->
+    <ol>
+    <li><a href="#getting-started">Getting Started</a></li>
+    <li>
+      <a href="#usage">Usage</a>
+      <ul>
+        <li><a href="#convert-genotype-to-vcf">Convert Genotype to VCF</a></li>
+        <ul>
+            <li><a href="#genotype-file">Genotype file</a></li>
+            <li><a href="#gene-location-list">Gene Location List</a></li>
+            <li><a href="#template-vcf-file">Template VCF File</a></li>
+        </ul>
+        <li><a href="#convert-vcf-to-genotype-table">Convert VCF to Genotype Table</a></li>
+        <li><a href="#">Convert VCF to Genotype Table</a></li>
+      </ul>
+    </li>
+  </ol>
+</details>
 
 # Getting started
 
 You can use conda to install the environment to be on se safe side.
 
 ```bash
-git clone https://github.com/nmendozam/alleles2vcf.git && cd alleles2vcf
+git clone https://github.com/nmendozam/alleleTools.git && cd alleleTools
 conda env create -f environment.yml
 ```
 
@@ -63,4 +90,29 @@ Converting from vcf to a genotype table is also useful. For example when the all
 conda activate vcf
 bcftools view --include 'ID~"HLA"' raw_imputed.vcf > only_hla.vcf
 python vcf2alleles.py only_hla.vcf --phe input.phe --out output.pyhla
+```
+
+## Normalizing allele resolutions
+
+This script normalizes allele resolutions to a uniform level across all input files, facilitating association analyses. It ensures that alleles, such as 01 and 01:01, which are essentially identical, are recognized as equal by renaming them for consistency.
+
+```
+- resolution 1:
+    - 01:01 -> 01
+    - 01 -> 01
+    - 02:03 -> 02
+- resolution 2:
+    - 01:01 -> 01:01
+    - 01 -> 01:01
+    - 02:03 -> 02:03
+- resolution 3:
+    - 01:01 -> 01:01:01
+    - 01 -> 01:01:01
+    - 02:03 -> 02:03:01
+```
+
+The output files are named `*.[resolution]fields.tsv`, containing the resolved alleles. The script supports up to three resolution levels (one, two and three).
+
+```bash
+./allele_resolution.sh one file1.tsv file2.tsv
 ```
