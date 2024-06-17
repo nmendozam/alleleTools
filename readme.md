@@ -2,7 +2,7 @@ This repo has a collection of scripts to convert files from genotyping to vcf an
 
 - `allele2vcf.py` parses .tsv files with genotyping data and appends it to a vcf file.
 - `vcf2alleles.py` does the opposite, it extracts the genotyping data from a vcf file and writes it to a .tsv file.
-- `allele_resolution.sh` normalizes alleles to a uniform resolution across all input files (.tsv).
+- `allele_resolution.sh` normalizes alleles to a uniform resolution of the input file (.tsv).
 
 The output of the latter is compatible with [pyHLA](https://github.com/felixfan/PyHLA) and [PyPop](http://pypop.org/index.html). While the output of the former might be useful for calculating linkage disequilibrium between alleles and SNPs, tagSNP selection, and construction of imputation panels compatible with VCF files.
 
@@ -95,7 +95,7 @@ python vcf2alleles.py only_hla.vcf --phe input.phe --out output.pyhla
 
 ## Normalizing allele resolutions
 
-This script normalizes allele resolutions to a uniform level across all input files, facilitating association analyses. It ensures that alleles, such as 01 and 01:01, which are essentially identical, are recognized as equal by renaming them for consistency.
+This script normalizes allele resolutions to a uniform level of the input file, facilitating association analyses. It ensures that alleles, such as 01 and 01:01, which are essentially identical, are recognized as equal by renaming them for consistency.
 
 ```
 - resolution 1:
@@ -112,7 +112,7 @@ This script normalizes allele resolutions to a uniform level across all input fi
     - 02:03 -> 02:03:01
 ```
 
-The output files are named `*.[resolution]fields.tsv`, containing the resolved alleles. The script supports up to three resolution levels (one, two and three).
+If an output file name is not provided, it will be named `*.[resolution]fields.tsv`, containing the resolved alleles. Up to three resolution levels are supported (one, two and three).
 
 ```bash
 ./allele_resolution.sh one file1.tsv file2.tsv
