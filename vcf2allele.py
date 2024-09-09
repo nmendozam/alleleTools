@@ -29,6 +29,7 @@ def read_vcf(file_name):
         df = pd.read_csv(f, sep="\t", on_bad_lines="warn")
         # Use alleles as index
         df["ID"] = df["ID"].str.replace("HLA_", "")
+        df["ID"] = df["ID"].str.replace("*", "_")
         df.set_index("ID", inplace=True)
 
         # Get the format of each allele
@@ -131,7 +132,23 @@ class AlleleList:
 
         return high_res.nlargest(1, columns="score")
 
-    def sort_and_fill(self):
+    def _fill_ploidy_second_most_probable(self, heterozygous, alleles):
+        # If there is not enough alleles to fill the ploidy
+        # with the most probable alleles
+        hetero_low = self._get_ploidy_alleles(
+            alleles, self._ploidy_filter.UNCERTAIN, n=2 - len(heterozygous)
+        )
+
+        if not ("DS" in hetero_low and "AB" in hetero_low):
+            return []
+
+        hetero_low_str = hetero_low.apply(
+            lambda row: f"{row.name}({row['DS']}/{row['AB']})", axis=1
+        )
+
+        return heterozygous.index.tolist() + [hetero_low_str.iloc[0]]
+
+    def sort_and_fill(self, extensive=False):
         results = list()
         genes = self.df.index.get_level_values("gene").unique()
         for gene in sorted(genes):
@@ -151,42 +168,19 @@ class AlleleList:
                 )
                 if len(heterozygous == 2):
                     to_append = heterozygous.index.tolist()
-                elif len(heterozygous) == 1:
-                    # If there is only one allele, look for the second most probable
-                    # from the uncertain alleles
-                    hetero_low = self._get_ploidy_alleles(
-                        alleles, self._ploidy_filter.UNCERTAIN
+                elif len(heterozygous) <= 1 and extensive:
+                    to_append = self._fill_ploidy_second_most_probable(
+                        heterozygous, alleles
                     )
-
-                    # from str to output dosage and AB
-                    if "DS" in hetero_low:
-                        hetero_low_str = hetero_low.apply(
-                            lambda row: f"{row.name}({row['DS']}/{row['AB']})", axis=1
-                        )
-
-                    to_append = heterozygous.index.tolist() + [hetero_low_str.iloc[0]]
-                elif len(heterozygous) == 0:
-                    # If there is no heterozygous alleles, look for the two most probable
-                    hetero_low = self._get_ploidy_alleles(
-                        alleles, self._ploidy_filter.UNCERTAIN, n=2
-                    )
-
-                    # from str to output dosage and AB
-                    if "DS" in hetero_low:
-                        hetero_low_str = hetero_low.apply(
-                            lambda row: f"{row.name}({row['DS']}/{row['AB']})", axis=1
-                        )
-
-                        to_append = hetero_low_str.tolist()
                 else:
-                    to_append = ["NA", "NA"]
+                    to_append = []
 
             results.extend(to_append)
 
         return results
 
 
-def get_true_alleles(vcf):
+def get_true_alleles(vcf, extensive=False):
     genotypes, format = read_vcf(vcf)
     df = pd.DataFrame()
     for sample in genotypes.columns:
@@ -195,7 +189,7 @@ def get_true_alleles(vcf):
             ~genotypes[sample].str.contains("0\|0:0:1,0,0", na=False), sample
         ]
 
-        allele_list = AlleleList(alleles, format).sort_and_fill()
+        allele_list = AlleleList(alleles, format).sort_and_fill(extensive)
         genes, alleles = zip(*[x.split("_") for x in allele_list])
 
         # Add _1 to duplicate genes
@@ -218,7 +212,15 @@ if __name__ == "__main__":
     )
     parser.add_argument("vcf", type=str, help="input vcf file name")
     parser.add_argument("--phe", type=str, help="input phe file name", default="")
-    parser.add_argument("--out", type=str, help="name of the output file", default="output.pyhla")
+    parser.add_argument(
+        "--out", type=str, help="name of the output file", default="output.pyhla"
+    )
+    parser.add_argument(
+        "--extensive",
+        type=bool,
+        help="when no allele is imputed, look for the next most likely alleles",
+        default=False,
+    )
 
     args = parser.parse_args()
 
@@ -226,7 +228,7 @@ if __name__ == "__main__":
         phe = pd.read_csv(args.phe, sep=" ", comment="##")
         phe.set_index("IID", inplace=True)
 
-    true_alleles = get_true_alleles(args.vcf)
+    true_alleles = get_true_alleles(args.vcf, args.extensive)
     # sort the columns
     true_alleles = true_alleles.reindex(sorted(true_alleles.columns), axis=1)
     # add phenotype column if provided
