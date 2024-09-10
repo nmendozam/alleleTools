@@ -10,7 +10,7 @@ To generate the input file from the imputation run this command
 """
 
 
-def read_vcf(file_name):
+def read_vcf(file_name, prefix):
     """
     This takes a vcf file data frame and returns
     a table were the row indexes are the allele names
@@ -28,7 +28,7 @@ def read_vcf(file_name):
         f.seek(last_pos)
         df = pd.read_csv(f, sep="\t", on_bad_lines="warn")
         # Use alleles as index
-        df["ID"] = df["ID"].str.replace("HLA_", "")
+        df["ID"] = df["ID"].str.replace(prefix, "")
         df.set_index("ID", inplace=True)
 
         # Get the format ofeeach allele
@@ -179,8 +179,7 @@ class AlleleList:
         return results
 
 
-def get_true_alleles(vcf, extensive=False):
-    genotypes, format = read_vcf(vcf)
+def get_true_alleles(genotypes, format, extensive=False, allele_separator="*"):
     df = pd.DataFrame()
     for sample in genotypes.columns:
         # Get the list of alleles for that column(sample)
@@ -189,7 +188,7 @@ def get_true_alleles(vcf, extensive=False):
         ]
 
         allele_list = AlleleList(alleles, format).sort_and_fill(extensive)
-        genes, alleles = zip(*[x.split("_") for x in allele_list])
+        genes, alleles = zip(*[x.split(allele_separator) for x in allele_list])
 
         # Add _1 to duplicate genes
         genes_columns = list()
@@ -240,13 +239,14 @@ if __name__ == "__main__":
         help="when no allele is imputed, look for the next most likely alleles",
         default=False,
     )
-    parser.add_argument(
-        "--population",
-        type=str,
-        help="""If this is set, a colum with the population will be added at the beginning.
-                This makes the output compatible with pyPop""",
-        default="",
-    )
+    # TODO: implement this argument
+    # parser.add_argument(
+    #     "--population",
+    #     type=str,
+    #     help="""If this is set, a colum with the population will be added at the beginning.
+    #             This makes the output compatible with pyPop""",
+    #     default="",
+    # )
 
     args = parser.parse_args()
 
@@ -254,7 +254,8 @@ if __name__ == "__main__":
         phe = pd.read_csv(args.phe, sep=" ", comment="##")
         phe.set_index("IID", inplace=True)
 
-    true_alleles = get_true_alleles(args.vcf, args.extensive)
+    genotypes, format = read_vcf(args.vcf, args.prefix)
+    true_alleles = get_true_alleles(genotypes, format, args.extensive, args.separator)
     # sort the columns
     true_alleles = true_alleles.reindex(sorted(true_alleles.columns), axis=1)
     # add phenotype column if provided
