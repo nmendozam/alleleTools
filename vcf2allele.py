@@ -29,10 +29,9 @@ def read_vcf(file_name):
         df = pd.read_csv(f, sep="\t", on_bad_lines="warn")
         # Use alleles as index
         df["ID"] = df["ID"].str.replace("HLA_", "")
-        df["ID"] = df["ID"].str.replace("*", "_")
         df.set_index("ID", inplace=True)
 
-        # Get the format of each allele
+        # Get the format ofeeach allele
         format = df["FORMAT"].str.split(":", expand=True).iloc[0].tolist()
 
         # Drop non sample columns
@@ -208,18 +207,45 @@ def get_true_alleles(vcf, extensive=False):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Convert vcf file to pyhla and output to std out"
+        description="Convert vcf file to allele table and output to std out"
     )
+    ## Input/output arguments
     parser.add_argument("vcf", type=str, help="input vcf file name")
-    parser.add_argument("--phe", type=str, help="input phe file name", default="")
+    parser.add_argument(
+        "--phe",
+        type=str,
+        help="input phe file name (to add phenotype column)",
+        default="",
+    )
     parser.add_argument(
         "--out", type=str, help="name of the output file", default="output.pyhla"
     )
+    ## Allele format arguments
+    parser.add_argument(
+        "--prefix",
+        type=str,
+        help="prefix to remove from allele names(genename)",
+        default="HLA_",
+    )
+    parser.add_argument(
+        "--separator",
+        type=str,
+        help="separator to split gene name from allele name",
+        default="*",
+    )
+    ## Additional arguments
     parser.add_argument(
         "--extensive",
         type=bool,
         help="when no allele is imputed, look for the next most likely alleles",
         default=False,
+    )
+    parser.add_argument(
+        "--population",
+        type=str,
+        help="""If this is set, a colum with the population will be added at the beginning.
+                This makes the output compatible with pyPop""",
+        default="",
     )
 
     args = parser.parse_args()
