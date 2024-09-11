@@ -270,10 +270,16 @@ if __name__ == "__main__":
     else:
         true_alleles["phenotype"] = 0
 
-    true_alleles.reset_index(inplace=True) # move sample id to column
+    # move phenotype to the first column
+    cols = true_alleles.columns.tolist()
+    cols.insert(0, cols.pop(len(cols) - 1))
+
+    true_alleles.reset_index(inplace=True)  # move sample id to column
 
     if args.population:
-        true_alleles.insert(0, "population", args.population) # add population column at the beginning
+        true_alleles.insert(
+            0, "population", args.population
+        )  # add population column at the beginning
 
     true_alleles.to_csv(
         args.out, sep="\t", index=False, na_rep="NA", header=args.output_header
