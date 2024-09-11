@@ -234,42 +234,47 @@ if __name__ == "__main__":
         help="separator to split gene name from allele name",
         default="*",
     )
-    ## Additional arguments
     parser.add_argument(
         "--extensive",
         type=bool,
         help="when no allele is imputed, look for the next most likely alleles",
         default=False,
     )
+    ## Additional arguments
     parser.add_argument(
         "-output_header",
         action="store_true",
         help="output header with the gene names",
     )
-    # TODO: implement this argument
-    # parser.add_argument(
-    #     "--population",
-    #     type=str,
-    #     help="""If this is set, a colum with the population will be added at the beginning.
-    #             This makes the output compatible with pyPop""",
-    #     default="",
-    # )
+    parser.add_argument(
+        "--population",
+        type=str,
+        help="""If this is set, a colum with the population will be added at the beginning.
+                This makes the output compatible with pyPop""",
+        default="",
+    )
 
     args = parser.parse_args()
-
-    if args.phe:
-        phe = pd.read_csv(args.phe, sep=" ", comment="##")
-        phe.set_index("IID", inplace=True)
 
     genotypes, format = read_vcf(args.vcf, args.prefix)
     true_alleles = get_true_alleles(genotypes, format, args.extensive, args.separator)
     # sort the columns
     true_alleles = true_alleles.reindex(sorted(true_alleles.columns), axis=1)
+
     # add phenotype column if provided
     if args.phe:
-        print("This part of the code need to be tested")
-        true_alleles = true_alleles.join(phe.LLI)
+        print("Warn: add phenotype (--phe) feature isn't tested")
+        phe = pd.read_csv(args.phe, sep=" ", comment="##")
+        phe.set_index("IID", inplace=True)
+        true_alleles = true_alleles.join(phe.phenotype)
+    else:
+        true_alleles["phenotype"] = 0
+
+    true_alleles.reset_index(inplace=True) # move sample id to column
+
+    if args.population:
+        true_alleles.insert(0, "population", args.population) # add population column at the beginning
 
     true_alleles.to_csv(
-        args.out, sep="\t", index=True, na_rep="NA", header=args.output_header
+        args.out, sep="\t", index=False, na_rep="NA", header=args.output_header
     )
