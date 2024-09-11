@@ -122,7 +122,7 @@ class AlleleList:
         filtered = alleles.loc[has_passed_filter]
         # 2. Get high resolution alleles
         is_high_res = self._find_high_res(filtered.index.values.tolist())
-        high_res = filtered.loc[is_high_res]
+        high_res = filtered.loc[is_high_res].copy()
         # 3. Get the n alleles with the highest dosages + AB probability
         if "AB" in high_res and "DS" in high_res:
             high_res["score"] = high_res["DS"] + high_res["AB"]
@@ -198,7 +198,9 @@ def get_true_alleles(genotypes, format, extensive=False, allele_separator="*"):
             genes_columns.append(gene)
 
         # Add the alleles to the data frame
-        row = pd.DataFrame(alleles, index=genes_columns, columns=[sample]).transpose()
+        row = pd.DataFrame(
+            allele_list, index=genes_columns, columns=[sample]
+        ).transpose()
         df = pd.concat([df, row])
 
     return df
@@ -239,6 +241,11 @@ if __name__ == "__main__":
         help="when no allele is imputed, look for the next most likely alleles",
         default=False,
     )
+    parser.add_argument(
+        "-output_header",
+        action="store_true",
+        help="output header with the gene names",
+    )
     # TODO: implement this argument
     # parser.add_argument(
     #     "--population",
@@ -263,4 +270,6 @@ if __name__ == "__main__":
         print("This part of the code need to be tested")
         true_alleles = true_alleles.join(phe.LLI)
 
-    true_alleles.to_csv(args.out, sep="\t", index=True, na_rep="NA")
+    true_alleles.to_csv(
+        args.out, sep="\t", index=True, na_rep="NA", header=args.output_header
+    )
