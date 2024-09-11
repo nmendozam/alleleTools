@@ -5,14 +5,10 @@
 # pypop -c  minimal.ini file1.one_fields.tsv
 # pypop -c  minimal.ini file2.one_fields.tsv
 
-# Define regex patterns
-one_field='(\t[0-9]{2})(\t|$)'
-two_field='(\t[0-9]{2})(:[0-9]{2})(\t|$)'
-three_field='(:[0-9]{2}){2,}G?'
 
 # Check if at least two arguments are provided (resolution + at least one file)
 if [ "$#" -lt 2 ]; then
-    echo "Usage: $0 <resolution> <input_file> [<output_file>]"
+    echo "Usage: $0 <resolution> <input_file> [<output_file>] [--prefix <prefix>]"
     echo "Valid resolutions: one, two, three"
     exit 1
 fi
@@ -20,6 +16,22 @@ fi
 # Extract and validate the resolution parameter
 resolution=$1
 input_file=$2
+prefix='\*'
+
+# Process optional arguments
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --prefix)
+            prefix=$2
+            shift 2
+            ;;
+        *)
+            shift
+            ;;
+    esac
+done
+
+
 
 case $resolution in
     one)
@@ -50,6 +62,13 @@ if [[ $input_file != *.tsv ]]; then
     echo "File $input_file is not a TSV file. The file name should end with .tsv"
     exit 1
 fi
+
+## Filter by resolution
+
+# Define regex patterns
+one_field="($prefix[0-9]{2})(\t|$)"
+two_field="($prefix[0-9]{2})(:[0-9]{2})(\t|$)"
+three_field='(:[0-9]{2}){2,}G?'
 
 # Apply the corresponding sed command based on the resolution
 case $resolution in
