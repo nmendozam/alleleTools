@@ -52,7 +52,7 @@ def setup_parser(subparsers):
     )
     ## Additional arguments
     parser.add_argument(
-        "-output_header",
+        "--output_header",
         action="store_true",
         help="output header with the gene names",
     )
