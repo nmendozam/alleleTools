@@ -7,10 +7,9 @@ def setup_parser(subparsers):
         description="Convert allele table to vcf"
     )
     parser.add_argument(
-        "--input",
+        "input",
         type=str,
         help="path to the input file with allele data in allele table format",
-        required=True,
     )
     parser.add_argument(
         "--loci_file",

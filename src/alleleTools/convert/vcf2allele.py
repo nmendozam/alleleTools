@@ -15,10 +15,9 @@ def setup_parser(subparsers):
     )
     ## Input/output arguments
     parser.add_argument(
-        "--input",
+        "input",
         type=str,
         help="Input vcf file name",
-        required=True,
     )
     parser.add_argument(
         "--phe",
