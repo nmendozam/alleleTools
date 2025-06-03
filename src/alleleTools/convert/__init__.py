@@ -1,6 +1,5 @@
-def convert_command(args):
-    print("running convert commands")
-    print(args)
+from . import vcf2allele
+
 
 def setup_parser(subparsers):
     parser = subparsers.add_parser(
@@ -12,18 +11,12 @@ def setup_parser(subparsers):
                     'It supports various input/output formats and allows for optional\n'
                     'validation during conversion.'
     )
-    parser.add_argument(
-        '--input', '-i',
-        type=str,
-        required=True,
-        help='Path to the input file for conversion.'
-    )
-    parser.add_argument(
-        '--output', '-o',
-        type=str,
-        help='Optional path for the output file. If not specified, output will be printed to stdout.'
+    convert_parser = parser.add_subparsers(
+            dest='convert_type',
+            help='Specify the type of input file. Supported types: vcf, csv, custom.',
+            required=True,
     )
 
-    parser.set_defaults(func=convert_command)
+    vcf2allele.setup_parser(convert_parser)
 
     return parser

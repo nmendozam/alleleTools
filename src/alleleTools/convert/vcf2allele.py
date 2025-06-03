@@ -1,4 +1,3 @@
-import argparse
 from enum import Enum
 from typing import List
 
@@ -9,8 +8,91 @@ To generate the input file from the imputation run this command
 > bcftools view --include 'ID~"HLA"' IMPUTED.vcf > HLA.vcf
 """
 
+def setup_parser(subparsers):
+    parser = subparsers.add_parser(
+        name="vcf2allele",
+        description="Convert vcf file to allele table and output to std out"
+    )
+    ## Input/output arguments
+    parser.add_argument("vcf", type=str, help="input vcf file name")
+    parser.add_argument(
+        "--phe",
+        type=str,
+        help="input phe file name (to add phenotype column)",
+        default="",
+    )
+    parser.add_argument(
+        "--out", type=str, help="name of the output file", default="output.pyhla"
+    )
+    ## Allele format arguments
+    parser.add_argument(
+        "--prefix",
+        type=str,
+        help="prefix to remove from allele names(genename)",
+        default="HLA_",
+    )
+    parser.add_argument(
+        "--separator",
+        type=str,
+        help="separator to split gene name from allele name",
+        default="*",
+    )
+    parser.add_argument(
+        "--extensive",
+        type=bool,
+        help="when no allele is imputed, look for the next most likely alleles",
+        default=False,
+    )
+    ## Additional arguments
+    parser.add_argument(
+        "-output_header",
+        action="store_true",
+        help="output header with the gene names",
+    )
+    parser.add_argument(
+        "--population",
+        type=str,
+        help="""If this is set, a colum with the population will be added at the beginning.
+                This makes the output compatible with pyPop""",
+        default="",
+    )
 
-def read_vcf(file_name, prefix):
+    parser.set_defaults(func=call_function)
+
+    return parser
+
+def call_function(args):
+    genotypes, format = _read_vcf(args.vcf, args.prefix)
+    true_alleles = _get_true_alleles(genotypes, format, args.extensive, args.separator)
+    # sort the columns
+    true_alleles = true_alleles.reindex(sorted(true_alleles.columns), axis=1)
+
+    # add phenotype column if provided
+    if args.phe:
+        print("Warn: add phenotype (--phe) feature isn't tested")
+        phe = pd.read_csv(args.phe, sep=" ", comment="##")
+        phe.set_index("IID", inplace=True)
+        true_alleles = true_alleles.join(phe.phenotype)
+    else:
+        true_alleles["phenotype"] = 0
+
+    # move phenotype to the first column
+    cols = true_alleles.columns.tolist()
+    cols.insert(0, cols.pop(len(cols) - 1))
+
+    true_alleles.reset_index(inplace=True)  # move sample id to column
+
+    if args.population:
+        true_alleles.insert(
+            0, "population", args.population
+        )  # add population column at the beginning
+
+    true_alleles.to_csv(
+        args.out, sep="\t", index=False, na_rep="NA", header=args.output_header
+    )
+
+
+def _read_vcf(file_name, prefix):
     """
     This takes a vcf file data frame and returns
     a table were the row indexes are the allele names
@@ -179,7 +261,7 @@ class AlleleList:
         return results
 
 
-def get_true_alleles(genotypes, format, extensive=False, allele_separator="*"):
+def _get_true_alleles(genotypes, format, extensive=False, allele_separator="*"):
     df = pd.DataFrame()
     for sample in genotypes.columns:
         # Get the list of alleles for that column(sample)
@@ -205,81 +287,3 @@ def get_true_alleles(genotypes, format, extensive=False, allele_separator="*"):
 
     return df
 
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Convert vcf file to allele table and output to std out"
-    )
-    ## Input/output arguments
-    parser.add_argument("vcf", type=str, help="input vcf file name")
-    parser.add_argument(
-        "--phe",
-        type=str,
-        help="input phe file name (to add phenotype column)",
-        default="",
-    )
-    parser.add_argument(
-        "--out", type=str, help="name of the output file", default="output.pyhla"
-    )
-    ## Allele format arguments
-    parser.add_argument(
-        "--prefix",
-        type=str,
-        help="prefix to remove from allele names(genename)",
-        default="HLA_",
-    )
-    parser.add_argument(
-        "--separator",
-        type=str,
-        help="separator to split gene name from allele name",
-        default="*",
-    )
-    parser.add_argument(
-        "--extensive",
-        type=bool,
-        help="when no allele is imputed, look for the next most likely alleles",
-        default=False,
-    )
-    ## Additional arguments
-    parser.add_argument(
-        "-output_header",
-        action="store_true",
-        help="output header with the gene names",
-    )
-    parser.add_argument(
-        "--population",
-        type=str,
-        help="""If this is set, a colum with the population will be added at the beginning.
-                This makes the output compatible with pyPop""",
-        default="",
-    )
-
-    args = parser.parse_args()
-
-    genotypes, format = read_vcf(args.vcf, args.prefix)
-    true_alleles = get_true_alleles(genotypes, format, args.extensive, args.separator)
-    # sort the columns
-    true_alleles = true_alleles.reindex(sorted(true_alleles.columns), axis=1)
-
-    # add phenotype column if provided
-    if args.phe:
-        print("Warn: add phenotype (--phe) feature isn't tested")
-        phe = pd.read_csv(args.phe, sep=" ", comment="##")
-        phe.set_index("IID", inplace=True)
-        true_alleles = true_alleles.join(phe.phenotype)
-    else:
-        true_alleles["phenotype"] = 0
-
-    # move phenotype to the first column
-    true_alleles.insert(0, "phenotype", true_alleles.pop("phenotype"))
-
-    true_alleles.reset_index(inplace=True)  # move sample id to column
-
-    if args.population:
-        true_alleles.insert(
-            0, "population", args.population
-        )  # add population column at the beginning
-
-    true_alleles.to_csv(
-        args.out, sep="\t", index=False, na_rep="NA", header=args.output_header
-    )
