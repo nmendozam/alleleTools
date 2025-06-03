@@ -11,10 +11,15 @@ To generate the input file from the imputation run this command
 def setup_parser(subparsers):
     parser = subparsers.add_parser(
         name="vcf2allele",
-        description="Convert vcf file to allele table and output to std out"
+        description="Convert vcf file to allele table"
     )
     ## Input/output arguments
-    parser.add_argument("vcf", type=str, help="input vcf file name")
+    parser.add_argument(
+        "--input",
+        type=str,
+        help="Input vcf file name",
+        required=True,
+    )
     parser.add_argument(
         "--phe",
         type=str,
@@ -22,7 +27,10 @@ def setup_parser(subparsers):
         default="",
     )
     parser.add_argument(
-        "--out", type=str, help="name of the output file", default="output.pyhla"
+        "--output",
+        type=str,
+        help="name of the output file",
+        default="output.pyhla",
     )
     ## Allele format arguments
     parser.add_argument(
@@ -62,7 +70,7 @@ def setup_parser(subparsers):
     return parser
 
 def call_function(args):
-    genotypes, format = _read_vcf(args.vcf, args.prefix)
+    genotypes, format = _read_vcf(args.input, args.prefix)
     true_alleles = _get_true_alleles(genotypes, format, args.extensive, args.separator)
     # sort the columns
     true_alleles = true_alleles.reindex(sorted(true_alleles.columns), axis=1)
@@ -88,7 +96,7 @@ def call_function(args):
         )  # add population column at the beginning
 
     true_alleles.to_csv(
-        args.out, sep="\t", index=False, na_rep="NA", header=args.output_header
+        args.output, sep="\t", index=False, na_rep="NA", header=args.output_header
     )
 
 
