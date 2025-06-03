@@ -1,9 +1,104 @@
-import argparse
 import glob
 import json
 import os
 import re
 from enum import Enum
+
+import pandas as pd
+
+VCF_ROW_REF = {
+    "CHROM": [6],
+    "POS": [],
+    "ID": [],
+    "REF": ["A"],
+    "ALT": ["T"],
+    "QUAL": ["."],
+    "FILTER": ["PASS"],
+    "INFO": ["AR2=1.00;DR2=1.00;AF=0.16"],
+    "FORMAT": ["GT:DS:GP"],
+}
+
+VCF_HEADER = """##fileformat=VCFv4.1
+##fileDate=20090805
+##source=alleleTools_consensus
+##reference=file:///seq/references/
+#"""
+
+def setup_parser(subparsers):
+    parser = subparsers.add_parser(
+        prog="Consensus HLA alleles",
+        description="This program finds a consensus between multiple HLA genotyping reports",
+        epilog="Author: Nicolás Mendoza Mejía (2023)",
+    )
+    parser.add_argument(
+        "--input",
+        metavar="path",
+        type=str,
+        default="IKMB_Reports/*.json",
+        help="Path of files to be converted; enclose in quotes, accepts * as wildcard for directories or filenames",
+    )
+    parser.add_argument(
+        "--output",
+        metavar="path",
+        type=str,
+        help="Path to output file",
+        default="output.txt",
+    )
+    parser.add_argument(
+        "--format",
+        choices=["vcf", "pyhla"],
+        default="pyhla",
+        type=str,
+        help="Format of the output file",
+    )
+
+    parser.set_defaults(func=call_function)
+
+    return parser
+
+def call_function(args):
+    if args.format == "vcf":
+        # Relevant variables for vcf format
+        df = pd.DataFrame(columns=VCF_ROW_REF.keys())
+        position = 29910247
+
+    # Delete output file if existing
+    try:
+        os.remove(args.out)
+    except OSError:
+        pass
+
+    for file in glob.glob(args.input):
+        report, consensus = _open_report(file)
+        alleles = [str(c) for gene in consensus for c in consensus[gene].alleles]
+
+        if args.format == "vcf":
+            # Look for existing alleles
+            for allele in alleles[:]:
+                if allele in df.index:
+                    df.loc[allele, report.sample] = "1|0:1:0,1,0"
+                    alleles.remove(allele)
+
+            # Add new alleles
+            vcf_row = {k: v * len(alleles) for k, v in VCF_ROW_REF.items()}
+            vcf_row["POS"] = range(position, position + len(alleles))
+            vcf_row["ID"] = alleles
+            vcf_row[report.sample] = ["1|0:1:0,1,0"] * len(alleles)
+
+            position += len(alleles)
+            # Add consensus to data frame
+            df = pd.concat([df, pd.DataFrame(vcf_row, index=alleles)])
+        elif args.format == "pyhla":
+            with open(args.out, "a") as out:
+                out.write("%s\t2\t%s\n" % (report.sample, "\t".join(alleles)))
+
+    if args.format == "vcf":
+        with open(args.out, "w") as vcf:
+            vcf.write(VCF_HEADER)
+
+        df.fillna("0|0:0:1,0,0", inplace=True)
+        df.sort_index(inplace=True)
+        df.to_csv(args.out, sep="\t", mode="a", index=False)
 
 
 class ComparisonResult(Enum):
@@ -120,10 +215,7 @@ class ConsensusAlgorithm:
             self.alleles.append(self.Consensus(new_pred))
 
 
-import pandas as pd
-
-
-def open_report(file_name: str):
+def _open_report(file_name: str):
     with open(file_name) as f:
         json_report = json.load(f)
 
@@ -148,95 +240,3 @@ def open_report(file_name: str):
 
             assert len(consensus[gene].alleles) == 2
         return report, consensus
-
-
-VCF_ROW_REF = {
-    "CHROM": [6],
-    "POS": [],
-    "ID": [],
-    "REF": ["A"],
-    "ALT": ["T"],
-    "QUAL": ["."],
-    "FILTER": ["PASS"],
-    "INFO": ["AR2=1.00;DR2=1.00;AF=0.16"],
-    "FORMAT": ["GT:DS:GP"],
-}
-
-VCF_HEADER = """##fileformat=VCFv4.1
-##fileDate=20090805
-##source=myImputationProgramV3.1
-##reference=file:///seq/references/
-#"""
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        prog="Consensus HLA alleles",
-        description="This program finds a consensus between multiple HLA genotyping reports",
-        epilog="Author: Nicolás Mendoza Mejía (2023)",
-    )
-    parser.add_argument(
-        "--out",
-        metavar="path",
-        type=str,
-        help="Path to output file",
-        default="output.txt",
-    )
-    parser.add_argument(
-        "--format",
-        choices=["vcf", "pyhla"],
-        default="pyhla",
-        type=str,
-        help="Format of the output file",
-    )
-    parser.add_argument(
-        "--input",
-        metavar="path",
-        type=str,
-        default="IKMB_Reports/*.json",
-        help="Path of files to be converted; enclose in quotes, accepts * as wildcard for directories or filenames",
-    )
-
-    args = parser.parse_args()
-
-    if args.format == "vcf":
-        # Relevant variables for vcf format
-        df = pd.DataFrame(columns=VCF_ROW_REF.keys())
-        position = 29910247
-
-    # Delete output file if existing
-    try:
-        os.remove(args.out)
-    except OSError:
-        pass
-
-    for file in glob.glob(args.input):
-        report, consensus = open_report(file)
-        alleles = [str(c) for gene in consensus for c in consensus[gene].alleles]
-
-        if args.format == "vcf":
-            # Look for existing alleles
-            for allele in alleles[:]:
-                if allele in df.index:
-                    df.loc[allele, report.sample] = "1|0:1:0,1,0"
-                    alleles.remove(allele)
-
-            # Add new alleles
-            vcf_row = {k: v * len(alleles) for k, v in VCF_ROW_REF.items()}
-            vcf_row["POS"] = range(position, position + len(alleles))
-            vcf_row["ID"] = alleles
-            vcf_row[report.sample] = ["1|0:1:0,1,0"] * len(alleles)
-
-            position += len(alleles)
-            # Add consensus to data frame
-            df = pd.concat([df, pd.DataFrame(vcf_row, index=alleles)])
-        elif args.format == "pyhla":
-            with open(args.out, "a") as out:
-                out.write("%s\t2\t%s\n" % (report.sample, "\t".join(alleles)))
-
-    if args.format == "vcf":
-        with open(args.out, "w") as vcf:
-            vcf.write(VCF_HEADER)
-
-        df.fillna("0|0:0:1,0,0", inplace=True)
-        df.sort_index(inplace=True)
-        df.to_csv(args.out, sep="\t", mode="a", index=False)
