@@ -1,4 +1,4 @@
-from . import vcf2allele
+from . import allele2vcf, vcf2allele
 
 
 def setup_parser(subparsers):
@@ -18,5 +18,6 @@ def setup_parser(subparsers):
     )
 
     vcf2allele.setup_parser(convert_parser)
+    allele2vcf.setup_parser(convert_parser)
 
     return parser
