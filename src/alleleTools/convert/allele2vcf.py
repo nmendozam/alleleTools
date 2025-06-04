@@ -23,10 +23,11 @@ def setup_parser(subparsers):
         help="name of the gene cluster (hla or kir), alternatively you could provide a --loci_file"
     )
     parser.add_argument(
-        "--output",
+        "--vcf",
         type=str,
-        help="name of the output file default is output.vcf",
-        default="output.vcf",
+        help="VCF file to append the alleles to",
+        default="file.vcf",
+        required=True,
     )
     parser.add_argument(
         "--field_separator",
@@ -88,12 +89,12 @@ def call_function(args):
     vcf_alleles = vcf_alleles.drop(columns=["gene", "start"])
 
     # Sort columns to match the base vcf file order.
-    vcf_col = _get_vcf_columns(args.output)
+    vcf_col = _get_vcf_columns(args.vcf)
     vcf_col = [x for x in vcf_col if x in vcf_alleles.columns]
     vcf_alleles = vcf_alleles[vcf_col]
     vcf_alleles.fillna("0|0", inplace=True)
 
-    with open(args.output, "a") as f:
+    with open(args.vcf, "a") as f:
         f.write(vcf_alleles.to_csv(index=False, sep="\t", header=False))
 
 def _diploid_notation(pairA, pairB):
