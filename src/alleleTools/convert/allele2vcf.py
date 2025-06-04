@@ -4,7 +4,7 @@ import pandas as pd
 def setup_parser(subparsers):
     parser = subparsers.add_parser(
         name="allele2vcf",
-        description="Convert allele table to vcf"
+        description="Convert allele table to vcf",
         epilog="Author: Nicolás Mendoza Mejía (2023)",
     )
     parser.add_argument(
@@ -15,8 +15,12 @@ def setup_parser(subparsers):
     parser.add_argument(
         "--loci_file",
         type=str,
-        help="path to the file with gene loci information",
-        required=True,
+        help="path to the file with gene loci information, alternatively you could specify --gene_cluster",
+    )
+    parser.add_argument(
+        "--gene_cluster",
+        type=str,
+        help="name of the gene cluster (hla or kir), alternatively you could provide a --loci_file"
     )
     parser.add_argument(
         "--output",
@@ -24,11 +28,25 @@ def setup_parser(subparsers):
         help="name of the output file default is output.vcf",
         default="output.vcf",
     )
+    parser.add_argument(
+        "--field_separator",
+        type=str,
+        help="character separating the fields inside input default is tab",
+        default="\t"
+    )
+
+    parser.set_defaults(func=call_function)
 
     return parser
 
 def call_function(args):
-    genotypes = pd.read_csv(args.input, sep=" ")
+    if not (args.gene_cluster or args.loci_file):
+        print(
+            "Error: either --gene_cluster or --loci_file must be provided."
+            "Use -h or --help to see more details."
+            )
+
+    genotypes = pd.read_csv(args.input, sep=args.field_separator)
 
     pairs = _gene_pairs(genotypes.columns)
     genes = [item for t in pairs for item in t]
