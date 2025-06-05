@@ -26,7 +26,7 @@ VCF_HEADER = """##fileformat=VCFv4.1
 
 def setup_parser(subparsers):
     parser = subparsers.add_parser(
-        prog="Consensus HLA alleles",
+        name="Consensus HLA alleles",
         description="This program finds a consensus between multiple HLA genotyping reports",
         epilog="Author: Nicolás Mendoza Mejía (2023)",
     )

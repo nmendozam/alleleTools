@@ -1,5 +1,6 @@
 import argparse
-from . import convert
+
+from . import convert, genotype, refactor
 
 
 def main():
@@ -14,7 +15,10 @@ def main():
             required=True
             )
 
+    # Register subcommands
     convert.setup_parser(subparsers)
+    genotype.setup_parser(subparsers)
+    refactor.setup_parser(subparsers)
 
     args = parser.parse_args()
 
