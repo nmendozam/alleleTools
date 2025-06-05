@@ -24,6 +24,7 @@ VCF_HEADER = """##fileformat=VCFv4.1
 ##reference=file:///seq/references/
 #"""
 
+
 def setup_parser(subparsers):
     parser = subparsers.add_parser(
         name="Consensus HLA alleles",
@@ -55,6 +56,7 @@ def setup_parser(subparsers):
     parser.set_defaults(func=call_function)
 
     return parser
+
 
 def call_function(args):
     if args.format == "vcf":

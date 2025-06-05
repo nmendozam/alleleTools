@@ -9,6 +9,7 @@ To generate the input file from the imputation run this command
 > bcftools view --include 'ID~"HLA"' IMPUTED.vcf > HLA.vcf
 """
 
+
 def setup_parser(subparsers):
     parser = subparsers.add_parser(
         name="vcf2allele",
@@ -69,6 +70,7 @@ def setup_parser(subparsers):
     parser.set_defaults(func=call_function)
 
     return parser
+
 
 def call_function(args):
     genotypes, format = _read_vcf(args.input, args.rm_prefix)
@@ -305,8 +307,10 @@ def _get_true_alleles(genotypes, format, extensive=False, allele_separator="*"):
 
         # Add the alleles to the data frame
         row = pd.DataFrame(
-            allele_list, index=genes_columns, columns=[sample],
-            ).transpose()
+            allele_list,
+            index=genes_columns,
+            columns=[sample],
+        ).transpose()
         df = pd.concat([df, row])
 
     if len(ignored_samples) > 0:
@@ -315,6 +319,5 @@ def _get_true_alleles(genotypes, format, extensive=False, allele_separator="*"):
             "This may be due to a separator not matching the allele names, try changing the --separator argument."
             f"For example, the last ignored allele was '{last_ignored_allele}',"
             f" but the expected --separator was '{allele_separator}'"
-            )
+        )
     return df
-

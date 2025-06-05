@@ -20,7 +20,7 @@ def setup_parser(subparsers):
     parser.add_argument(
         "--gene_cluster",
         type=str,
-        help="name of the gene cluster (hla or kir), alternatively you could provide a --loci_file"
+        help="name of the gene cluster (hla or kir), alternatively you could provide a --loci_file",
     )
     parser.add_argument(
         "--vcf",
@@ -33,19 +33,20 @@ def setup_parser(subparsers):
         "--field_separator",
         type=str,
         help="character separating the fields inside input default is tab",
-        default="\t"
+        default="\t",
     )
 
     parser.set_defaults(func=call_function)
 
     return parser
 
+
 def call_function(args):
     if not (args.gene_cluster or args.loci_file):
         print(
             "Error: either --gene_cluster or --loci_file must be provided."
             "Use -h or --help to see more details."
-            )
+        )
 
     genotypes = pd.read_csv(args.input, sep=args.field_separator)
 
@@ -97,6 +98,7 @@ def call_function(args):
     with open(args.vcf, "a") as f:
         f.write(vcf_alleles.to_csv(index=False, sep="\t", header=False))
 
+
 def _diploid_notation(pairA, pairB):
     """
     Takes a Multindex series of presence/absence of an allele in a sample
@@ -113,6 +115,7 @@ def _diploid_notation(pairA, pairB):
     group.index.name = "ID"
     return group.reset_index()
 
+
 def _gene_pairs(lst):
     """
     Takes a list and return a list of tuples with the elements in pairs,
@@ -128,6 +131,7 @@ def _gene_pairs(lst):
     gene_1 = [x for x in gene_1 if x.replace(".1", "") in gene]
 
     return [[g, g1] for g, g1 in zip(gene, gene_1)]
+
 
 def _get_vcf_columns(vcf_file):
     # Read only the line that starts with #CHROM
