@@ -1,10 +1,23 @@
-This repo has a collection of scripts to convert files from genotyping to vcf and back.
+Working with alleles from highly polymorphic genes, like those in HLA and KIR clusters, is already hard enough! This repo is a collection of tools to facilitate your work on the manipulation and analysis of allele data sets.
 
-- `allele2vcf.py` parses .tsv files with genotyping data and appends it to a vcf file.
-- `vcf2alleles.py` does the opposite, it extracts the genotyping data from a vcf file and writes it to a .tsv file.
-- `allele_resolution.sh` normalizes alleles to a uniform resolution of the input file (.tsv).
+The tools in this repo are sorted by category:
+1. genotype: a set of tools to facilitate the genotyping process.
+2. convert: a group commands that convert allele data between different file formats. Including vcf, csv and our own format .alt (from allele table). You could also convert from vcf to files compatible with [pyHLA](https://github.com/felixfan/PyHLA) and [PyPop](http://pypop.org/index.html).
+3. refactor: some commands to normalize allele resolutions and other useful refactoring.
 
-The output of the latter is compatible with [pyHLA](https://github.com/felixfan/PyHLA) and [PyPop](http://pypop.org/index.html). While the output of the former might be useful for calculating linkage disequilibrium between alleles and SNPs, tagSNP selection, and construction of imputation panels compatible with VCF files.
+# Getting started
+To install this package you can use pip:
+
+```bash
+pip install pip@git+https://github.com/nmendozam/alleleTools.git
+```
+It will install the `altools` command in your current environment. So, to execute a command you need to specify three things `altools [tool_category] [tool_name] [input]`.
+```
+altools convert vcf2allele input.vcf
+```
+
+
+# Usage
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -28,29 +41,12 @@ The output of the latter is compatible with [pyHLA](https://github.com/felixfan/
   </ol>
 </details>
 
-# Getting started
-
-You can use conda to install the environment to be on se safe side.
-
-```bash
-git clone https://github.com/nmendozam/alleleTools.git && cd alleleTools
-conda env create -f environment.yml
-```
-
-But in theory the only requirements are:
-
-- Python 3.6 or higher
-- pandas 2.0.3
-
-# Usage
-
 ## Convert genotype to vcf
 
-To convert a genotype file to vcf, you can use the script `allele2vcf.py`. It will append the genotyped alleles to the vcf file.
+To convert a genotype file to vcf, you can use the command `allele2vcf`. It will append the genotyped alleles to a vcf file.
 
 ```bash
-conda activate vcf
-python allele2vcf.py resources/hla_diversity.txt resources/gene_table.tsv resources/template.vcf
+altools convert allele2vcf resources/hla_diversity.txt --loci_file resources/gene_locations.tsv --vcf file_to_append_to.vcf
 ```
 
 ### Genotype file
@@ -85,12 +81,11 @@ bcftools view --force-samples -S samples_id.txt test.vcf > filtered.vcf
 
 ## Convert vcf to genotype table
 
-Converting from vcf to a genotype table is also useful. For example when the alleles are imputed the output is a vcf file. To convert it to a genotype table you can use the script `vcf2alleles.py`. The vcf file should be filtered to contain only the HLA genes. You can use `bcftools` to do this. The script will output a .pyhla file that can be used with [pyHLA](https://github.com/felixfan/PyHLA) and [PyPop](http://pypop.org/index.html). The phenotype file is optional should follow the .phe format of plink files.
+Converting from vcf to a genotype table is also useful. For example when the alleles are imputed the output is a vcf file. To convert it to a genotype table you can use the command `vcf2alleles`. The vcf file should be filtered to contain only the HLA genes. You can use `bcftools` to do this. The script will output a .pyhla file that can be used with [pyHLA](https://github.com/felixfan/PyHLA) and [PyPop](http://pypop.org/index.html). The phenotype file is optional should follow the .phe format of plink files.
 
 ```bash
-conda activate vcf
 bcftools view --include 'ID~"HLA"' raw_imputed.vcf > only_hla.vcf
-python vcf2alleles.py only_hla.vcf --phe input.phe --out output.pyhla
+altools convert vcf2alleles only_hla.vcf --phe input.phe --out output.pyhla
 ```
 
 ## Normalizing allele resolutions
@@ -115,7 +110,7 @@ This script normalizes allele resolutions to a uniform level of the input file, 
 If an output file name is not provided, it will be named `*.[resolution]fields.tsv`, containing the resolved alleles. Up to three resolution levels are supported (one, two and three).
 
 ```bash
-./allele_resolution.sh one file1.tsv file2.tsv
+bash src/alleleTools/refactor/allele_resolution.sh one file1.tsv file2.tsv
 ```
 
 ## Consensus allele
@@ -124,8 +119,7 @@ This script is used to generate a consensus HLA genotype from the result of many
 HLA genotyping algorithms. It will generate a vcf file or an allele table.
 
 ```bash
-python consensus.py --input "IKMB_Reports/*.json" --output "output.txt" --format pyhla
-
+altools genotype consensus --input "IKMB_Reports/*.json" --output "output.txt" --format pyhla
 ```
 
 The input files follow the format of reports generated by the [ikmb HLA genotyping](https://github.com/ikmb/hla) pipeline. These report files should be in a folder called `IKMB_Reports/` in a json format.

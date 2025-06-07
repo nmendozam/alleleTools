@@ -1,0 +1,26 @@
+[project]
+name = "alleleTools"
+version = "0.1"
+authors = [
+	{ name="Nicolas Mendoza Mejia", email="mendozamejian@gmail.com" }
+]
+description = "A set of tools to handle alleles from polymorphic genes"
+readme = "readme.md"
+requires-python = ">=3.9"
+license = "GPL-3.0"
+license-files = ["LICENSE"]
+
+[project.urls]
+Homepage = "https://github.com/nmendozam/alleleTools"
+Issues = "https://github.com/nmendozam/alleleTools/issues"
+
+[project.scripts]
+altools = "alleleTools.alleleTools:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["alleleTools"]
+
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
