@@ -1,8 +1,11 @@
+from typing import Tuple
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from typing import Tuple
+
 from ..argtypes import file_path
+
 
 def setup_parser(subparsers):
     parser = subparsers.add_parser(
@@ -50,6 +53,12 @@ def create_phewas_plot(input_file: str,
         df = pd.read_csv(input_file)
     except Exception as e:
         raise Exception(f"An error occurred while opening the file {input_file}: {e}")
+    
+    # filter by allele name
+    if allele_name:
+        df = df[df['HLA'].str.contains(allele_name, case=False, na=False)]
+        if df.empty:
+            raise ValueError(f"No data found for allele name '{allele_name}' in the input file. Check that the argument --allele_name matches with the provided input file.")
 
     df.sort_values(by='Category', inplace=True)
     df.index = range(len(df.index))
