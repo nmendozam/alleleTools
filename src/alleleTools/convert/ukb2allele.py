@@ -21,7 +21,7 @@ def setup_parser(subparsers):
     parser.add_argument(
         "--phenotype",
         type=csv_file,
-        help="name of the phenotype file",
+        help="ssv file with 6 columns: eid, fid, ... , Sex, Phenotype. No headers and space separated.",
         required=True,
     )
     parser.add_argument(
@@ -29,6 +29,13 @@ def setup_parser(subparsers):
         type=str,
         help="name of the output file",
         default="output.alt",
+    )
+    ## Additional arguments
+    parser.add_argument(
+        "--remove_pheno_zero",
+        action="store_true",
+        help="Remove individuals with phenotype 0 from the output",
+        default=False,
     )
 
     parser.set_defaults(func=call_function)
@@ -40,18 +47,18 @@ def call_function(args):
     input = pd.read_csv(args.input, sep=',', header=0, index_col=0)
 
     phenotype = pd.read_csv(args.phenotype, sep=' ', header=None)
-    phenotype.columns = ["eid", "FID", "_", "__", "Sex", "LLI"]
+    phenotype.columns = ["eid", "FID", "_", "__", "Sex", "Pheno"]
 
-    output = _convert_ukb_to_allele(input, phenotype, args.output)
+    output = _convert_ukb_to_allele(input, phenotype, args.output, args.remove_pheno_zero)
 
     # Save the result to a file
     output.to_csv(args.output, sep='\t', index=False, header=False)
 
     print(output.info())
-    print(output["LLI"].value_counts())
+    print(output["Pheno"].value_counts())
     print(f"Output saved to {args.output}")
 
-def _convert_ukb_to_allele(input: pd.DataFrame, phenotype: pd.DataFrame) -> pd.DataFrame:
+def _convert_ukb_to_allele(input: pd.DataFrame, phenotype: pd.DataFrame, rm_phe_zero: bool = False) -> pd.DataFrame:
     #%%
     df_melted = input.reset_index().melt(id_vars="eid", var_name="Allele", value_name="Presence")
     df_melted.head()
@@ -98,17 +105,16 @@ def _convert_ukb_to_allele(input: pd.DataFrame, phenotype: pd.DataFrame) -> pd.D
     df_formatted_alleles.head()
 
     #%% Add the case-control values
-    # Get the LLI values from phenotype and assign it to a new column in df_formatted_alleles
-    df_case_control = df_formatted_alleles.merge(phenotype[["eid", "LLI"]], on="eid", how="inner")
+    # Get the Pheno values from phenotype and assign it to a new column in df_formatted_alleles
+    df_case_control = df_formatted_alleles.merge(phenotype[["eid", "Pheno"]], on="eid", how="inner")
 
     # place it on the second column
-    df_case_control = df_case_control[["eid", "LLI"] + [col for col in df_case_control.columns if col != "LLI" and col != "eid"]]
+    df_case_control = df_case_control[["eid", "Pheno"] + [col for col in df_case_control.columns if col != "Pheno" and col != "eid"]]
     df_case_control.head()
 
-    # remove LLI with 0
-    df_case_control = df_case_control[df_case_control["LLI"] != 0]
-    # df_case_control[df_case_control["LLI"] == 1] = 0
-    # df_case_control[df_case_control["LLI"] == 2] = 1
+    # remove Pheno with 0
+    if rm_phe_zero:
+        df_case_control = df_case_control[df_case_control["Pheno"] != 0]
 
     return df_case_control
 
