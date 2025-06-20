@@ -49,7 +49,7 @@ def call_function(args):
     phenotype = pd.read_csv(args.phenotype, sep=' ', header=None)
     phenotype.columns = ["eid", "FID", "_", "__", "Sex", "Pheno"]
 
-    output = _convert_ukb_to_allele(input, phenotype, args.output, args.remove_pheno_zero)
+    output = _convert_ukb_to_allele(input, phenotype, args.remove_pheno_zero)
 
     # Save the result to a file
     output.to_csv(args.output, sep='\t', index=False, header=False)
