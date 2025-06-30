@@ -1,3 +1,4 @@
+import argparse
 import glob
 import json
 import os
@@ -27,28 +28,28 @@ VCF_HEADER = """##fileformat=VCFv4.1
 
 def setup_parser(subparsers):
     parser = subparsers.add_parser(
-        name="Consensus HLA alleles",
+        name="consensus",
         description="This program finds a consensus between multiple HLA genotyping reports",
         epilog="Author: Nicolás Mendoza Mejía (2023)",
     )
     parser.add_argument(
-        "--input",
+        "input",
         metavar="path",
-        type=str,
-        default="IKMB_Reports/*.json",
-        help="Path of files to be converted; enclose in quotes, accepts * as wildcard for directories or filenames",
+        type=argparse.FileType("r"),
+        nargs="+",
+        help="JSON files with HLA genotyping reports to be processed",
     )
     parser.add_argument(
         "--output",
         metavar="path",
         type=str,
         help="Path to output file",
-        default="output.txt",
+        default="output.alt",
     )
     parser.add_argument(
         "--format",
-        choices=["vcf", "pyhla"],
-        default="pyhla",
+        choices=["vcf", "alt"],
+        default="alt",
         type=str,
         help="Format of the output file",
     )
@@ -64,13 +65,12 @@ def call_function(args):
         df = pd.DataFrame(columns=VCF_ROW_REF.keys())
         position = 29910247
 
-    # Delete output file if existing
-    try:
-        os.remove(args.out)
-    except OSError:
-        pass
+    # Check if output file exists
+    if os.path.exists(args.out):
+        print(f"Output file {args.out} already exists.")
+        exit(1)
 
-    for file in glob.glob(args.input):
+    for file in args.input:
         report, consensus = _open_report(file)
         alleles = [str(c) for gene in consensus for c in consensus[gene].alleles]
 
@@ -90,7 +90,7 @@ def call_function(args):
             position += len(alleles)
             # Add consensus to data frame
             df = pd.concat([df, pd.DataFrame(vcf_row, index=alleles)])
-        elif args.format == "pyhla":
+        elif args.format == "alt":
             with open(args.out, "a") as out:
                 out.write("%s\t2\t%s\n" % (report.sample, "\t".join(alleles)))
 
