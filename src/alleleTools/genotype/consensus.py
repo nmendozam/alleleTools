@@ -1,9 +1,8 @@
 import argparse
-import glob
 import json
-import os
 import re
 from enum import Enum
+from typing import Dict, List
 
 import pandas as pd
 
@@ -70,7 +69,7 @@ def call_function(args):
 
         report = Report(json_report)
 
-        consensus = ConsensusAlgorithm(report)
+        consensus = ConsensusAlgorithm(report.genes)
         consensus.correct_homozygous_calls()
         alleles = consensus.get_flat_alleles()
 
@@ -187,25 +186,25 @@ class Report:
 
 
 class ConsensusAlgorithm:
-    def __init__(self, report: Report) -> None:
+    def __init__(self, calls: Dict[str, List[Allele]]) -> None:
         self.consensus = dict()
 
-        for gene, calls in report.genes.items():
-            alleles = list()
+        for gene, alleles in calls.items():
+            allele_cluster = list()
 
             # Cluster similar alleles
-            for call in calls:
-                match = self.find_matching_allele(call, alleles)
+            for call in alleles:
+                match = self.find_matching_allele(call, allele_cluster)
 
                 if not match:
-                    alleles.append(self.Consensus(call))
+                    allele_cluster.append(self.Consensus(call))
                 else:
                     match.add_evidence(call)
 
                     if match.compare(call) == ComparisonResult.MORE_RESOLUTION:
                         match.fields = call.fields
 
-            self.consensus[gene] = alleles
+            self.consensus[gene] = allele_cluster
 
     def correct_homozygous_calls(self):
         """Go over alleles and correct homozygosity"""
@@ -219,7 +218,7 @@ class ConsensusAlgorithm:
             elif n_alleles == 0:
                 self.consensus[gene] = ["NA", "NA"]
 
-    def find_matching_allele(self, allele: Allele, allele_list):
+    def find_matching_allele(self, allele: Allele, allele_list: list["Consensus"]) -> "Consensus":
         """Finds a matching allele in the consensus"""
         for a in allele_list:
             result = a.compare(allele)
@@ -231,8 +230,8 @@ class ConsensusAlgorithm:
         return [str(c) for gene in self.consensus for c in self.consensus[gene]]
 
     class Consensus:
-        def __init__(self, new) -> None:
-            self.main_allele: Allele = new
+        def __init__(self, new: Allele) -> None:
+            self.main_allele = new
             self.evidence = [new]
 
         def __repr__(self) -> str:
