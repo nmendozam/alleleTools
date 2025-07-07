@@ -1,4 +1,4 @@
-from . import graph_phewas
+from . import graph_pathogens, graph_phewas
 
 
 def setup_parser(subparsers):
@@ -15,5 +15,6 @@ def setup_parser(subparsers):
     )
 
     graph_phewas.setup_parser(interpret_parser)
+    graph_pathogens.setup_parser(interpret_parser)
 
     return parser
