@@ -21,7 +21,7 @@ def setup_parser(subparsers):
     parser.add_argument(
         "--phenotype",
         type=csv_file,
-        help="ssv file with 6 columns: eid, fid, ... , Sex, Phenotype. No headers and space separated.",
+        help="ssv file with 6 columns: eid, fid, ... , Sex, Pheno. No headers and space separated. The column Pheno (last column) will be included as phenotype in the output file",
         required=True,
     )
     parser.add_argument(
