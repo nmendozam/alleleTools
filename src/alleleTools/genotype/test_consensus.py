@@ -53,19 +53,22 @@ def test_consensus():
     assert len(con.get_flat_alleles()) == 1
 
 
-# def test_overlapping_allele_consensus():
-#     allele_list = [
-#         "DPA1*01 (0.6666)",
-#         "DPA1*02 (0.3335)",
-#         "DPA1*01:03:01 (0.3333)",
-#         "DPA1*01:04 (0.3333)",
-#         "DPA1*01:03:01:01 (0.3114)",
-#     ]
-#     parsed_calls = { "DPA1" :[Allele("prog1", a) for a in allele_list] }
-#     con = ConsensusAlgorithm(parsed_calls)
-#     print(con.get_flat_alleles())
-#     assert con.alleles[parsed_calls[3]] == 2
-#     assert con.alleles[parsed_calls[4]] == 3
+def test_overlapping_allele_consensus():
+    allele_list = [
+        "DPA1*01 (0.6666)",
+        "DPA1*02 (0.3335)",
+        "DPA1*01:03:01 (0.3333)",
+        "DPA1*01:04 (0.3333)",
+        "DPA1*01:03:01:01 (0.3114)",
+    ]
+    calls = make_report(allele_list)
+    report = Report(calls, resolution=2)
+    con = ConsensusAlgorithm(report.genes)
+    print(con.get_flat_alleles())
+    print(con.consensus)
+    assert len(con.get_flat_alleles()) == 2
+    assert con.get_flat_alleles()[0] == "DPA1*01:04"
+    assert con.get_flat_alleles()[1] == "DPA1*02"
 
 
 def test_allele_sorting():

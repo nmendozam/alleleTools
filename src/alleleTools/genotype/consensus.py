@@ -4,26 +4,6 @@ import re
 from enum import Enum
 from typing import Dict, List
 
-import pandas as pd
-
-VCF_ROW_REF = {
-    "CHROM": [6],
-    "POS": [],
-    "ID": [],
-    "REF": ["A"],
-    "ALT": ["T"],
-    "QUAL": ["."],
-    "FILTER": ["PASS"],
-    "INFO": ["AR2=1.00;DR2=1.00;AF=0.16"],
-    "FORMAT": ["GT:DS:GP"],
-}
-
-VCF_HEADER = """##fileformat=VCFv4.1
-##fileDate=20090805
-##source=alleleTools_consensus
-##reference=file:///seq/references/
-#"""
-
 
 def setup_parser(subparsers):
     parser = subparsers.add_parser(
@@ -45,13 +25,6 @@ def setup_parser(subparsers):
         help="Path to output file",
         default="output.alt",
     )
-    parser.add_argument(
-        "--format",
-        choices=["vcf", "alt"],
-        default="alt",
-        type=str,
-        help="Format of the output file",
-    )
 
     parser.set_defaults(func=call_function)
 
@@ -59,51 +32,20 @@ def setup_parser(subparsers):
 
 
 def call_function(args):
-    if args.format == "vcf":
-        # Relevant variables for vcf format
-        df = pd.DataFrame(columns=VCF_ROW_REF.keys())
-        position = 29910247
-
     for file in args.input:
         json_report = json.load(file)
 
-        report = Report(json_report)
+        report = Report(json_report, resolution=2)
 
         consensus = ConsensusAlgorithm(report.genes)
-        consensus.correct_homozygous_calls()
         alleles = consensus.get_flat_alleles()
 
         ##########################
         # Generate the output file
         ##########################
 
-        if args.format == "vcf":
-            # Look for existing alleles
-            for allele in alleles[:]:
-                if allele in df.index:
-                    df.loc[allele, report.sample] = "1|0:1:0,1,0"
-                    alleles.remove(allele)
-
-            # Add new alleles
-            vcf_row = {k: v * len(alleles) for k, v in VCF_ROW_REF.items()}
-            vcf_row["POS"] = range(position, position + len(alleles))
-            vcf_row["ID"] = alleles
-            vcf_row[report.sample] = ["1|0:1:0,1,0"] * len(alleles)
-
-            position += len(alleles)
-            # Add consensus to data frame
-            df = pd.concat([df, pd.DataFrame(vcf_row, index=alleles)])
-        elif args.format == "alt":
-            with open(args.output, "a") as out:
-                out.write("%s\t2\t%s\n" % (report.sample, "\t".join(alleles)))
-
-    if args.format == "vcf":
-        with open(args.output, "w") as vcf:
-            vcf.write(VCF_HEADER)
-
-        df.fillna("0|0:0:1,0,0", inplace=True)
-        df.sort_index(inplace=True)
-        df.to_csv(args.output, sep="\t", mode="a", index=False)
+        with open(args.output, "a") as out:
+            out.write("%s\t2\t%s\n" % (report.sample, "\t".join(alleles)))
 
 
 def pairwise(iterable):
@@ -210,7 +152,7 @@ class Allele:
 
     def __eq__(self, allele_b: "Allele"):
         return self.compare(allele_b) == ComparisonResult.EQUAL
-    
+
     def __hash__(self):
         return hash(str(self))
 
@@ -281,19 +223,21 @@ class ConsensusAlgorithm:
 
             self.consensus[gene] = allele_cluster
 
-    def correct_homozygous_calls(self):
+        self.correct_homozygous_calls(self.consensus)
+
+    def correct_homozygous_calls(self, consensus: dict):
         """Go over alleles and correct zygosity. e.i. if there is only one allele,
         the allele will be duplicated. If there is more than two, the allele list
         will be truncated. If the list is empty, it will return NA"""
-        for gene in self.consensus:
-            n_alleles = len(self.consensus[gene])
+        for gene in consensus:
+            n_alleles = len(consensus[gene])
 
             if n_alleles > 2:
-                self.consensus[gene] = self.consensus[gene][:2]
+                consensus[gene] = consensus[gene][:2]
             elif n_alleles == 1:
-                self.consensus[gene] = self.consensus[gene] * 2
+                consensus[gene] = consensus[gene] * 2
             elif n_alleles == 0:
-                self.consensus[gene] = ["NA", "NA"]
+                consensus[gene] = ["NA", "NA"]
 
     def find_matching_allele(
         self, allele: Allele, allele_list: list["AlleleWithEvidence"]
@@ -320,4 +264,3 @@ class ConsensusAlgorithm:
 
         def add_evidence(self, allele: Allele) -> None:
             self.evidence.append(allele)
-
