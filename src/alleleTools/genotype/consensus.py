@@ -106,6 +106,63 @@ def call_function(args):
         df.to_csv(args.output, sep="\t", mode="a", index=False)
 
 
+def pairwise(iterable):
+    """
+    Iterate over a list in a pairwise manner:
+        pairwise('ABCDEFG') → AB BC CD DE EF FG
+    """
+
+    iterator = iter(iterable)
+    a = next(iterator, None)
+
+    for b in iterator:
+        yield a, b
+        a = b
+
+
+def get_allele_pair(alleles: List[str], resolution) -> List["Allele"]:
+    """Gets a list of alleles in str and returns a list of two
+    Allele objects with the desired resolution"""
+    parsed_alleles = list()
+    alleles.sort()
+    for allele in alleles:
+        try:
+            parsed_allele = Allele(allele)
+            parsed_alleles.append(parsed_allele)
+        except Exception as e:
+            pass
+
+    ##############################################################
+    # Hisat specific section:
+    # Given that Hisat returns a list of most abundant alleles,
+    # this sections trys to use the ranking to come up with the
+    # highest resolution and most abundant alleles
+    ##############################################################
+
+    # Check the abundance of alleles and discard if more than two
+    pair = list()
+    for pair in pairwise(parsed_alleles):
+        abundance = 0
+        for allele in pair:
+            abundance += allele.confidence if hasattr(allele, "confidence") else 0.5
+        resolution_is_met = all([len(a) > resolution for a in pair])
+
+        if abundance > 0.90 and resolution_is_met:
+            break
+
+    ##############################################################
+    # End of Hisat specific section
+    ##############################################################
+
+    # truncate the alleles to the desired resolution
+    for allele in pair:
+        allele.truncate(resolution)
+
+    assert len(pair) <= 2, "More than two alleles found in call"
+
+    return pair[:2]  # Return only the first two alleles, if any
+
+
 class ComparisonResult(Enum):
     """Codes for comparison of alleles"""
 
@@ -118,7 +175,7 @@ class ComparisonResult(Enum):
 class Allele:
     """Class to represent alleles"""
 
-    def __init__(self, program_name: str, code: str) -> None:
+    def __init__(self, code: str) -> None:
         if not code:
             raise Exception("No allele to parse")
 
@@ -135,15 +192,36 @@ class Allele:
         allele_code = allele_pattern.group(0)
         self.gene, fields = allele_code.split("*")
         self.fields = fields.split(":")
-        self.program_name = program_name
 
     def __repr__(self) -> str:
         if not hasattr(self, "gene"):
             return ""
-        # return f"({len(self.fields)}-fields){self.gene}*{':'.join(self.fields)}"
+        return f"({len(self.fields)}-fields){self.gene}*{':'.join(self.fields)}"
+
+    def __str__(self) -> str:
+        """String representation of the allele"""
+        if not hasattr(self, "gene"):
+            return ""
         return f"{self.gene}*{':'.join(self.fields)}"
 
+    def __len__(self) -> int:
+        """Returns the resolution of the allele in n-fields"""
+        return len(self.fields)
+
+    def __eq__(self, allele_b: "Allele"):
+        return self.compare(allele_b) == ComparisonResult.EQUAL
+    
+    def __hash__(self):
+        return hash(str(self))
+
+    def truncate(self, new_resolution: int):
+        """Reduce the resolution of the allele"""
+        if new_resolution > len(self):
+            return
+        self.fields = self.fields[:new_resolution]
+
     def compare(self, allele: "Allele") -> ComparisonResult:
+        """Compares this allele to another. Check if they are equal, not equal, or if one has more resolution than the other."""
         # Check that it belongs to the same gene
         if self.gene != allele.gene:
             return ComparisonResult.NOT_EQUAL
@@ -163,51 +241,50 @@ class Allele:
 
 
 class Report:
-    def __init__(self, report: dict) -> None:
+    def __init__(self, report: dict, resolution: int = 2) -> None:
+        self.resolution = resolution  # desired resolution in fields
         calls = report["calls"]
         self.sample = report["sample"]
         self.genes = dict()
+
         for gene, call in calls.items():
             self.genes[gene] = self.parse_call(call)
 
-    def parse_call(self, call: dict) -> list[Allele]:
-        alleles = list()
+    def parse_call(self, call: dict) -> dict[Allele]:
+        alleles_by_alg = dict()
 
-        for algorithm, called_alleles in call.items():
-            for allele in called_alleles:
-                try:
-                    allele = Allele(algorithm, allele)
-                    alleles.append(allele)
-                except Exception as e:
-                    print(f"Error parsing allele {allele} from {algorithm} algorithm")
-                    print("\t%s" % e)
-                    pass
-        return alleles
+        for algorithm, alleles in call.items():
+            two_alleles = get_allele_pair(alleles, self.resolution)
+            alleles_by_alg[algorithm] = two_alleles
+        return alleles_by_alg
 
 
 class ConsensusAlgorithm:
-    def __init__(self, calls: Dict[str, List[Allele]]) -> None:
+    def __init__(self, calls: Dict[str, Dict[str, List[Allele]]]) -> None:
         self.consensus = dict()
 
         for gene, alleles in calls.items():
             allele_cluster = list()
 
             # Cluster similar alleles
-            for call in alleles:
-                match = self.find_matching_allele(call, allele_cluster)
+            for call in alleles.values():
+                for allele in call:
+                    match = self.find_matching_allele(allele, allele_cluster)
 
-                if not match:
-                    allele_cluster.append(self.Consensus(call))
-                else:
-                    match.add_evidence(call)
+                    if not match:
+                        allele_cluster.append(self.AlleleWithEvidence(allele))
+                    else:
+                        match.add_evidence(allele)
 
-                    if match.compare(call) == ComparisonResult.MORE_RESOLUTION:
-                        match.fields = call.fields
+                        if match.compare(allele) == ComparisonResult.MORE_RESOLUTION:
+                            match.fields = allele.fields
 
             self.consensus[gene] = allele_cluster
 
     def correct_homozygous_calls(self):
-        """Go over alleles and correct homozygosity"""
+        """Go over alleles and correct zygosity. e.i. if there is only one allele,
+        the allele will be duplicated. If there is more than two, the allele list
+        will be truncated. If the list is empty, it will return NA"""
         for gene in self.consensus:
             n_alleles = len(self.consensus[gene])
 
@@ -218,7 +295,9 @@ class ConsensusAlgorithm:
             elif n_alleles == 0:
                 self.consensus[gene] = ["NA", "NA"]
 
-    def find_matching_allele(self, allele: Allele, allele_list: list["Consensus"]) -> "Consensus":
+    def find_matching_allele(
+        self, allele: Allele, allele_list: list["AlleleWithEvidence"]
+    ) -> "AlleleWithEvidence":
         """Finds a matching allele in the consensus"""
         for a in allele_list:
             result = a.compare(allele)
@@ -229,19 +308,16 @@ class ConsensusAlgorithm:
     def get_flat_alleles(self) -> list[str]:
         return [str(c) for gene in self.consensus for c in self.consensus[gene]]
 
-    class Consensus:
-        def __init__(self, new: Allele) -> None:
-            self.main_allele = new
-            self.evidence = [new]
+    class AlleleWithEvidence(Allele):
+        def __init__(self, allele: Allele) -> None:
+            # Make a copy of the allele's attributes
+            self.gene = allele.gene
+            self.fields = allele.fields
+            if hasattr(allele, "confidence"):
+                self.confidence = allele.confidence
 
-        def __repr__(self) -> str:
-            return str(self.main_allele)
-            # return f"{self.main_allele} ({len(self.evidence)})"
-        
+            self.evidence = [allele]
+
         def add_evidence(self, allele: Allele) -> None:
             self.evidence.append(allele)
-        
-        def compare(self, allele: Allele) -> ComparisonResult:
-            return self.main_allele.compare(allele)
-
 
