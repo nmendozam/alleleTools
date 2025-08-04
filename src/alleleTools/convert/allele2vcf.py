@@ -1,5 +1,7 @@
 import pandas as pd
 
+from alleleTools.argtypes import file_path
+
 
 def setup_parser(subparsers):
     parser = subparsers.add_parser(
@@ -14,7 +16,7 @@ def setup_parser(subparsers):
     )
     parser.add_argument(
         "--loci_file",
-        type=str,
+        type=file_path,
         help="path to the file with gene loci information, alternatively you could specify --gene_cluster",
     )
     parser.add_argument(
@@ -24,7 +26,7 @@ def setup_parser(subparsers):
     )
     parser.add_argument(
         "--vcf",
-        type=str,
+        type=file_path,
         help="VCF file to append the alleles to",
         default="file.vcf",
         required=True,

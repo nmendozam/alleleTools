@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from ..argtypes import file_path
+from ..argtypes import file_path, output_path
 
 
 def setup_parser(subparsers):
@@ -21,7 +21,7 @@ def setup_parser(subparsers):
     )
     parser.add_argument(
         "--output",
-        type=str,
+        type=output_path,
         help="name of the output image file generated",
         default="pleiotropy.svg"
     )

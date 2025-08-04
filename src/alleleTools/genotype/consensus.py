@@ -4,6 +4,8 @@ import re
 from enum import Enum
 from typing import Dict, List
 
+from alleleTools.argtypes import output_path
+
 
 def setup_parser(subparsers):
     parser = subparsers.add_parser(
@@ -21,7 +23,7 @@ def setup_parser(subparsers):
     parser.add_argument(
         "--output",
         metavar="path",
-        type=str,
+        type=output_path,
         help="Path to output file",
         default="output.alt",
     )

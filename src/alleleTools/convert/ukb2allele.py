@@ -3,7 +3,7 @@ import sys
 
 import pandas as pd
 
-from ..argtypes import csv_file
+from ..argtypes import csv_file, output_path
 
 
 def setup_parser(subparsers):
@@ -26,7 +26,7 @@ def setup_parser(subparsers):
     )
     parser.add_argument(
         "--output",
-        type=str,
+        type=output_path,
         help="name of the output file",
         default="output.alt",
     )

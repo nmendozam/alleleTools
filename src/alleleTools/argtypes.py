@@ -9,6 +9,14 @@ def path(in_string:str):
 
     return in_string
 
+def output_path(in_string:str):
+    basepath = Path(in_string).parent
+    if not basepath.exists():
+        raise argparse.ArgumentTypeError(f"the directory {basepath} does not exist.")
+    elif os.path.isfile(in_string):
+        raise argparse.ArgumentTypeError(f"{in_string} already exists!")
+
+    return in_string
 
 def file_path(in_string:str):
     file = path(in_string) 

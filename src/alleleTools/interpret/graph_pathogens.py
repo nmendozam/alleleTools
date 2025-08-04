@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
+from alleleTools.argtypes import path
+
 from .iedb.epitope_query import organism_iris, query_mhc
 from .iedb.taxon_query import query_taxon_ids
 
@@ -48,7 +50,7 @@ def setup_parser(subparsers):
     )
     parser.add_argument(
         "--output_basename",
-        type=str,
+        type=path,
         help="Base name of the output files, since this command outputs multiple graphs.",
         default="output_graphs"
     )

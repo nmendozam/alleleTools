@@ -4,6 +4,8 @@ from typing import List
 
 import pandas as pd
 
+from alleleTools.argtypes import file_path, output_path
+
 """
 To generate the input file from the imputation run this command
 > bcftools view --include 'ID~"HLA"' IMPUTED.vcf > HLA.vcf
@@ -19,18 +21,18 @@ def setup_parser(subparsers):
     ## Input/output arguments
     parser.add_argument(
         "input",
-        type=str,
+        type=file_path,
         help="Input vcf file name",
     )
     parser.add_argument(
         "--phe",
-        type=str,
+        type=file_path,
         help="input phe file name (to add phenotype column)",
         default="",
     )
     parser.add_argument(
         "--output",
-        type=str,
+        type=output_path,
         help="name of the output file",
         default="output.alt",
     )
