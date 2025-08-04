@@ -83,26 +83,15 @@ def _convert_ukb_to_allele(input: pd.DataFrame, phenotype: pd.DataFrame, rm_phe_
     #%%
     # Expand alleles into individual columns and name them
     expanded = joint_alleles["Allele"].str.split(',', expand=True)
-    expanded.columns = ["A", "A_2", "B", "B_2", "C", "C_2", "DRB5", "DRB5_2", "DRB4", "DRB4_2", "DRB3", "DRB3_2", "DRB1", "DRB1_2", "DQB1", "DQB1_2", "DQA1", "DQA1_2", "DPB1", "DPB1_2", "DPA1", "DPA1_2"]
+    # get number of columns
+    num_cols = expanded.shape[1]
+    expanded.columns = ["A", "A_2", "B", "B_2", "C", "C_2", "DRB5", "DRB5_2", "DRB4", "DRB4_2", "DRB3", "DRB3_2", "DRB1", "DRB1_2", "DQB1", "DQB1_2", "DQA1", "DQA1_2", "DPB1", "DPB1_2", "DPA1", "DPA1_2"][0:num_cols]
     # Concatenate individual ID with alleles
     df_alleles = pd.concat([joint_alleles["eid"], expanded], axis=1)
 
 
     #%% Properly format allele names
-
-    # Now replace anything containing NA with just NA
-    df_formatting = df_alleles.replace(to_replace=r'.*_NA', value='NA', regex=True)
-    df_formatting = df_formatting.replace(to_replace=r'.*9901', value='NA', regex=True)
-    # Replace all _ with *
-    df_formatting = df_formatting.replace(to_replace=r'_', value='*', regex=True)
-    # Add : before the last 2 digits
-    df_formatting = df_formatting.replace(to_replace=r'([0-9]{2})\b', value=':\\1', regex=True)
-    # if there is less than 4 digits after the *, add a 0 at the beginning
-    df_formatted_alleles = df_formatting.replace(to_replace=r'\*([0-9]{1}):', value='*0\\1:', regex=True)
-    # Remove any spaces
-    df_formatted_alleles = df_formatted_alleles.replace(to_replace=r'\s', value='', regex=True)
-
-    df_formatted_alleles.head()
+    df_formatted_alleles = _format_allele_names(df_alleles)
 
     #%% Add the case-control values
     # Get the Pheno values from phenotype and assign it to a new column in df_formatted_alleles
@@ -118,8 +107,27 @@ def _convert_ukb_to_allele(input: pd.DataFrame, phenotype: pd.DataFrame, rm_phe_
 
     return df_case_control
 
+def _format_allele_names(expanded: pd.DataFrame) -> pd.DataFrame:
+    # Rename columns to the desired format
+    df = expanded.replace(to_replace=r'.*_NA', value='NA', regex=True)
+    df = df.replace(to_replace=r'.*9901', value='NA', regex=True)
+    df = df.fillna('NA')
+    # Replace all _ with *
+    df = df.replace(to_replace=r'_', value='*', regex=True)
+    # Add : before the last 2 digits
+    df = df.replace(to_replace=r'([0-9]{2})\b', value=':\\1', regex=True)
+    # if there is less than 4 digits after the *, add a 0 at the beginning
+    df = df.replace(to_replace=r'\*([0-9]{1}):', value='*0\\1:', regex=True)
+    # Remove any spaces
+    df = df.replace(to_replace=r'\s', value='', regex=True)
+    return df
+
 def _add_missing_alleles(row):
     alleles = row.split(",")
+
+    # Sort alleles
+    alleles.sort()
+
     checked_alleles = []
     # count how many duplicated genes there are
     current = alleles[0].split("_")[0]
@@ -139,6 +147,6 @@ def _add_missing_alleles(row):
 
     # If the last gene has less than 2 alleles, add NA
     if len(checked_alleles)%2 != 0:
-        checked_alleles.append("NA")
+        checked_alleles.append(current + "_NA")
 
     return ",".join(checked_alleles)
