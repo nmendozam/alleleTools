@@ -5,6 +5,7 @@ from typing import List
 import pandas as pd
 
 from alleleTools.argtypes import file_path, output_path
+from alleleTools.convert.vcf import VCF
 
 """
 To generate the input file from the imputation run this command
@@ -50,7 +51,7 @@ def setup_parser(subparsers):
         default="*",
     )
     parser.add_argument(
-        "--extensive",
+        "--extensive_search",
         type=bool,
         help="when no allele is imputed, look for the next most likely alleles",
         default=False,
@@ -75,8 +76,16 @@ def setup_parser(subparsers):
 
 
 def call_function(args):
-    genotypes, format = _read_vcf(args.input, args.rm_prefix)
-    true_alleles = _get_true_alleles(genotypes, format, args.extensive, args.separator)
+    vcf = VCF(args.input)
+    vcf.remove_id_prefix(args.rm_prefix)
+    format = vcf.get_format()
+
+    # Get table with only samples as columns
+    genotypes = vcf.samples_dataframe()
+
+    true_alleles = _get_true_alleles(
+        genotypes, format, args.extensive_search, args.separator
+    )
     # sort the columns
     true_alleles = true_alleles.reindex(sorted(true_alleles.columns), axis=1)
 
@@ -105,44 +114,11 @@ def call_function(args):
     )
 
 
-def _read_vcf(file_name, prefix):
-    """
-    This takes a vcf file data frame and returns
-    a table were the row indexes are the allele names
-    and the column names are the sample names
-    """
-    last_pos = 0
-    with open(file_name, "r") as f:
-        # Skip the header
-        while True:
-            line = f.readline()
-            if line.startswith("#CHROM"):
-                break
-            last_pos = f.tell()
-        # Read the rest of the file
-        f.seek(last_pos)
-        df = pd.read_csv(f, sep="\t", on_bad_lines="warn")
-        # Use alleles as index
-        df["ID"] = df["ID"].str.replace(prefix, "")
-        df.set_index("ID", inplace=True)
-
-        # Get the format ofeeach allele
-        format = df["FORMAT"].str.split(":", expand=True).iloc[0].tolist()
-
-        # Drop non sample columns
-        df.drop(
-            ["#CHROM", "POS", "REF", "ALT", "QUAL", "FILTER", "INFO", "FORMAT"],
-            axis=1,
-            inplace=True,
-        )
-        return df, format
-
-
-class AlleleList:
+class VCFalleles:
     def __init__(self, alleles: pd.DataFrame, formats: pd.DataFrame) -> None:
         self.df = self._parse_vcf_info(alleles, formats)
 
-        self.df["is_homozygous"] = self.df.GT.str.contains("1\|1")
+        self.df["is_homozygous"] = self.df.GT.str.contains(r"1\|1")
 
         genes = self._get_genes(self.df.index)
         self.df = self.df.set_index([genes, self.df.index]).rename_axis(
@@ -191,9 +167,9 @@ class AlleleList:
 
     # enum of filter to get alleles by ploidy
     class _ploidy_filter(Enum):
-        HOMOZYGOUS = (True, "1\|1")
-        HETEROZYGOUS = (False, "0\|0")
-        UNCERTAIN = (True, "0\|0")
+        HOMOZYGOUS = (True, r"1\|1")
+        HETEROZYGOUS = (False, r"0\|0")
+        UNCERTAIN = (True, r"0\|0")
 
     def _get_ploidy_alleles(
         self, alleles: pd.DataFrame, filter: _ploidy_filter, n: int = 1
@@ -281,10 +257,10 @@ def _get_true_alleles(genotypes, format, extensive=False, allele_separator="*"):
     for sample in genotypes.columns:
         # Get the list of alleles for that column(sample)
         alleles = genotypes.loc[
-            ~genotypes[sample].str.contains("0\|0:0:1,0,0", na=False), sample
+            ~genotypes[sample].str.contains(r"0\|0:0:1,0,0", na=False), sample
         ]
 
-        allele_list = AlleleList(alleles, format).sort_and_fill(extensive)
+        allele_list = VCFalleles(alleles, format).sort_and_fill(extensive)
 
         # Separate allele from gene name
         genes, alleles = (list(), list())

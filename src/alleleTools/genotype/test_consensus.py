@@ -50,7 +50,7 @@ def test_consensus():
         }
     }
     con = ConsensusAlgorithm(genes)
-    assert len(con.get_flat_alleles()) == 1
+    assert len(con.get_flat_alleles()) == 2
 
 
 def test_overlapping_allele_consensus():

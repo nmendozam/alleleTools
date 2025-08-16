@@ -1,6 +1,6 @@
 import argparse
 
-from . import convert, genotype, refactor, interpret
+from . import convert, genotype, interpret, refactor
 
 
 def main():
