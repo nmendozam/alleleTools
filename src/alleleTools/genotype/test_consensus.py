@@ -1,4 +1,4 @@
-from .consensus import (Allele, ComparisonResult, ConsensusAlgorithm, Report,
+from .consensus import (Allele, CmpResult, ConsensusAlgorithm, Report,
                         get_allele_pair)
 
 
@@ -18,12 +18,12 @@ def test_comparison_results():
     a1 = Allele("A*02:01")
     a2 = Allele("A*02:01:01:01")
 
-    assert a1.compare(a2) == ComparisonResult.MORE_RESOLUTION
-    assert a2.compare(a1) == ComparisonResult.LESS_RESOLUTION
-    assert a1.compare(a1) == ComparisonResult.EQUAL
+    assert a1.compare(a2) == CmpResult.MORE_RESOLUTION
+    assert a2.compare(a1) == CmpResult.LESS_RESOLUTION
+    assert a1.compare(a1) == CmpResult.EQUAL
 
     a3 = Allele("B*02:01:01:01")
-    assert a1.compare(a3) == ComparisonResult.NOT_EQUAL
+    assert a1.compare(a3) == CmpResult.NOT_EQUAL
 
 
 def test_allele_parsing():
@@ -44,12 +44,19 @@ def test_allele_parsing_no_allele():
 
 
 def test_consensus():
-    genes = {
-        "A": {
-            "alg": [Allele("A*02:01"), Allele("A*02:01:01:01")],
+    report = [
+        {
+            "gene": "A",
+            "program": "alg1",
+            "allele": Allele("A*02:01"),
+        },
+        {
+            "gene": "A",
+            "program": "alg2",
+            "allele": Allele("A*02:01:01:01"),
         }
-    }
-    con = ConsensusAlgorithm(genes)
+    ]
+    con = ConsensusAlgorithm(report)
     assert len(con.get_flat_alleles()) == 2
 
 
@@ -63,7 +70,7 @@ def test_overlapping_allele_consensus():
     ]
     calls = make_report(allele_list)
     report = Report(calls, resolution=2)
-    con = ConsensusAlgorithm(report.genes)
+    con = ConsensusAlgorithm(report)
     print(con.get_flat_alleles())
     print(con.consensus)
     assert len(con.get_flat_alleles()) == 2
@@ -82,7 +89,7 @@ def test_allele_sorting():
         },
     }
     report = Report(calls)
-    consensus = ConsensusAlgorithm(report.genes)
+    consensus = ConsensusAlgorithm(report)
 
     alleles = consensus.get_flat_alleles()
     print(alleles)

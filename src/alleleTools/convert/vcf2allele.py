@@ -19,7 +19,7 @@ def setup_parser(subparsers):
         description="Convert vcf file to allele table",
         epilog="Author: Nicolás Mendoza Mejía (2023)",
     )
-    ## Input/output arguments
+    # Input/output arguments
     parser.add_argument(
         "input",
         type=file_path,
@@ -37,11 +37,14 @@ def setup_parser(subparsers):
         help="name of the output file",
         default="output.alt",
     )
-    ## Allele format arguments
+    # Allele format arguments
     parser.add_argument(
         "--rm-prefix",
         type=str,
-        help="removes prefix from allele names, usually its the gene name (KIR or HLA_)",
+        help="""
+        removes prefix from allele names, usually its the gene name
+        (KIR or HLA_)
+        """,
         default="HLA_",
     )
     parser.add_argument(
@@ -53,10 +56,12 @@ def setup_parser(subparsers):
     parser.add_argument(
         "--extensive_search",
         type=bool,
-        help="when no allele is imputed, look for the next most likely alleles",
+        help="""
+        when no allele is imputed, look for the next most likely alleles
+        """,
         default=False,
     )
-    ## Additional arguments
+    # Additional arguments
     parser.add_argument(
         "--output_header",
         action="store_true",
@@ -65,8 +70,10 @@ def setup_parser(subparsers):
     parser.add_argument(
         "--population",
         type=str,
-        help="""If this is set, a colum with the population will be added at the beginning.
-                This makes the output compatible with pyPop""",
+        help="""
+        If this is set, a colum with the population will be added at the
+        beginning. This makes the output compatible with pyPop.
+        """,
         default="",
     )
 
@@ -110,7 +117,11 @@ def call_function(args):
         )  # add population column at the beginning
 
     true_alleles.to_csv(
-        args.output, sep="\t", index=False, na_rep="NA", header=args.output_header
+        args.output,
+        sep="\t",
+        index=False,
+        na_rep="NA",
+        header=args.output_header
     )
 
 
@@ -250,7 +261,11 @@ class VCFalleles:
         return results
 
 
-def _get_true_alleles(genotypes, format, extensive=False, allele_separator="*"):
+def _get_true_alleles(genotypes,
+                      format,
+                      extensive=False,
+                      allele_separator="*"
+                      ):
     df = pd.DataFrame()
     ignored_samples = defaultdict(lambda: 0)
     last_ignored_allele = ""
@@ -293,9 +308,12 @@ def _get_true_alleles(genotypes, format, extensive=False, allele_separator="*"):
 
     if len(ignored_samples) > 0:
         print(
-            f"Warning: A total of {len(ignored_samples)} samples had ignored alleles."
-            "This may be due to a separator not matching the allele names, try changing the --separator argument."
-            f"For example, the last ignored allele was '{last_ignored_allele}',"
-            f" but the expected --separator was '{allele_separator}'"
+            f"""
+            Warning: A total of {len(ignored_samples)} samples had ignored
+            alleles. This may be due to a separator not matching the allele
+            names, try changing the --separator argument. For example, the last
+            ignored allele was '{last_ignored_allele}', but the expected
+            --separator was '{allele_separator}'
+            """
         )
     return df

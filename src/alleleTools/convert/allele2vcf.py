@@ -17,12 +17,18 @@ def setup_parser(subparsers):
     parser.add_argument(
         "--loci_file",
         type=file_path,
-        help="path to the file with gene loci information, alternatively you could specify --gene_cluster",
+        help="""
+        path to the file with gene loci information, alternatively you could
+        specify --gene_cluster
+        """,
     )
     parser.add_argument(
         "--gene_cluster",
         type=str,
-        help="name of the gene cluster (hla or kir), alternatively you could provide a --loci_file",
+        help="""
+        name of the gene cluster (hla or kir), alternatively you could provide
+        a --loci_file
+        """,
     )
     parser.add_argument(
         "--vcf",
@@ -53,12 +59,11 @@ def call_function(args):
     genotypes = pd.read_csv(args.input, sep=args.field_separator)
 
     pairs = _gene_pairs(genotypes.columns)
-    genes = [item for t in pairs for item in t]
 
     # By this point we have the vcf file without the leading columns.
-    # First we pivot the table to have the samples as columns and the alleles as rows.
-    # Then we merge both gene alleles into a single row by applying the diploid_notation function.
-    # e.g.:
+    # First we pivot the table to have the samples as columns and the alleles
+    # as rows. Then we merge both gene alleles into a single row by applying
+    # the diploid_notation function. e.g.:
     # ID  SAMPLE_ID ...
     pre_vcf_alleles = pd.DataFrame()
     for pair in pairs:
@@ -81,8 +86,10 @@ def call_function(args):
     # CHROM  POS ID  REF  ALT  QUAL  FILTER  INFO  FORMAT  SAMPLE_ID. ...
     gene_loci = pd.read_csv(args.loci_file, sep="\t")
     # column start has chr:pos, divide that into two columns.
-    gene_loci[["CHROM", "POS"]] = gene_loci["start"].str.split(":", expand=True)
-    # cross gene from pre_vcf_alleles with gene_loci to get the position of each allele.
+    gene_loci[["CHROM", "POS"]] = gene_loci["start"].str.split(
+        ":", expand=True)
+    # cross gene from pre_vcf_alleles with gene_loci to get the position of
+    # each allele.
     vcf_alleles = pre_vcf_alleles.merge(gene_loci, how="left", on="gene")
     vcf_alleles = vcf_alleles[vcf_alleles["POS"].notna()]
     vcf_alleles = vcf_alleles.assign(

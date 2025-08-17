@@ -1,6 +1,7 @@
 import argparse
 import json
 import re
+from collections import defaultdict
 from enum import Enum
 from typing import Dict, List
 
@@ -10,7 +11,9 @@ from alleleTools.argtypes import output_path
 def setup_parser(subparsers):
     parser = subparsers.add_parser(
         name="consensus",
-        description="This program finds a consensus between multiple HLA genotyping reports",
+        description="""
+        This program finds a consensus between multiple HLA genotyping reports
+        """,
         epilog="Author: Nicolás Mendoza Mejía (2023)",
     )
     parser.add_argument(
@@ -39,7 +42,7 @@ def call_function(args):
 
         report = Report(json_report, resolution=2)
 
-        consensus = ConsensusAlgorithm(report.genes)
+        consensus = ConsensusAlgorithm(report)
         alleles = consensus.get_flat_alleles()
 
         ##########################
@@ -74,6 +77,8 @@ def get_allele_pair(alleles: List[str], resolution) -> List["Allele"]:
             parsed_allele = Allele(allele)
             parsed_alleles.append(parsed_allele)
         except Exception as e:
+            print(f"Error: exeption {e}")
+            print(f"The allele {allele} was not parsed")
             pass
 
     ##############################################################
@@ -88,7 +93,8 @@ def get_allele_pair(alleles: List[str], resolution) -> List["Allele"]:
     for pair in pairwise(parsed_alleles):
         abundance = 0
         for allele in pair:
-            abundance += allele.confidence if hasattr(allele, "confidence") else 0.5
+            abundance += allele.confidence if hasattr(
+                allele, "confidence") else 0.5
         resolution_is_met = all([len(a) > resolution for a in pair])
 
         if abundance > 0.90 and resolution_is_met:
@@ -107,7 +113,7 @@ def get_allele_pair(alleles: List[str], resolution) -> List["Allele"]:
     return pair[:2]  # Return only the first two alleles, if any
 
 
-class ComparisonResult(Enum):
+class CmpResult(Enum):
     """Codes for comparison of alleles"""
 
     NOT_EQUAL = 1
@@ -139,8 +145,8 @@ class Allele:
 
     def __repr__(self) -> str:
         if not hasattr(self, "gene"):
-            return ""
-        return f"({len(self.fields)}-fields){self.gene}*{':'.join(self.fields)}"
+            return "<Empty Allele>"
+        return f"""({len(self.fields)}-fields){str(self)}"""
 
     def __str__(self) -> str:
         """String representation of the allele"""
@@ -153,7 +159,7 @@ class Allele:
         return len(self.fields)
 
     def __eq__(self, allele_b: "Allele"):
-        return self.compare(allele_b) == ComparisonResult.EQUAL
+        return self.compare(allele_b) == CmpResult.EQUAL
 
     def __hash__(self):
         return hash(str(self))
@@ -164,24 +170,27 @@ class Allele:
             return
         self.fields = self.fields[:new_resolution]
 
-    def compare(self, allele: "Allele") -> ComparisonResult:
-        """Compares this allele to another. Check if they are equal, not equal, or if one has more resolution than the other."""
+    def compare(self, allele: "Allele") -> CmpResult:
+        """
+        Compares this allele to another. Check if they are equal, not equal,
+        or if one has more resolution than the other.
+        """
         # Check that it belongs to the same gene
         if self.gene != allele.gene:
-            return ComparisonResult.NOT_EQUAL
+            return CmpResult.NOT_EQUAL
 
         # Compare each field
         for s_field, a_field in zip(self.fields, allele.fields):
             if s_field != a_field:
-                return ComparisonResult.NOT_EQUAL
+                return CmpResult.NOT_EQUAL
 
         # Check differences in resolution
         if len(self.fields) > len(allele.fields):
-            return ComparisonResult.LESS_RESOLUTION
+            return CmpResult.LESS_RESOLUTION
         elif len(self.fields) < len(allele.fields):
-            return ComparisonResult.MORE_RESOLUTION
+            return CmpResult.MORE_RESOLUTION
 
-        return ComparisonResult.EQUAL
+        return CmpResult.EQUAL
 
 
 class Report:
@@ -201,36 +210,46 @@ class Report:
             two_alleles = get_allele_pair(alleles, self.resolution)
             alleles_by_alg[algorithm] = two_alleles
         return alleles_by_alg
+    
+    def __iter__(self):
+        for gene, prog_calls in self.genes.items():
+            for program, calls in prog_calls.items():
+                for allele in calls:
+                    yield {
+                        "gene": gene,
+                        "program": program,
+                        "allele": allele
+                    }
+
 
 
 class ConsensusAlgorithm:
-    def __init__(self, calls: Dict[str, Dict[str, List[Allele]]]) -> None:
-        self.consensus = dict()
+    def __init__(self, calls: Report) -> None:
+        self.consensus = defaultdict(list)
 
-        for gene, alleles in calls.items():
-            allele_cluster = list()
+        for report in calls:
+            allele = report["allele"]
+            gene = report["gene"]
+            allele_cluster = self.consensus[gene]
+            match = self.find_matching_allele(allele, allele_cluster)
 
-            # Cluster similar alleles
-            for call in alleles.values():
-                for allele in call:
-                    match = self.find_matching_allele(allele, allele_cluster)
+            if not match:
+                allele_cluster.append(self.AlleleWithEvidence(allele))
+            else:
+                match.add_evidence(allele)
 
-                    if not match:
-                        allele_cluster.append(self.AlleleWithEvidence(allele))
-                    else:
-                        match.add_evidence(allele)
-
-                        if match.compare(allele) == ComparisonResult.MORE_RESOLUTION:
-                            match.fields = allele.fields
-
-            self.consensus[gene] = allele_cluster
+                if match.compare(allele) == CmpResult.MORE_RESOLUTION:
+                    match.fields = allele.fields
 
         self.correct_homozygous_calls(self.consensus)
 
     def correct_homozygous_calls(self, consensus: dict):
-        """Go over alleles and correct zygosity. e.i. if there is only one allele,
-        the allele will be duplicated. If there is more than two, the allele list
-        will be truncated. If the list is empty, it will return NA"""
+        """
+        Go over alleles and correct zygosity. e.i. if there is only one
+        allele, the allele will be duplicated. If there is more than two,
+        the allele list will be truncated. If the list is empty, it will
+        return NA
+        """
         for gene in consensus:
             n_alleles = len(consensus[gene])
 
@@ -247,7 +266,7 @@ class ConsensusAlgorithm:
         """Finds a matching allele in the consensus"""
         for a in allele_list:
             result = a.compare(allele)
-            if result != ComparisonResult.NOT_EQUAL:
+            if result != CmpResult.NOT_EQUAL:
                 return a
         return None
 

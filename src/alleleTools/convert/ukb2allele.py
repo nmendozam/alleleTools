@@ -1,6 +1,3 @@
-# %%
-import sys
-
 import pandas as pd
 
 from ..argtypes import csv_file, output_path
@@ -12,7 +9,7 @@ def setup_parser(subparsers):
         description="Convert UK Biobank HLA data to allele table format",
         epilog="Author: Nicolás Mendoza Mejía (2025)",
     )
-    ## Input/output arguments
+    # Input/output arguments
     parser.add_argument(
         "input",
         type=csv_file,
@@ -21,7 +18,11 @@ def setup_parser(subparsers):
     parser.add_argument(
         "--phenotype",
         type=csv_file,
-        help="ssv file with 6 columns: eid, fid, ... , Sex, Pheno. No headers and space separated. The column Pheno (last column) will be included as phenotype in the output file",
+        help="""
+        ssv file with 6 columns: eid, fid, ... , Sex, Pheno. No headers and
+        space separated. The column Pheno (last column) will be included as
+        phenotype in the output file.
+        """,
         required=True,
     )
     parser.add_argument(
@@ -30,7 +31,7 @@ def setup_parser(subparsers):
         help="name of the output file",
         default="output.alt",
     )
-    ## Additional arguments
+    # Additional arguments
     parser.add_argument(
         "--remove_pheno_zero",
         action="store_true",
@@ -63,23 +64,30 @@ def __get_list_of_genes(df: pd.DataFrame) -> list:
     return df.columns.map(lambda x: x.split("_")[0]).unique().tolist()
 
 
-def __filter_alleles(
-    df: pd.DataFrame, min_probability: float = 0.7, homo_thr: float = 1.4
+def __evaluate_abundance(
+    df: pd.DataFrame, min_abundance: float = 0.7, homo_thr: float = 1.4
 ) -> pd.DataFrame:
     """
-    Filters alleles based on their probability. The UK Biobank recommends filtering out alleles with less than 70% probability. Aleles with a probability greater than 1.4 are considered homozygous and duplicated in the output.
+    Filters alleles based on their abundance by masking them as NA. The UK
+    Biobank recommends filtering out alleles with less than 70%
+    probability/abundance. Alleles with a probability greater than 2x
+    min_abundance (1.4) are considered homozygous and duplicated in the output.
     - df = dataframe with the allele table
     - min_probability = minimum probability threshold
-    - homo_thr = homozygous threshold
+    - homo_thr = abundance threshold to consider an allele homozygous
     """
     # Get only values with non-zero probability
     df_filtered = df[df["Presence"] > 0]
-    # Filter out alleles with less than 70% probability as recommended by UKB
-    df_filtered.loc[
-        df_filtered["Presence"] <= min_probability, "Allele"
-    ] = df_filtered.loc[df_filtered["Presence"] <= min_probability, "Allele"].apply(
-        lambda x: x.split("_")[0] + "_NA"
-    )
+
+    # Mask as NA alleles with less than 70% probability as recommended by UKB
+    low_prob_mask = df_filtered["Presence"] <= min_abundance
+
+    def na_mask(x):
+        return x.split("_")[0] + "_NA"
+
+    masked = df_filtered.loc[low_prob_mask, "Allele"].apply(na_mask)
+    df_filtered.loc[low_prob_mask, "Allele"] = masked
+
     # Duplicate homozygous alleles
     df_filtered.loc[df_filtered["Presence"] > homo_thr, "Allele"] = (
         df_filtered.loc[df_filtered["Presence"] > homo_thr, "Allele"]
@@ -90,15 +98,22 @@ def __filter_alleles(
     return df_filtered
 
 
-def __assign_genes(str):
-    alleles = dict()
-    for allele in str.split(","):
-        locus = allele.split("_")[0]
-        if locus in alleles.keys():
-            locus += "_2"
-        alleles[locus] = allele
+def __by_gene(df: pd.DataFrame):
+    def __assign_genes(str: str):
+        alleles = dict()
+        for allele in str.split(","):
+            locus = allele.split("_")[0]
+            if locus in alleles.keys():
+                locus += "_2"
+            alleles[locus] = allele
 
-    return pd.Series(alleles.values(), index=alleles.keys())
+        return pd.Series(alleles.values(), index=alleles.keys())
+
+    # Organize alleles by gene name (eid is lost here)
+    expanded = df.Allele.apply(__assign_genes)
+
+    # Integrate sample id again
+    return pd.concat([df["eid"], expanded], axis=1)
 
 
 def _convert_ukb_to_allele(
@@ -108,36 +123,33 @@ def _convert_ukb_to_allele(
         id_vars="eid", var_name="Allele", value_name="Presence"
     )
 
-    # Filter rows where the allele is present
-    df_filtered = __filter_alleles(df_melted)
+    # Filter rows based on abundance
+    df_filtered = __evaluate_abundance(
+        df_melted, min_abundance=0.7, homo_thr=1.4
+    )
 
     # Joint allele names from each individual
-    joint_alleles = df_filtered.groupby("eid")["Allele"].apply(",".join).reset_index()
+    id_grouped = df_filtered.groupby("eid")
+    csv_alleles = id_grouped["Allele"].apply(",".join).reset_index()
 
     # Fills in the gaps of missing alleles
-    joint_alleles["Allele"] = joint_alleles["Allele"].apply(_na_missing_alleles)
+    csv_alleles["Allele"] = csv_alleles["Allele"].apply(_na_missing_alleles)
 
-    # Reshape the table
-    expanded = joint_alleles.Allele.apply(__assign_genes)
+    # Create allele table
+    allele_table = __by_gene(csv_alleles)
+    allele_table = __format_allele_names(allele_table)
 
-    # Concatenate individual ID with alleles
-    df_alleles = pd.concat([joint_alleles["eid"], expanded], axis=1)
-
-    # Properly format allele names
-    df_formatted_alleles = _format_allele_names(df_alleles)
-
-    # Add the case-control values
-    # Get the Pheno values from phenotype and assign it to a new column in df_formatted_alleles
-    df_case_control = df_formatted_alleles.merge(
+    # Add the case-control values.
+    df_case_control = allele_table.merge(
         phenotype[["eid", "Pheno"]], on="eid", how="inner"
     )
 
     # place it on the second column
-    df_case_control = df_case_control[
-        ["eid", "Pheno"]
-        + [col for col in df_case_control.columns if col != "Pheno" and col != "eid"]
+    non_gene_col = ["eid", "Pheno"]
+    gene_columns = [
+        col for col in df_case_control.columns if col not in non_gene_col
     ]
-    df_case_control.head()
+    df_case_control = df_case_control[non_gene_col + gene_columns]
 
     # remove Pheno with 0
     if rm_phe_zero:
@@ -146,7 +158,7 @@ def _convert_ukb_to_allele(
     return df_case_control
 
 
-def _format_allele_names(expanded: pd.DataFrame) -> pd.DataFrame:
+def __format_allele_names(expanded: pd.DataFrame) -> pd.DataFrame:
     """
     Reformats allele names to the standard format:
     - A_101 becomes A*01:01

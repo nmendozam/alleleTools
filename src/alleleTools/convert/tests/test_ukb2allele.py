@@ -1,8 +1,10 @@
 import pandas as pd
 
-from alleleTools.convert.ukb2allele import (_convert_ukb_to_allele,
-                                            _format_allele_names,
-                                            _na_missing_alleles)
+from alleleTools.convert.ukb2allele import (
+    _convert_ukb_to_allele,
+    __format_allele_names,
+    _na_missing_alleles,
+)
 
 
 def test_convert_ukb_to_allele():
@@ -126,7 +128,7 @@ def test_allele_formatting():
         }
     )
 
-    formatted = _format_allele_names(df)
+    formatted = __format_allele_names(df)
 
     expected = {
         "A": ["A*01:01", "NA"],
