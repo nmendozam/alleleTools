@@ -1,6 +1,6 @@
 import pandas as pd
 
-from alleleTools.argtypes import file_path
+from ..argtypes import file_path
 
 
 def setup_parser(subparsers):

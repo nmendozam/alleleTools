@@ -1,6 +1,6 @@
 import pandas as pd
 
-from alleleTools.convert.ukb2allele import (
+from ..convert.ukb2allele import (
     _convert_ukb_to_allele,
     __format_allele_names,
     _na_missing_alleles,

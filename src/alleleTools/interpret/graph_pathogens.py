@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from alleleTools.argtypes import path
+from ..argtypes import path
 
 from .iedb.epitope_query import organism_iris, query_mhc
 from .iedb.taxon_query import query_taxon_ids
@@ -15,7 +15,7 @@ def setup_parser(subparsers):
         epilog="Author: Nicolás Mendoza Mejía (2025)",
     )
     parser.add_argument(
-        'email', 
+        'email',
         type=str,
         help='email required to get the tax ids from NCBI'
     )
@@ -59,6 +59,7 @@ def setup_parser(subparsers):
 
     return parser
 
+
 def call_function(args):
     # Query the IEDB API for a specific HLA allele
     data = query_mhc(
@@ -68,12 +69,15 @@ def call_function(args):
     )
 
     # Check which rows contain the NCBI IDs
-    contains_ncbi_id = data["source_organism_iri"].str.contains("NCBITaxon", case=False, na=False)
+    contains_ncbi_id = data["source_organism_iri"].str.contains(
+        "NCBITaxon", case=False, na=False)
 
     # Pre-process taxa id
     leading_id = "NCBITaxon:"
-    data["TaxId"] = data["source_organism_iri"].replace(leading_id, "", regex=True)
-    taxon_ids = data.loc[contains_ncbi_id,"TaxId"].dropna().unique().astype(int)
+    data["TaxId"] = data["source_organism_iri"].replace(
+        leading_id, "", regex=True)
+    taxon_ids = data.loc[contains_ncbi_id,
+                         "TaxId"].dropna().unique().astype(int)
     taxon_ids = map(str, taxon_ids)
 
     # Proceed to get the genus and family of each ncbi taxon id
@@ -81,10 +85,14 @@ def call_function(args):
 
     merged = data.merge(taxon_ranks, left_on="TaxId", right_on="TaxId")
 
-    graph_by_genus(merged, "Bacteria", f"{args.output_basename}_bacteria_genus.svg")
-    graph_by_genus(merged, "Viruses", f"{args.output_basename}_virus_genus.svg")
+    graph_by_genus(merged, "Bacteria",
+                   f"{args.output_basename}_bacteria_genus.svg")
+    graph_by_genus(merged, "Viruses",
+                   f"{args.output_basename}_virus_genus.svg")
 
 # %% Stacked plot by percentage
+
+
 def adjustFigAspect(fig, aspect=1):
     """
     Adjust the subplot parameters so that the figure has the correct
@@ -119,11 +127,11 @@ def graph_by_genus(data: pd.DataFrame, division: str, output_file: str):
     grouped = grouped[grouped.sum(axis=1) > 10]
 
     # sort by the sum of the columns
-    grouped = grouped.loc[grouped.sum(axis=1).sort_values(ascending=False).index]
+    grouped = grouped.loc[grouped.sum(
+        axis=1).sort_values(ascending=False).index]
 
     # normalize rows
     grouped = grouped.div(grouped.sum(axis=1), axis=0)
-
 
     # Filter qualitative values
     # expected_values = set([
@@ -140,7 +148,8 @@ def graph_by_genus(data: pd.DataFrame, division: str, output_file: str):
 
     # grouped = grouped.sort_index(axis=1)
 
-    grouped[["Negative", "Positive-Low"]] = grouped[["Negative", "Positive-Low"]] * -1
+    grouped[["Negative", "Positive-Low"]
+            ] = grouped[["Negative", "Positive-Low"]] * -1
 
     colors = ["#8b0000", "#f6655f", "#fdb966", "#97e692", "#069d59"]
     fig, ax = plt.subplots()
@@ -152,4 +161,3 @@ def graph_by_genus(data: pd.DataFrame, division: str, output_file: str):
     ax.autoscale(enable=True, axis="y", tight=True)
 
     plt.savefig(output_file, bbox_inches="tight")
-

@@ -1,4 +1,4 @@
-from alleleTools.convert.vcf2allele import VCF
+from ..convert.vcf2allele import VCF
 
 
 def test_read_vcf():

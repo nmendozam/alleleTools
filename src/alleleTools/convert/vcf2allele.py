@@ -4,8 +4,8 @@ from typing import List
 
 import pandas as pd
 
-from alleleTools.argtypes import file_path, output_path
-from alleleTools.convert.vcf import VCF
+from ..argtypes import file_path, output_path
+from ..convert.vcf import VCF
 
 """
 To generate the input file from the imputation run this command

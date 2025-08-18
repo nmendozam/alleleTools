@@ -5,7 +5,7 @@ from collections import defaultdict
 from enum import Enum
 from typing import Dict, List
 
-from alleleTools.argtypes import output_path
+from ..argtypes import output_path
 
 
 def setup_parser(subparsers):
@@ -210,7 +210,7 @@ class Report:
             two_alleles = get_allele_pair(alleles, self.resolution)
             alleles_by_alg[algorithm] = two_alleles
         return alleles_by_alg
-    
+
     def __iter__(self):
         for gene, prog_calls in self.genes.items():
             for program, calls in prog_calls.items():
@@ -220,7 +220,6 @@ class Report:
                         "program": program,
                         "allele": allele
                     }
-
 
 
 class ConsensusAlgorithm:
