@@ -1,4 +1,4 @@
-# <p align="center"> AlleleTools: gene agnostic tool set </p>
+# <p align="center"> Gene agnostic AlleleTools! </p>
 
 Working with alleles from highly polymorphic genes, like those in HLA and KIR clusters, is already hard enough! This repo is a collection of tools to facilitate your work on the manipulation and analysis of allele data sets.
 
@@ -7,6 +7,9 @@ The tools in this repo are sorted by category:
 1. genotype: a set of tools to facilitate the genotyping process.
 2. convert: a group commands that convert allele data between different file formats. Including vcf, csv and our own format .alt (from allele table). You could also convert from vcf to files compatible with [pyHLA](https://github.com/felixfan/PyHLA) and [PyPop](http://pypop.org/index.html).
 3. refactor: some commands to normalize allele resolutions and other useful refactoring.
+
+> [!WARNING]
+> This project is currently under development in alpha stage. Some things might break. If that is the case, please do not hesitate to file an issue ([clicking here](https://github.com/nmendozam/alleleTools/issues))
 
 ## Getting started
 
