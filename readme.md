@@ -1,47 +1,44 @@
+# <p align="center"> AlleleTools: gene agnostic tool set </p>
+
 Working with alleles from highly polymorphic genes, like those in HLA and KIR clusters, is already hard enough! This repo is a collection of tools to facilitate your work on the manipulation and analysis of allele data sets.
 
 The tools in this repo are sorted by category:
+
 1. genotype: a set of tools to facilitate the genotyping process.
 2. convert: a group commands that convert allele data between different file formats. Including vcf, csv and our own format .alt (from allele table). You could also convert from vcf to files compatible with [pyHLA](https://github.com/felixfan/PyHLA) and [PyPop](http://pypop.org/index.html).
 3. refactor: some commands to normalize allele resolutions and other useful refactoring.
 
-# Getting started
+## Getting started
+
 To install this package you can use pip:
 
 ```bash
 pip install pip@git+https://github.com/nmendozam/alleleTools.git
 ```
+
 It will install the `altools` command in your current environment. So, to execute a command you need to specify three things `altools [tool_category] [tool_name] [input]`.
-```
+
+```bash
 altools convert vcf2allele input.vcf
 ```
 
+## Usage
 
-# Usage
+### Table of Contents
 
-<!-- TABLE OF CONTENTS -->
 <details>
-    <summary style="font-size: 24px; font-weight: bold;">Table of Contents</summary>
-    <!-- Your content here -->
-    <ol>
-    <li><a href="#getting-started">Getting Started</a></li>
-    <li>
-      <a href="#usage">Usage</a>
-      <ul>
-        <li><a href="#convert-genotype-to-vcf">Convert Genotype to VCF</a></li>
-        <ul>
-            <li><a href="#genotype-file">Genotype file</a></li>
-            <li><a href="#gene-location-list">Gene Location List</a></li>
-            <li><a href="#template-vcf-file">Template VCF File</a></li>
-        </ul>
-        <li><a href="#convert-vcf-to-genotype-table">Convert VCF to Genotype Table</a></li>
-        <li><a href="#normalizing-allele-resolutions">Normalizing Allele Resolutions</a></li>
-      </ul>
-    </li>
-  </ol>
+    <summary>Click to expand</summary>
+    1. [Getting Started](#getting-started)
+    2. [Usage](#usage)
+        - [Convert Genotype to VCF](#convert-genotype-to-vcf)
+            - [Genotype file](#genotype-file)
+            - [Gene Location List](#gene-location-list)
+            - [Template VCF File](#template-vcf-file)
+        - [Convert VCF to Genotype Table](#convert-vcf-to-genotype-table)
+        - [Normalizing Allele Resolutions](#normalizing-allele-resolutions)
 </details>
 
-## Convert genotype to vcf
+### Convert genotype to vcf
 
 To convert a genotype file to vcf, you can use the command `allele2vcf`. It will append the genotyped alleles to a vcf file.
 
@@ -49,7 +46,7 @@ To convert a genotype file to vcf, you can use the command `allele2vcf`. It will
 altools convert allele2vcf resources/hla_diversity.txt --loci_file resources/gene_locations.tsv --vcf file_to_append_to.vcf
 ```
 
-### Genotype file
+#### Genotype file
 
 The input format is a tab-separated file, where the first column is the sample name and pairs of columns for each gene. The header gene name convention is "gene" + "gene.1". e.g.
 
@@ -58,7 +55,7 @@ The input format is a tab-separated file, where the first column is the sample n
 "sample1" "CEPH" "03:01" "02:01"
 ```
 
-### Gene location list
+#### Gene location list
 
 Additionally the script requires a list of gene locations. The file should be tab-separated with the following format:
 
@@ -70,7 +67,7 @@ HLA-A    6:29942554
 
 The first column is the gene name and the second column is (chromosome):(position). This position data can be found in [ensembl](https://www.ensembl.org/index.html) or [UCSC](https://genome.ucsc.edu/). The sample file used in this repo was obtained from a post in [IPD-IMGT](https://www.ebi.ac.uk/ipd/imgt/hla/help/genomics.html)
 
-### Template VCF file
+#### Template VCF file
 
 This is a file with the known SNPs and the header. The script will append the genotyped alleles to this file. The header should contain the gene names in the same format as the gene location list. You need to assure that the file contains ONLY the samples in the genotype file and no more. Otherwise the concatenated alleles won't match the header. To filter the samples you can use `bcftools`:
 
@@ -79,7 +76,7 @@ cut -d' ' -f1 resources/hla_diversity.txt | tail -n +2 | tr -d '"' |uniq > sampl
 bcftools view --force-samples -S samples_id.txt test.vcf > filtered.vcf
 ```
 
-## Convert vcf to genotype table
+### Convert vcf to genotype table
 
 Converting from vcf to a genotype table is also useful. For example when the alleles are imputed the output is a vcf file. To convert it to a genotype table you can use the command `vcf2alleles`. The vcf file should be filtered to contain only the HLA genes. You can use `bcftools` to do this. The script will output a .pyhla file that can be used with [pyHLA](https://github.com/felixfan/PyHLA) and [PyPop](http://pypop.org/index.html). The phenotype file is optional should follow the .phe format of plink files.
 
@@ -88,7 +85,7 @@ bcftools view --include 'ID~"HLA"' raw_imputed.vcf > only_hla.vcf
 altools convert vcf2alleles only_hla.vcf --phe input.phe --out output.pyhla
 ```
 
-## Normalizing allele resolutions
+### Normalizing allele resolutions
 
 This script normalizes allele resolutions to a uniform level of the input file, facilitating association analyses. It ensures that alleles, such as 01 and 01:01, which are essentially identical, are recognized as equal by renaming them for consistency.
 
@@ -113,7 +110,7 @@ If an output file name is not provided, it will be named `*.[resolution]fields.t
 bash src/alleleTools/refactor/allele_resolution.sh one file1.tsv file2.tsv
 ```
 
-## Consensus allele
+### Consensus allele
 
 This script is used to generate a consensus HLA genotype from the result of many
 HLA genotyping algorithms. It will generate a vcf file or an allele table.
