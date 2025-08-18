@@ -31,14 +31,16 @@ altools convert vcf2allele input.vcf
 
 <details>
     <summary>Click to expand</summary>
-    1. [Getting Started](#getting-started)
-    2. [Usage](#usage)
-        - [Convert Genotype to VCF](#convert-genotype-to-vcf)
-            - [Genotype file](#genotype-file)
-            - [Gene Location List](#gene-location-list)
-            - [Template VCF File](#template-vcf-file)
-        - [Convert VCF to Genotype Table](#convert-vcf-to-genotype-table)
-        - [Normalizing Allele Resolutions](#normalizing-allele-resolutions)
+
+1. [Getting Started](#getting-started)
+2. [Usage](#usage)
+    - [Convert Genotype to VCF](#convert-genotype-to-vcf)
+        - [Genotype file](#genotype-file)
+        - [Gene Location List](#gene-location-list)
+        - [Template VCF File](#template-vcf-file)
+    - [Convert VCF to Genotype Table](#convert-vcf-to-genotype-table)
+    - [Normalizing Allele Resolutions](#normalizing-allele-resolutions)
+
 </details>
 
 ### Convert genotype to vcf
