@@ -1,6 +1,6 @@
 [project]
 name = "alleleTools"
-version = "0.1"
+version = "0.1.0"
 authors = [
 	{ name="Nicolas Mendoza Mejia", email="mendozamejian@gmail.com" }
 ]
@@ -9,10 +9,50 @@ readme = "readme.md"
 requires-python = ">=3.9"
 license = "GPL-3.0"
 license-files = ["LICENSE"]
+license = {text = "GPL-3.0"}
+keywords = ["genetics", "bioinformatics"]
+dependencies = [
+	"pandas==2.2.3",
+	"numpy==1.26.4",
+	"matplotlib==3.9.2",
+	"biopython==1.85",
+	"yaspin==3.1.0",
+]
+classifiers=[
+"Intended Audience :: Developers",
+"Intended Audience :: Science/Research",
+"Development Status :: 2 - Pre-Alpha",
+"Operating System :: OS Independent",
+"Environment :: Console",
+"Programming Language :: Python",
+"Programming Language :: Python :: 3",
+"Programming Language :: Python :: 3.10",
+"Programming Language :: Python :: 3.11",
+"Programming Language :: Python :: 3.12",
+"Programming Language :: Python :: 3.13",
+"Topic :: Scientific/Engineering",
+"Topic :: Scientific/Engineering :: Bio-Informatics",
+"Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+
+[project.optional-dependencies]
+dev = [
+	"pytest>=6.0",
+	"pytest-cov",
+	"black",
+	"flake8",
+]
+test = [
+	"pytest>=6.0",
+	"pytest-cov",
+]
 
 [project.urls]
 Homepage = "https://github.com/nmendozam/alleleTools"
 Issues = "https://github.com/nmendozam/alleleTools/issues"
+Documentation = "https://github.com/nmendozam/alleleTools#readme"
+
 
 [project.scripts]
 altools = "alleleTools.alleleTools:main"
@@ -24,3 +64,14 @@ include = ["alleleTools"]
 [build-system]
 requires = ["setuptools>=42"]
 build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+
