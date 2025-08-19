@@ -1,3 +1,9 @@
+<div style="padding-left: 10%;">
+<p align="center">
+    <img src="./resources/icon.svg" alt="AlleleTools Icon" width="260"/>
+</p>
+</div>
+
 # <p align="center"> Gene agnostic AlleleTools! </p>
 
 Working with alleles from highly polymorphic genes, like those in HLA and KIR clusters, is already hard enough! This repo is a collection of tools to facilitate your work on the manipulation and analysis of allele data sets.
