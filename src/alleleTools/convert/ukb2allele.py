@@ -1,9 +1,29 @@
+"""
+UK Biobank to Allele Table Conversion Module.
+
+This module converts UK Biobank HLA imputation data into standardized allele
+table format. It handles the specific data structure and probability thresholds
+used by UK Biobank, including filtering based on allele abundance and handling
+of homozygous/heterozygous calls.
+
+Author: Nicolás Mendoza Mejía (2025)
+"""
+
 import pandas as pd
 
 from ..argtypes import csv_file, output_path
 
 
 def setup_parser(subparsers):
+    """
+    Set up the argument parser for the ukb2allele command.
+
+    Args:
+        subparsers: The subparsers object to add this command to.
+
+    Returns:
+        argparse.ArgumentParser: The configured parser for ukb2allele.
+    """
     parser = subparsers.add_parser(
         name="ukb2allele",
         description="Convert UK Biobank HLA data to allele table format",
@@ -45,6 +65,23 @@ def setup_parser(subparsers):
 
 
 def call_function(args):
+    """
+    Main function to execute UK Biobank to allele table conversion.
+
+    This function orchestrates the conversion process by:
+    1. Loading UK Biobank HLA imputation data
+    2. Loading phenotype information
+    3. Converting to standardized allele format
+    4. Optionally filtering out individuals with phenotype 0
+    5. Saving results to output file
+
+    Args:
+        args: Parsed command line arguments containing:
+            - input: Path to UK Biobank CSV file with HLA data
+            - phenotype: Path to phenotype file (space-separated)
+            - output: Path to output allele table file
+            - remove_pheno_zero: Whether to exclude phenotype 0 individuals
+    """
     input = pd.read_csv(args.input, sep=",", header=0, index_col=0)
 
     phenotype = pd.read_csv(args.phenotype, sep=" ", header=None)
@@ -61,6 +98,15 @@ def call_function(args):
 
 
 def __get_list_of_genes(df: pd.DataFrame) -> list:
+    """
+    Extract unique gene names from UK Biobank column names.
+
+    Args:
+        df (pd.DataFrame): DataFrame with UK Biobank column names
+
+    Returns:
+        list: List of unique gene names extracted from column prefixes
+    """
     return df.columns.map(lambda x: x.split("_")[0]).unique().tolist()
 
 
@@ -68,13 +114,24 @@ def __evaluate_abundance(
     df: pd.DataFrame, min_abundance: float = 0.7, homo_thr: float = 1.4
 ) -> pd.DataFrame:
     """
-    Filters alleles based on their abundance by masking them as NA. The UK
-    Biobank recommends filtering out alleles with less than 70%
-    probability/abundance. Alleles with a probability greater than 2x
-    min_abundance (1.4) are considered homozygous and duplicated in the output.
-    - df = dataframe with the allele table
-    - min_probability = minimum probability threshold
-    - homo_thr = abundance threshold to consider an allele homozygous
+    Filter alleles based on abundance and identify homozygous calls.
+
+    Applies UK Biobank recommended filtering by:
+    1. Masking alleles with <70% probability as NA
+    2. Identifying homozygous alleles (>140% probability) and duplicating them
+    3. Filtering out zero-probability alleles
+
+    Args:
+        df (pd.DataFrame): DataFrame with allele presence data
+        min_abundance (float): Minimum probability threshold (default: 0.7)
+        homo_thr (float): Homozygous threshold (default: 1.4)
+
+    Returns:
+        pd.DataFrame: Filtered DataFrame with abundance-based filtering applied
+
+    Note:
+        UK Biobank uses probability values >1.0 to indicate homozygous calls,
+        where the total probability for both allele copies exceeds 1.0.
     """
     # Get only values with non-zero probability
     df_filtered = df[df["Presence"] > 0]
@@ -99,6 +156,19 @@ def __evaluate_abundance(
 
 
 def __by_gene(df: pd.DataFrame):
+    """
+    Organize alleles by gene name and create gene-specific columns.
+
+    Takes a DataFrame with comma-separated alleles and expands them into
+    separate columns for each gene, handling duplicate genes by adding
+    suffixes (_2, etc.).
+
+    Args:
+        df (pd.DataFrame): DataFrame with 'eid' and 'Allele' columns
+
+    Returns:
+        pd.DataFrame: DataFrame with sample IDs and gene-specific columns
+    """
     def __assign_genes(str: str):
         alleles = dict()
         for allele in str.split(","):
@@ -119,6 +189,25 @@ def __by_gene(df: pd.DataFrame):
 def _convert_ukb_to_allele(
     input: pd.DataFrame, phenotype: pd.DataFrame, rm_phe_zero: bool = False
 ) -> pd.DataFrame:
+    """
+    Convert UK Biobank HLA data to standardized allele table format.
+
+    This is the main conversion function that orchestrates the entire process:
+    1. Melts the input data to long format
+    2. Filters based on abundance thresholds
+    3. Groups alleles by individual
+    4. Fills missing alleles with NA
+    5. Formats allele names to standard nomenclature
+    6. Integrates phenotype data
+
+    Args:
+        input (pd.DataFrame): UK Biobank HLA imputation data
+        phenotype (pd.DataFrame): Phenotype data with eid and Pheno columns
+        rm_phe_zero (bool): Whether to remove individuals with phenotype 0
+
+    Returns:
+        pd.DataFrame: Standardized allele table with phenotype information
+    """
     df_melted = input.reset_index().melt(
         id_vars="eid", var_name="Allele", value_name="Presence"
     )
@@ -160,9 +249,23 @@ def _convert_ukb_to_allele(
 
 def __format_allele_names(expanded: pd.DataFrame) -> pd.DataFrame:
     """
-    Reformats allele names to the standard format:
-    - A_101 becomes A*01:01
-    - Fills missing alleles with NA
+    Convert UK Biobank allele names to standard HLA nomenclature.
+
+    Transforms allele names from UK Biobank format (e.g., A_101) to standard
+    HLA nomenclature (e.g., A*01:01). Also handles special cases like NA
+    values and null alleles (9901).
+
+    Args:
+        expanded (pd.DataFrame): DataFrame with UK Biobank formatted allele names
+
+    Returns:
+        pd.DataFrame: DataFrame with standardized HLA allele nomenclature
+
+    Examples:
+        A_101 -> A*01:01
+        B_5701 -> B*57:01
+        C_NA -> NA
+        DRB1_9901 -> NA
     """
     # Rename columns to the desired format
     df = expanded.replace(to_replace=r".*_NA", value="NA", regex=True)
@@ -181,10 +284,26 @@ def __format_allele_names(expanded: pd.DataFrame) -> pd.DataFrame:
 
 def _na_missing_alleles(row):
     """
-    This expects a list of alleles as a string separated by commas.
-    It returns a list of alleles with NA added for missing pairs.
-    For example, if the input is "A_101,B_201", the output will
-    be "A_101,A_NA,B_201,B_NA".
+    Fill missing allele pairs with NA values to ensure diploid representation.
+
+    Ensures that each gene has exactly two alleles by adding NA values for
+    missing allele pairs. This is necessary because individuals may be
+    heterozygous (having only one detected allele) or have missing data.
+
+    Args:
+        row (str): Comma-separated string of alleles (e.g., "A_101,B_201")
+
+    Returns:
+        str: Comma-separated string with NA values added for missing pairs
+
+    Examples:
+        "A_101,B_201" -> "A_101,A_NA,B_201,B_NA"
+        "A_101,A_102,B_201" -> "A_101,A_102,B_201,B_NA"
+        "A_101" -> "A_101,A_NA"
+
+    Note:
+        This function assumes that alleles are named with gene_allele format
+        and that each gene should have exactly two alleles in diploid organisms.
     """
     alleles = row.split(",")
 

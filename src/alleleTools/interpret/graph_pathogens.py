@@ -1,13 +1,34 @@
+"""
+Pathogen Recognition Visualization Module.
+
+This module provides functionality to query the IEDB (Immune Epitope Database)
+for visualizing the results of epitope assays related to a specific HLA allele.
+It helps researchers understand which pathogens might the provided allele bind to,
+potentially providing resistance against or susceptibility to infections.
+
+Data source: IEDB (Immune Epitope Database) - https://www.iedb.org/
+
+Author: Nicolás Mendoza Mejía (2025)
+"""
+
 import matplotlib.pyplot as plt
 import pandas as pd
 
 from ..argtypes import path
-
 from .iedb.epitope_query import organism_iris, query_mhc
 from .iedb.taxon_query import query_taxon_ids
 
 
 def setup_parser(subparsers):
+    """
+    Set up the argument parser for the graph_pathogens command.
+
+    Args:
+        subparsers: The subparsers object to add this command to.
+
+    Returns:
+        argparse.ArgumentParser: The configured parser for pathogen visualization.
+    """
     parser = subparsers.add_parser(
         name='graph_pathogens',
         help='Graph epitope assay results for HLA alleles',
@@ -61,6 +82,25 @@ def setup_parser(subparsers):
 
 
 def call_function(args):
+    """
+    Main function to execute pathogen association analysis and visualization.
+
+    This function orchestrates the complete workflow:
+    1. Queries IEDB for epitope-MHC binding data
+    2. Extracts and processes NCBI taxonomy IDs
+    3. Retrieves taxonomic information from NCBI
+    4. Generates separate visualizations for bacteria and viruses
+
+    Args:
+        args: Parsed command line arguments containing:
+            - email: Email for NCBI API access
+            - allele: HLA allele to analyze
+            - min_epitope_len: Minimum epitope length filter
+            - max_epitope_len: Maximum epitope length filter
+            - source: Source organism filter
+            - host: Host organism filter
+            - output_basename: Base name for output files
+    """
     # Query the IEDB API for a specific HLA allele
     data = query_mhc(
         args.allele,
@@ -95,8 +135,14 @@ def call_function(args):
 
 def adjustFigAspect(fig, aspect=1):
     """
-    Adjust the subplot parameters so that the figure has the correct
-    aspect ratio.
+    Adjust subplot parameters to achieve the correct aspect ratio.
+
+    This function modifies the figure layout to ensure proper proportions
+    for publication-quality plots.
+
+    Args:
+        fig (matplotlib.figure.Figure): Figure object to adjust
+        aspect (float): Desired aspect ratio (default: 1)
     """
     xsize, ysize = fig.get_size_inches()
     minsize = min(xsize, ysize)
@@ -112,6 +158,22 @@ def adjustFigAspect(fig, aspect=1):
 
 
 def graph_by_genus(data: pd.DataFrame, division: str, output_file: str):
+    """
+    Generate a stacked bar chart showing assay results by pathogen genus.
+
+    Creates a visualization of epitope binding assay results grouped by
+    pathogen genus, with bars showing the distribution of qualitative
+    measures (positive, negative, etc.) for each genus.
+
+    Args:
+        data (pd.DataFrame): Merged dataset with IEDB and taxonomy information
+        division (str): Taxonomic division to filter by (e.g., "Bacteria", "Viruses")
+        output_file (str): Path for the output SVG file
+
+    Note:
+        The function filters data by the specified division and creates
+        a stacked percentage bar chart showing assay result distributions.
+    """
 
     grouped = (
         data[data["Division"] == division]

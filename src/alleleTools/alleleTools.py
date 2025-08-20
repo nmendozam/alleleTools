@@ -1,3 +1,10 @@
+"""
+Main entry point for the alleleTools command-line interface.
+
+This module provides the main CLI interface for alleleTools. The CLI is
+organized into subcommands for different categories of operations.
+"""
+
 import argparse
 
 from . import convert, genotype, interpret, refactor

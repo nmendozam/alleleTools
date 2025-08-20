@@ -1,3 +1,20 @@
+"""
+VCF to Allele Table Conversion Module.
+
+This module converts VCF (Variant Call Format) files
+containing HLA or KIR allele data into allele tables. It supports various
+output formats including pyHLA and PyPop compatible formats.
+
+Usage:
+    To generate the input file from imputation, run:
+    # Extract only relevant alleles
+    bcftools view --include 'ID~"HLA"' IMPUTED.vcf > HLA.vcf
+    # Convert the extracted alleles to a table
+    altools convert vcf2allele HLA.vcf --output out.alt
+
+Author: Nicolás Mendoza Mejía (2023)
+"""
+
 from collections import defaultdict
 from enum import Enum
 from typing import List
@@ -7,13 +24,17 @@ import pandas as pd
 from ..argtypes import file_path, output_path
 from ..convert.vcf import VCF
 
-"""
-To generate the input file from the imputation run this command
-> bcftools view --include 'ID~"HLA"' IMPUTED.vcf > HLA.vcf
-"""
-
 
 def setup_parser(subparsers):
+    """
+    Set up the argument parser for the vcf2allele command.
+
+    Args:
+        subparsers: The subparsers object to add this command to.
+
+    Returns:
+        argparse.ArgumentParser: The configured parser for vcf2allele.
+    """
     parser = subparsers.add_parser(
         name="vcf2allele",
         description="Convert vcf file to allele table",
@@ -83,6 +104,27 @@ def setup_parser(subparsers):
 
 
 def call_function(args):
+    """
+    Main function to execute VCF to allele table conversion.
+
+    This function orchestrates the conversion process by:
+    1. Loading and preprocessing the VCF file
+    2. Extracting genotype information
+    3. Converting to allele format
+    4. Adding phenotype data if provided
+    5. Writing the output file
+
+    Args:
+        args: Parsed command line arguments containing:
+            - input: Path to input VCF file
+            - output: Path to output file
+            - rm_prefix: Prefix to remove from allele names
+            - separator: Separator between gene and allele names
+            - extensive_search: Whether to perform extensive allele search
+            - phe: Optional phenotype file path
+            - output_header: Whether to include header in output
+            - population: Population identifier for PyPop compatibility
+    """
     vcf = VCF(args.input)
     vcf.remove_id_prefix(args.rm_prefix)
     format = vcf.get_format()
@@ -126,6 +168,22 @@ def call_function(args):
 
 
 class VCFalleles:
+    """
+    Class for processing and analyzing VCF allele data.
+
+    This class handles the parsing and analysis of allele information from
+    VCF format data, including genotype determination, resolution analysis,
+    and ploidy-based filtering.
+
+    Attributes:
+        df (pd.DataFrame): Processed allele data with genotype information
+                          indexed by gene and allele names.
+
+    Args:
+        alleles (pd.DataFrame): Raw allele data from VCF
+        formats (pd.DataFrame): Format information from VCF header
+    """
+
     def __init__(self, alleles: pd.DataFrame, formats: pd.DataFrame) -> None:
         self.df = self._parse_vcf_info(alleles, formats)
 
@@ -138,13 +196,17 @@ class VCFalleles:
 
     def _parse_vcf_info(self, alleles, formats):
         """
-        This function takes a pandas series with info fields from a vcf file
-        and the allele codes as index. It returns a data frame with the
-        genotype, dosage and ploidy likelihoods. The pattern is:
+        Parse VCF info fields into structured data.
 
-        {GT}:{DS}:{AA},{AB},{BB}
+        Extracts genotype, dosage, and ploidy likelihoods from VCF format
+        fields following the pattern: {GT}:{DS}:{AA},{AB},{BB}
 
-        GT is a string and the other four are floats
+        Args:
+            alleles (pd.Series): Series with info fields from VCF file
+            formats (list): List of format field names
+
+        Returns:
+            pd.DataFrame: Parsed data with GT as string and DS, AA, AB, BB as floats
         """
         # Extract the genotype, dosage and ploidy likelihoods
         info_df = alleles.str.split(":", expand=True)
@@ -160,9 +222,18 @@ class VCFalleles:
 
     def _find_high_res(self, allele_list: List[str]):
         """
-        Checks wether the alleles is covered by a higher resolution one
-        or not. Because the imputation returns multiple levels of resolutions
-        eg.  ['A*02', 'A*02:01:01:01' ] returns [False, True]
+        Identify high-resolution alleles from a list.
+
+        Determines which alleles represent the highest resolution by checking
+        if any allele is a substring of another (indicating lower resolution).
+        For example, in ['A*02', 'A*02:01:01:01'], only 'A*02:01:01:01' is
+        considered high resolution.
+
+        Args:
+            allele_list (List[str]): List of allele names to analyze
+
+        Returns:
+            List[bool]: Boolean list indicating which alleles are high resolution
         """
         high_res = list()
         for i, x in enumerate(allele_list):
@@ -174,10 +245,26 @@ class VCFalleles:
         return high_res
 
     def _get_genes(self, alleles: pd.Series):
+        """
+        Extract gene names from allele identifiers.
+
+        Args:
+            alleles (pd.Series): Series of allele identifiers
+
+        Returns:
+            pd.Series: Extracted gene names
+        """
         return alleles.str.extract(r"([A-Z0-9]+)")[0]
 
-    # enum of filter to get alleles by ploidy
     class _ploidy_filter(Enum):
+        """
+        Enumeration for filtering alleles by ploidy status.
+
+        Each enum value contains a tuple of (mask_boolean, regex_pattern):
+        - HOMOZYGOUS: Filters for homozygous genotypes (1|1)
+        - HETEROZYGOUS: Filters for heterozygous genotypes (not 0|0)
+        - UNCERTAIN: Filters for uncertain genotypes (0|0)
+        """
         HOMOZYGOUS = (True, r"1\|1")
         HETEROZYGOUS = (False, r"0\|0")
         UNCERTAIN = (True, r"0\|0")
@@ -186,13 +273,16 @@ class VCFalleles:
         self, alleles: pd.DataFrame, filter: _ploidy_filter, n: int = 1
     ):
         """
-        Gets the n highest resolution alleles that have passed the filter.
-        args:
-            alleles: data frame with the allele codes as index and the
-                columns GT, DS, AB
-            filter: tuple of mask (get values that do or don't match the
-                pattern) and pattern (substring to match)
-            n: int number of alleles to return
+        Get the highest resolution alleles that match a ploidy filter.
+
+        Args:
+            alleles (pd.DataFrame): DataFrame with allele codes as index and
+                                  columns GT, DS, AB
+            filter (_ploidy_filter): Filter criteria for ploidy selection
+            n (int): Number of alleles to return (default: 1)
+
+        Returns:
+            pd.DataFrame: Filtered alleles sorted by score (DS + AB)
         """
         # 1. Apply filter
         mask, pattern = filter.value
@@ -214,6 +304,19 @@ class VCFalleles:
         return high_res.nlargest(1, columns="score")
 
     def _fill_ploidy_second_most_probable(self, heterozygous, alleles):
+        """
+        Fill ploidy with second most probable alleles when needed.
+
+        When there aren't enough high-confidence alleles to fill the expected
+        ploidy, this method finds the next most probable alleles.
+
+        Args:
+            heterozygous (pd.DataFrame): Current heterozygous alleles
+            alleles (pd.DataFrame): All available alleles
+
+        Returns:
+            List[str]: Combined list of allele names including scores
+        """
         # If there is not enough alleles to fill the ploidy
         # with the most probable alleles
         hetero_low = self._get_ploidy_alleles(
@@ -230,6 +333,20 @@ class VCFalleles:
         return heterozygous.index.tolist() + [hetero_low_str.iloc[0]]
 
     def sort_and_fill(self, extensive=False):
+        """
+        Sort alleles by gene and determine final genotype calls.
+
+        For each gene, determines whether the genotype is homozygous or
+        heterozygous and selects the appropriate alleles based on confidence
+        scores and resolution.
+
+        Args:
+            extensive (bool): Whether to perform extensive search for
+                            low-confidence alleles (default: False)
+
+        Returns:
+            List[str]: List of selected allele names for all genes
+        """
         results = list()
         genes = self.df.index.get_level_values("gene").unique()
         for gene in sorted(genes):
@@ -266,6 +383,28 @@ def _get_true_alleles(genotypes,
                       extensive=False,
                       allele_separator="*"
                       ):
+    """
+    Extract true alleles from VCF genotype data for all samples.
+
+    This function processes genotype data for all samples in the VCF file,
+    determining the most likely allele calls for each gene and sample.
+
+    Args:
+        genotypes (pd.DataFrame): DataFrame with samples as columns and
+                                allele IDs as index, containing genotype info
+        format (list): List of format field names from VCF header
+        extensive (bool): Whether to perform extensive search for uncertain
+                        alleles (default: False)
+        allele_separator (str): Character separating gene name from allele
+                              name (default: "*")
+
+    Returns:
+        pd.DataFrame: DataFrame with samples as index and genes as columns,
+                     containing the called alleles
+
+    Raises:
+        Warning: Prints warning if alleles are ignored due to separator mismatch
+    """
     df = pd.DataFrame()
     ignored_samples = defaultdict(lambda: 0)
     last_ignored_allele = ""

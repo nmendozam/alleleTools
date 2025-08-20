@@ -1,9 +1,29 @@
+"""
+Allele Table to VCF Conversion Module.
+
+This module provides functionality to convert allele table data into VCF
+(Variant Call Format) files. It handles the transformation of genotype data
+from tabular format to standard VCF format, including proper diploid notation
+and genomic coordinate mapping.
+
+Author: Nicolás Mendoza Mejía (2023)
+"""
+
 import pandas as pd
 
 from ..argtypes import file_path
 
 
 def setup_parser(subparsers):
+    """
+    Set up the argument parser for the allele2vcf command.
+
+    Args:
+        subparsers: The subparsers object to add this command to.
+
+    Returns:
+        argparse.ArgumentParser: The configured parser for allele2vcf.
+    """
     parser = subparsers.add_parser(
         name="allele2vcf",
         description="Convert allele table to vcf",
@@ -50,6 +70,27 @@ def setup_parser(subparsers):
 
 
 def call_function(args):
+    """
+    Main function to execute allele table to VCF conversion.
+
+    This function orchestrates the conversion process by:
+    1. Validating input parameters
+    2. Loading and processing allele table data
+    3. Converting to VCF format with proper diploid notation
+    4. Mapping alleles to genomic coordinates
+    5. Appending results to the target VCF file
+
+    Args:
+        args: Parsed command line arguments containing:
+            - input: Path to input allele table file
+            - loci_file: Path to gene loci information file
+            - gene_cluster: Alternative gene cluster specification
+            - vcf: Path to target VCF file for appending
+            - field_separator: Field separator for input file (default: tab)
+
+    Raises:
+        SystemExit: If neither gene_cluster nor loci_file is provided
+    """
     if not (args.gene_cluster or args.loci_file):
         print(
             "Error: either --gene_cluster or --loci_file must be provided."
@@ -110,9 +151,23 @@ def call_function(args):
 
 def _diploid_notation(pairA, pairB):
     """
-    Takes a Multindex series of presence/absence of an allele in a sample
-    and returns a single indexed series with the notation for homozygous and
-    heterozygous alleles by mixing both tables.
+    Convert allele presence/absence data to VCF diploid notation.
+
+    Takes two boolean DataFrames representing allele presence for each gene
+    copy and converts them to standard VCF genotype notation (0|0, 0|1, 1|0,
+    1|1).
+
+    Args:
+        pairA (pd.DataFrame): Boolean DataFrame for first allele copy
+        pairB (pd.DataFrame): Boolean DataFrame for second allele copy
+
+    Returns:
+        pd.DataFrame: DataFrame with allele IDs and corresponding VCF
+            genotype codes
+
+    Example:
+        pairA=True, pairB=False -> "1|0"
+        pairA=True, pairB=True -> "1|1"
     """
     # assign a code to each allele combination.
     pairA = pairA.astype(int).rename_axis("id")
@@ -127,8 +182,21 @@ def _diploid_notation(pairA, pairB):
 
 def _gene_pairs(lst):
     """
-    Takes a list and return a list of tuples with the elements in pairs,
-    that follow the gene gene.1 convention.
+    Extract gene pairs from column names following the gene/gene.1 convention.
+
+    Identifies paired gene columns where one column represents the first allele
+    (e.g., "HLA-A") and another represents the second allele (e.g., "HLA-A.1").
+
+    Args:
+        lst (list): List of column names from the allele table
+
+    Returns:
+        list: List of tuples containing paired gene column names
+              [(gene, gene.1), ...]
+
+    Example:
+        >>> _gene_pairs(["HLA-A", "HLA-A.1", "HLA-B", "HLA-B.1"])
+        [["HLA-A", "HLA-A.1"], ["HLA-B", "HLA-B.1"]]
     """
     # Get elements in the list with *.1
     gene_1 = [x for x in lst if x.endswith(".1")]
@@ -143,6 +211,23 @@ def _gene_pairs(lst):
 
 
 def _get_vcf_columns(vcf_file):
+    """
+    Extract column names from a VCF file header.
+
+    Reads the VCF file to find the #CHROM header line and extracts
+    the column names for proper column ordering in the output.
+
+    Args:
+        vcf_file (str): Path to the VCF file
+
+    Returns:
+        list: List of column names from the VCF header
+
+    Example:
+        >>> _get_vcf_columns("sample.vcf")
+        ["CHROM", "POS", "ID", "REF", "ALT", "QUAL", "FILTER", "INFO",
+        "FORMAT", "SAMPLE1", "SAMPLE2"]
+    """
     # Read only the line that starts with #CHROM
     with open(vcf_file, "r") as f:
         line = f.readline()
