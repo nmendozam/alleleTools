@@ -7,15 +7,16 @@ authors = [
 description = "A set of tools to handle alleles from polymorphic genes"
 readme = "readme.md"
 requires-python = ">=3.9"
-license = "GPL-3.0"
 license-files = ["LICENSE"]
-license = {text = "GPL-3.0"}
+license = "GPL-3.0"
 keywords = ["genetics", "bioinformatics"]
 dependencies = [
-	"pandas==2.2.3",
-	"numpy==1.26.4",
-	"matplotlib==3.9.2",
 	"biopython==1.85",
+	"matplotlib==3.9.2",
+	"numpy==1.26.4",
+	"openpyxl==3.1.5",
+	"pandas==2.2.3",
+	"requests==2.32.4",
 	"yaspin==3.1.0",
 ]
 classifiers=[
@@ -70,6 +71,26 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
+addopts = """
+	--verbose
+	--tb=short
+	--strict-markers
+	--disable-warnings
+	--cov=alleleTools
+	--cov-report=html
+	--cov-report=term-missing
+	--cov-fail-under=80
+"""
+markers = """
+	slow: marks tests as slow (deselect with '-m "not slow"')
+	integration: marks tests as integration tests
+	unit: marks tests as unit tests
+	requires_network: marks tests that require network access
+"""
+filterwarnings = """
+	ignore::DeprecationWarning
+	ignore::PendingDeprecationWarning
+"""
 
 [tool.black]
 line-length = 88
