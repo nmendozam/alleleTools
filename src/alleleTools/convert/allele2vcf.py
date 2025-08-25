@@ -96,6 +96,7 @@ def call_function(args):
             "Error: either --gene_cluster or --loci_file must be provided."
             "Use -h or --help to see more details."
         )
+        exit(1)
 
     genotypes = pd.read_csv(args.input, sep=args.field_separator)
 
