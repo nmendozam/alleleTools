@@ -14,7 +14,9 @@ Author: Nicolás Mendoza Mejía (2023)
 
 from typing import List, Tuple
 
-from ..allele import Allele, build_allele_tree
+import pandas as pd
+
+from ..allele import Allele, FieldTree
 from ..argtypes import output_path
 from .ikmb_report import Gene, Report, read_json
 
@@ -42,6 +44,18 @@ def setup_parser(subparsers):
         type=str,
         nargs="+",
         help="JSON files with HLA genotyping reports from the IKMB pipeline",
+    )
+    parser.add_argument(
+        "--min_coverage",
+        type=float,
+        help="Minimum coverage threshold",
+        default=100.0,
+    )
+    parser.add_argument(
+        "--min_support",
+        type=float,
+        help="Proportion of algorithms supporting the consensus call",
+        default=0.6,
     )
     parser.add_argument(
         "--output",
@@ -73,33 +87,72 @@ def call_function(args):
     for file in args.input:
         j = read_json(file)
         report = ConsensusReport(j)
-        reports.extend(report.consensus())
-    print(reports)
+        reports.extend(report.consensus(args.min_support))
+
+    # Filter under covered sample's genes
+    df = pd.DataFrame(reports)
+    df = df[df["coverage"] >= args.min_coverage]
+
+    # Convert and save file
+    alt = reports_as_allele_table(df)
+    alt.to_csv(args.output, sep="\t", index=True)
+
+def reports_as_allele_table(reports: pd.DataFrame) -> pd.DataFrame:
+    # pivot table
+    df_pivot = reports.pivot_table(
+        values="alleles",
+        index=["sample"],
+        columns=["gene"],
+        aggfunc="sum",
+    )
+
+    # Gene columns have a list of one or two alleles
+    # extract those alleles into [gene_name]_1 and [gene_name]_2
+    genes = df_pivot.columns
+    genes = [gene for gene in genes if gene != "sample"]
+    for gene in genes:
+        df_pivot[[f"{gene}_1", f"{gene}_2"]] = pd.DataFrame(df_pivot[gene].tolist(), index=df_pivot.index)
+        df_pivot = df_pivot.drop(columns=[gene])
+
+    # Add phenotype column
+    df_pivot["phenotype"] = 0
+
+    return df_pivot
 
 
 class ConsensusGene(Gene):
-    def get_consensus_call(self) -> Tuple[List[str], List[float]]:
+    def get_consensus_call(self, min_support: float) -> Tuple[List[str], List[float]]:
         """
         Determine the consensus alleles and returns two values
+
+        Args:
+            min_support (float): Minimum support threshold for consensus calls.
 
         Returns:
             alleles: list of consensus alleles
             support: percentage of algorithms supported the consensus alleles
         """
-        allele_list = [
-            Allele(a, gene=self.name)
-            for alleles in self.calls.values()
-            for a in alleles
-        ]
-        tree = build_allele_tree(self.name, allele_list)
-        alleles, support = tree.get_consensus(0.6)
+        tree = FieldTree(self.name)
+        for tool, alleles in self.calls.items():
+            alleles = set(alleles)
+            for allele in alleles:
+                p_allele = Allele(allele, gene=self.name)
+                tree.add(p_allele.fields)
+
+        alleles, support = tree.get_consensus(min_support=min_support)
         return alleles, support
 
-    def consensus_dict(self) -> dict:
+    def consensus_dict(self, min_support: float) -> dict:
         """
         Convert this object into a dictionary
+
+        Args:
+            min_support (float): Minimum support threshold for consensus calls.
+
+        Returns:
+            dict: Dictionary representation of the consensus gene.
         """
-        alleles, support = self.get_consensus_call()
+        alleles, support = self.get_consensus_call(min_support)
         return {
             "gene": self.name,
             "coverage": self.mean_coverage(),
@@ -114,10 +167,19 @@ class ConsensusReport(Report):
     ) -> ConsensusGene:
         return ConsensusGene(name, coverage, calls)
 
-    def consensus(self) -> List[dict]:
+    def consensus(self, min_support: float) -> List[dict]:
+        """
+        Generate a consensus report for the given sample.
+
+        Args:
+            min_support (float): Minimum support threshold for consensus calls.
+
+        Returns:
+            List[dict]: Consensus report for the given sample.
+        """
         result = list()
         for gene in self.genes:
-            d = gene.consensus_dict()
+            d = gene.consensus_dict(min_support)
             d["sample"] = self.sample
             result.append(d)
         return result

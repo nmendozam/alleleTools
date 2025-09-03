@@ -223,7 +223,7 @@ class FieldTree:
         """
         return self.__str__()
 
-    def add(self, fields: list):
+    def add(self, fields: list, weight: float = 1.0):
         """
         Add a sequence of fields to the tree, incrementing counts and creating
         nodes as needed.
@@ -236,7 +236,7 @@ class FieldTree:
             tree.add(['01', '01']) will add/increment nodes for '01' at two
             levels.
         """
-        self.support += 1
+        self.support += weight
 
         if len(fields) == 0:
             return
@@ -246,12 +246,12 @@ class FieldTree:
 
         for child in self.children:
             if child.field == name:
-                child.add(overhead)
+                child.add(overhead, weight)
                 return
 
         # if nothing was found
         new_tree = FieldTree(name)
-        new_tree.add(overhead)
+        new_tree.add(overhead, weight)
         self.children.append(new_tree)
 
     def get_consensus(self, min_support: float) -> Tuple[List[str], List[float]]:
@@ -274,24 +274,28 @@ class FieldTree:
         # Look for consensus solutions
         max_support = self.support
         min_support_n = max_support * min_support
-        solutions = self.__get_consensus__(ceil(min_support_n / 2))
+        solutions = self.__get_consensus__(min_support_n / 2)
 
         # Get the two most supported alleles
         solutions.sort(key=lambda i: i[1], reverse=True)
         solutions = solutions[:2]
+        
+        # For homozygous calls adjust the minimum support threshold
+        if len(solutions) == 1:
+            solutions = self.__get_consensus__(min_support_n)
 
         # Reformat the output
         alleles = [a for a, _ in solutions]
-        supports = [s / max_support for _, s in solutions]
+        supports = [s for _, s in solutions]
 
         return alleles, supports
 
-    def __get_consensus__(self, min_support_number: int) -> List[Tuple[str, float]]:
+    def __get_consensus__(self, min_support_number: float) -> List[Tuple[str, float]]:
         """
         Get consensus solutions from the field tree.
 
         Args:
-            min_support_number (int): Minimum support threshold.
+            min_support_number (float): Minimum support threshold.
 
         Returns:
             List[Tuple[str, float]]: List of consensus solutions with their support.
@@ -324,24 +328,3 @@ class FieldTree:
         for fields, support in res:
             sol.append((f"{self.field}:{fields}", support))
         return sol
-
-
-def build_allele_tree(gene: str, alleles: List[Allele]) -> FieldTree:
-    """
-    Build a FieldTree representing the structure of allele fields for a given gene.
-
-    Args:
-        gene (str): The gene name to use as the root of the tree.
-        alleles (List[Allele]): List of Allele objects to add to the tree.
-
-    Returns:
-        FieldTree: The root of the constructed field tree.
-
-    Example:
-        >>> build_allele_tree('A', [Allele('A*01:01'), Allele('A*01:02')])
-        Field(A:0)[Field(01:2)[Field(01:1), Field(02:1)]]
-    """
-    root = FieldTree(gene)
-    for allele in alleles:
-        root.add(allele.fields)
-    return root

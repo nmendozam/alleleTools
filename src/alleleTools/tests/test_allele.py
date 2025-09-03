@@ -1,5 +1,27 @@
-from ..allele import Allele, AlleleMatchStatus, build_allele_tree
+from typing import List
 
+from ..allele import Allele, AlleleMatchStatus, FieldTree
+
+
+def build_allele_tree(gene: str, alleles: List[Allele]) -> FieldTree:
+    """
+    Build a FieldTree representing the structure of allele fields for a given gene.
+
+    Args:
+        gene (str): The gene name to use as the root of the tree.
+        alleles (List[Allele]): List of Allele objects to add to the tree.
+
+    Returns:
+        FieldTree: The root of the constructed field tree.
+
+    Example:
+        >>> build_allele_tree('A', [Allele('A*01:01'), Allele('A*01:02')])
+        Field(A:0)[Field(01:2)[Field(01:1), Field(02:1)]]
+    """
+    root = FieldTree(gene)
+    for allele in alleles:
+        root.add(allele.fields)
+    return root
 
 class TestAllele:
     def test_comparison_results(self):
@@ -104,5 +126,3 @@ class TestFieldTree:
 
         assert alleles == ["DPA1*01:03:01", "DPA1*01:03:01:04"]
         assert support == [1.0, 0.6666666666666666]
-
-
