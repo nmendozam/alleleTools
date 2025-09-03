@@ -12,13 +12,11 @@ Input formats:
 Author: Nicolás Mendoza Mejía (2023)
 """
 
-import argparse
-import json
-from collections import defaultdict
-from typing import List
+from typing import List, Tuple
 
-from ..allele import Allele, AlleleMatchStatus
+from ..allele import Allele, build_allele_tree
 from ..argtypes import output_path
+from .ikmb_report import Gene, Report, read_json
 
 
 def setup_parser(subparsers):
@@ -41,9 +39,9 @@ def setup_parser(subparsers):
     parser.add_argument(
         "input",
         metavar="path",
-        type=argparse.FileType("r"),
+        type=str,
         nargs="+",
-        help="JSON files with HLA genotyping reports to be processed",
+        help="JSON files with HLA genotyping reports from the IKMB pipeline",
     )
     parser.add_argument(
         "--output",
@@ -71,284 +69,55 @@ def call_function(args):
             - input: List of JSON file handles with genotyping reports
             - output: Path to output consensus file
     """
+    reports = list()
     for file in args.input:
-        json_report = json.load(file)
-
-        report = Report(json_report, resolution=2)
-
-        consensus = ConsensusAlgorithm(report)
-        alleles = consensus.get_flat_alleles()
-
-        ##########################
-        # Generate the output file
-        ##########################
-
-        with open(args.output, "a") as out:
-            out.write("%s\t2\t%s\n" % (report.sample, "\t".join(alleles)))
+        j = read_json(file)
+        report = ConsensusReport(j)
+        reports.extend(report.consensus())
+    print(reports)
 
 
-def pairwise(iterable):
-    """
-    Iterate over a sequence in a pairwise manner.
-
-    Args:
-        iterable: Any iterable sequence
-
-    Yields:
-        tuple: Consecutive pairs from the iterable
-
-    Example:
-        >>> list(pairwise('ABCDEFG'))
-        [('A', 'B'), ('B', 'C'), ('C', 'D'), ('D', 'E'), ('E', 'F'), ('F', 'G')]
-    """
-
-    iterator = iter(iterable)
-    a = next(iterator, None)
-
-    for b in iterator:
-        yield a, b
-        a = b
-
-
-def get_allele_pair(alleles: List[str], resolution) -> List["Allele"]:
-    """
-    Parse and select the best allele pair from a list of allele strings.
-
-    This function handles algorithm-specific logic, particularly for HiSat
-    which returns ranked lists of alleles. It selects the two most confident
-    alleles that meet the resolution requirements.
-
-    Args:
-        alleles (List[str]): List of allele strings to parse
-        resolution (int): Desired resolution level (number of fields)
-
-    Returns:
-        List[Allele]: List of up to two Allele objects representing the best pair
-
-    Note:
-        For HiSat results, alleles with combined confidence >0.90 and meeting
-        resolution requirements are preferred.
-    """
-    parsed_alleles = list()
-    alleles.sort()
-    for allele in alleles:
-        try:
-            parsed_allele = Allele(allele)
-            parsed_alleles.append(parsed_allele)
-        except Exception as e:
-            print(f"Error: exception {e}")
-            print(f"The allele {allele} was not parsed")
-            pass
-
-    ##############################################################
-    # Hisat specific section:
-    # Given that Hisat returns a list of most abundant alleles,
-    # this sections trys to use the ranking to come up with the
-    # highest resolution and most abundant alleles
-    ##############################################################
-
-    # Check the abundance of alleles and discard if more than two
-    pair = list()
-    for pair in pairwise(parsed_alleles):
-        abundance = 0
-        for allele in pair:
-            abundance += allele.confidence if hasattr(
-                allele, "confidence") else 0.5
-        resolution_is_met = all([len(a) > resolution for a in pair])
-
-        if abundance > 0.90 and resolution_is_met:
-            break
-
-    ##############################################################
-    # End of Hisat specific section
-    ##############################################################
-
-    # truncate the alleles to the desired resolution
-    for allele in pair:
-        allele.truncate(resolution)
-
-    assert len(pair) <= 2, "More than two alleles found in call"
-
-    return pair[:2]  # Return only the first two alleles, if any
-
-
-class Report:
-    """
-    Class for parsing and organizing HLA genotyping reports.
-
-    This class handles JSON reports from HLA genotyping pipelines,
-    organizing results by gene and algorithm for consensus analysis.
-
-    Attributes:
-        resolution (int): Target resolution level for alleles
-        sample (str): Sample identifier from the report
-        genes (Dict): Dictionary organizing calls by gene and algorithm
-
-    Args:
-        report (dict): JSON report dictionary from genotyping pipeline
-        resolution (int): Desired resolution level (default: 2)
-    """
-
-    def __init__(self, report: dict, resolution: int = 2) -> None:
-        self.resolution = resolution  # desired resolution in fields
-        calls = report["calls"]
-        self.sample = report["sample"]
-        self.genes = dict()
-
-        for gene, call in calls.items():
-            self.genes[gene] = self.parse_call(call)
-
-    def parse_call(self, call: dict) -> dict[Allele]:
+class ConsensusGene(Gene):
+    def get_consensus_call(self) -> Tuple[List[str], List[float]]:
         """
-        Parse genotyping calls for a single gene from multiple algorithms.
-
-        Args:
-            call (dict): Dictionary with algorithm names as keys and
-                        allele lists as values
+        Determine the consensus alleles and returns two values
 
         Returns:
-            dict: Dictionary mapping algorithm names to allele pairs
+            alleles: list of consensus alleles
+            support: percentage of algorithms supported the consensus alleles
         """
-        alleles_by_alg = dict()
+        allele_list = [
+            Allele(a, gene=self.name)
+            for alleles in self.calls.values()
+            for a in alleles
+        ]
+        tree = build_allele_tree(self.name, allele_list)
+        alleles, support = tree.get_consensus(0.6)
+        return alleles, support
 
-        for algorithm, alleles in call.items():
-            two_alleles = get_allele_pair(alleles, self.resolution)
-            alleles_by_alg[algorithm] = two_alleles
-        return alleles_by_alg
-
-    def __iter__(self):
+    def consensus_dict(self) -> dict:
         """
-        Iterate over all allele calls in the report.
-
-        Yields:
-            dict: Dictionary with 'gene', 'program', and 'allele' keys
-                 for each individual allele call
+        Convert this object into a dictionary
         """
-        for gene, prog_calls in self.genes.items():
-            for program, calls in prog_calls.items():
-                for allele in calls:
-                    yield {
-                        "gene": gene,
-                        "program": program,
-                        "allele": allele
-                    }
+        alleles, support = self.get_consensus_call()
+        return {
+            "gene": self.name,
+            "coverage": self.mean_coverage(),
+            "alleles": alleles,
+            "support": support,
+        }
 
 
-class ConsensusAlgorithm:
-    """
-    Algorithm for generating consensus HLA genotypes from multiple sources.
+class ConsensusReport(Report):
+    def __parse_gene__(
+        self, name: str, coverage: List[dict], calls: dict
+    ) -> ConsensusGene:
+        return ConsensusGene(name, coverage, calls)
 
-    This class implements an evidence-based consensus algorithm that:
-    1. Collects allele calls from multiple genotyping algorithms
-    2. Groups similar alleles and accumulates evidence
-    3. Resolves conflicts by selecting higher resolution alleles
-    4. Ensures proper diploid representation (exactly 2 alleles per gene)
-
-    Attributes:
-        consensus (defaultdict): Dictionary mapping genes to consensus alleles
-
-    Args:
-        calls (Report): Parsed genotyping report containing multiple algorithm results
-    """
-
-    def __init__(self, calls: Report) -> None:
-        self.consensus = defaultdict(list)
-
-        for report in calls:
-            allele = report["allele"]
-            gene = report["gene"]
-            allele_cluster = self.consensus[gene]
-            match = self.find_matching_allele(allele, allele_cluster)
-
-            if not match:
-                allele_cluster.append(self.AlleleWithEvidence(allele))
-            else:
-                match.add_evidence(allele)
-
-                if match.compare(allele) == AlleleMatchStatus.MORE_RESOLUTION:
-                    match.fields = allele.fields
-
-        self.correct_homozygous_calls(self.consensus)
-
-    def correct_homozygous_calls(self, consensus: dict):
-        """
-        Ensure proper diploid representation for all genes.
-
-        Corrects the number of alleles per gene to exactly two:
-        - If >2 alleles: keeps only the first two (highest evidence)
-        - If 1 allele: duplicates it (homozygous call)
-        - If 0 alleles: fills with "NA" values
-
-        Args:
-            consensus (dict): Dictionary mapping genes to allele lists
-        """
-        for gene in consensus:
-            n_alleles = len(consensus[gene])
-
-            if n_alleles > 2:
-                consensus[gene] = consensus[gene][:2]
-            elif n_alleles == 1:
-                consensus[gene] = consensus[gene] * 2
-            elif n_alleles == 0:
-                consensus[gene] = ["NA", "NA"]
-
-    def find_matching_allele(
-        self, allele: Allele, allele_list: list["AlleleWithEvidence"]
-    ) -> "AlleleWithEvidence":
-        """
-        Find an existing allele in the consensus that matches the given allele.
-
-        Args:
-            allele (Allele): Allele to find a match for
-            allele_list (list): List of existing consensus alleles
-
-        Returns:
-            AlleleWithEvidence: Matching allele if found, None otherwise
-        """
-        for a in allele_list:
-            result = a.compare(allele)
-            if result != AlleleMatchStatus.NOT_EQUAL:
-                return a
-        return None
-
-    def get_flat_alleles(self) -> list[str]:
-        """
-        Get a flat list of all consensus alleles as strings.
-
-        Returns:
-            list[str]: List of allele strings for all genes
-        """
-        return [str(c) for gene in self.consensus for c in self.consensus[gene]]
-
-class AlleleWithEvidence(Allele):
-    """
-    Allele class that tracks supporting evidence from multiple algorithms.
-
-    Extends the base Allele class to maintain a list of supporting
-    evidence from different genotyping algorithms, enabling confidence
-    assessment and conflict resolution.
-
-    Attributes:
-        evidence (List[Allele]): List of supporting allele calls
-
-    Args:
-        allele (Allele): Initial allele to create evidence for
-    """
-
-    def __init__(self, allele: Allele) -> None:
-        # Make a copy of the allele's attributes
-        self.gene = allele.gene
-        self.fields = allele.fields
-        if hasattr(allele, "confidence"):
-            self.confidence = allele.confidence
-
-        self.evidence = [allele]
-
-    def add_evidence(self, allele: Allele) -> None:
-        """
-        Add supporting evidence for this allele.
-
-        Args:
-            allele (Allele): Additional allele call supporting this consensus allele
-        """
-        self.evidence.append(allele)
+    def consensus(self) -> List[dict]:
+        result = list()
+        for gene in self.genes:
+            d = gene.consensus_dict()
+            d["sample"] = self.sample
+            result.append(d)
+        return result

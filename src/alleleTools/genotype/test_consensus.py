@@ -1,5 +1,5 @@
-from .consensus import (Allele, CmpResult, ConsensusAlgorithm, Report,
-                        get_allele_pair)
+from ..allele import Allele
+from .consensus import ConsensusAlgorithm, Report, get_allele_pair
 
 
 def make_report(alleles: list):
@@ -12,35 +12,6 @@ def make_report(alleles: list):
         },
     }
     return calls
-
-
-def test_comparison_results():
-    a1 = Allele("A*02:01")
-    a2 = Allele("A*02:01:01:01")
-
-    assert a1.compare(a2) == CmpResult.MORE_RESOLUTION
-    assert a2.compare(a1) == CmpResult.LESS_RESOLUTION
-    assert a1.compare(a1) == CmpResult.EQUAL
-
-    a3 = Allele("B*02:01:01:01")
-    assert a1.compare(a3) == CmpResult.NOT_EQUAL
-
-
-def test_allele_parsing():
-    a1 = Allele("A*02:01")
-    assert str(a1) == "A*02:01"
-
-    a1 = Allele("A*02")
-    assert str(a1) == "A*02"
-
-
-def test_allele_parsing_no_allele():
-    failed = False
-    try:
-        a1 = Allele("")
-    except:
-        failed = True
-    assert failed
 
 
 def test_consensus():
