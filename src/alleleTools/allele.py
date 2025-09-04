@@ -1,6 +1,5 @@
 import re
 from enum import Enum
-from math import ceil
 from typing import List, Tuple
 
 
@@ -266,19 +265,24 @@ class FieldTree:
         new_tree.add(overhead, weight)
         self.children.append(new_tree)
 
-    def get_consensus(self, min_support: float) -> Tuple[List[str], List[float]]:
+    def get_consensus(
+            self, min_support: float
+    ) -> Tuple[List[str], List[float]]:
         """
-        Gets a list of up to two posible consensus solutions that meet the criteria
-        of the minimum support. This is basically a tree search algorithm.
+        Gets a list of up to two possible consensus solutions that meet the
+        criteria of the minimum support. This is basically a tree search
+        algorithm.
 
         Args:
-            min_support (float): minimum proportion of support required. Each program
-                contributes votes equally, the amount of times the allele has been genotyped
-                is stored in each node of the tree. This value is used to filter consensus
-                alleles based on their support values.
+            min_support (float): minimum proportion of support required. Each
+                program contributes votes equally, the amount of times the
+                allele has been genotyped is stored in each node of the tree.
+                This value is used to filter consensus alleles based on their
+                support values.
 
         Returns:
-            Tuple[List[str], List[float]]: Consensus alleles and their support values.
+            Tuple[List[str], List[float]]: Consensus alleles and their support
+                values.
         """
         # min_support is a proportion between 0 and 1
         assert min_support <= 1 and min_support >= 0
@@ -291,18 +295,50 @@ class FieldTree:
         # Get the two most supported alleles
         solutions.sort(key=lambda i: i[1], reverse=True)
         solutions = solutions[:2]
-        
+
         # For homozygous calls adjust the minimum support threshold
         if len(solutions) == 1:
             solutions = self.__get_consensus__(min_support_n)
 
-        # Reformat the output
-        alleles = [a for a, _ in solutions]
-        supports = [s for _, s in solutions]
+        return self.__format_solutions_as_alleles__(solutions)
+
+    def __format_solutions_as_alleles__(
+            self, solutions: List[Tuple[str, float]]
+    ) -> Tuple[List[str], List[float]]:
+        """
+        Formats the solutions as two separate lists:
+
+        Args:
+            solutions (list): is a list of the found consensus alleles with
+                their scores
+
+
+        Returns:
+            - list of consensus alleles (str)
+            - list of respective number of algorithms supporting the consensus
+              (float)
+        """
+        alleles, supports = list(), list()
+        for allele, support in solutions:
+            supports.append(support)
+
+            nodes = allele.split(":")
+
+            # If it's only the gene name, there was no consensus
+            if len(nodes) <= 1:
+                alleles.append("")
+                continue
+
+            # Use the allele class as an interface to format the string
+            alleles.append(
+                str(Allele(code=nodes[1:], gene=nodes[0]))
+            )
 
         return alleles, supports
 
-    def __get_consensus__(self, min_support_number: float) -> List[Tuple[str, float]]:
+    def __get_consensus__(
+            self, min_support_number: float
+    ) -> List[Tuple[str, float]]:
         """
         Get consensus solutions from the field tree.
 
@@ -310,7 +346,8 @@ class FieldTree:
             min_support_number (float): Minimum support threshold.
 
         Returns:
-            List[Tuple[str, float]]: List of consensus solutions with their support.
+            List[Tuple[str, float]]: List of consensus solutions with their
+                support.
         """
         if self.support < min_support_number:
             return list()
@@ -323,7 +360,9 @@ class FieldTree:
             solutions.extend(self.__merge_with_current_node__(child_sol))
         return solutions
 
-    def __merge_with_current_node__(self, res: List[Tuple[str, float]]) -> List[Tuple[str, float]]:
+    def __merge_with_current_node__(
+            self, res: List[Tuple[str, float]]
+    ) -> List[Tuple[str, float]]:
         """
         Takes as input the list of possible consensus from child nodes
         and merges it with the current node's field. If no response was
@@ -331,8 +370,8 @@ class FieldTree:
         field and its support count.
 
         example:
-            if the current node is "A" and the child node is "B:2", the result will be
-            ["A:B:2", 2]
+            if the current node is "A" and the child node is "B:2", the result
+            will be ["A:B:2", 2]
         """
         if len(res) == 0:
             return [(self.field, self.support)]
