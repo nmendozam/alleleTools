@@ -35,7 +35,11 @@ class Allele:
         confidence (float): Optional confidence score from genotyping algorithm
 
     Args:
-        code (str): Allele string to parse (e.g., 'A*01:01:01' or 'A*01:01(0.95)')
+        code (str | list): Allele string to parse (e.g., 'A*01:01:01' or
+            'A*01:01(0.95)'). Alternatively, you can pass a list of fields
+            along with the argument `gene`
+        gene (str): If the gene name is not present in `code` you should pass
+            the here here.
 
     Raises:
         Exception: If the allele string cannot be parsed
@@ -47,9 +51,17 @@ class Allele:
         >>> print(len(allele))  # 3
     """
 
-    def __init__(self, code: str, gene: str = "") -> None:
+    def __init__(self, code, gene: str = "") -> None:
         if not code:
             raise Exception("No allele to parse")
+
+        if isinstance(code, list):
+            assert len(gene) > 0
+            self.fields = code
+            self.gene = gene
+            return
+
+        assert isinstance(code, str)
 
         # Extract confidence score (Hisat)
         confidence_score = re.search(r"\((.*?)\)", code)
