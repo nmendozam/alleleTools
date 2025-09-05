@@ -68,3 +68,13 @@ def call_function(args):
     cmd.append(args.input)
     cmd.append(args.output)
     cmd.append(args.prefix)
+
+    # Execute the command
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        print("Error running allele_resolution.sh:")
+        print("output:")
+        print(result.stdout)
+        print("error:")
+        print(result.stderr)
+        exit(result.returncode)
