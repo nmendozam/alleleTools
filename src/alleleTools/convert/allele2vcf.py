@@ -8,6 +8,7 @@ and genomic coordinate mapping.
 
 Author: Nicolás Mendoza Mejía (2023)
 """
+import os
 
 import pandas as pd
 
@@ -45,6 +46,7 @@ def setup_parser(subparsers):
     parser.add_argument(
         "--gene_cluster",
         type=str,
+        choices=["HLA", "KIR"],
         help="""
         name of the gene cluster (hla or kir), alternatively you could provide
         a --loci_file
@@ -97,8 +99,25 @@ def call_function(args):
             "Use -h or --help to see more details."
         )
         exit(1)
+    
+    if not args.loci_file:
+        from .. import alleleTools
+        path = os.path.dirname(os.path.abspath(alleleTools.__file__))
+        # remove two levels to get to the root of the package
+        path = os.path.dirname(os.path.dirname(path))
+        if args.gene_cluster == "HLA":
+            args.loci_file = os.path.join(path, "resources/gene_table.tsv")
+        elif args.gene_cluster == "KIR":
+            args.loci_file = os.path.join(path, "resources/gene_table_kir.tsv")
+        else:
+            print(
+                "Error: --gene_cluster must be either 'HLA' or 'KIR'."
+                "Use -h or --help to see more details."
+            )
+            exit(1)
 
     genotypes = pd.read_csv(args.input, sep=args.field_separator)
+    gene_loci = pd.read_csv(args.loci_file, sep="\t")
 
     pairs = _gene_pairs(genotypes.columns)
 
@@ -126,7 +145,6 @@ def call_function(args):
     # to match the base vcf file order.
     # e.g.:
     # CHROM  POS ID  REF  ALT  QUAL  FILTER  INFO  FORMAT  SAMPLE_ID. ...
-    gene_loci = pd.read_csv(args.loci_file, sep="\t")
     # column start has chr:pos, divide that into two columns.
     gene_loci[["CHROM", "POS"]] = gene_loci["start"].str.split(
         ":", expand=True)
@@ -146,6 +164,11 @@ def call_function(args):
     vcf_alleles = vcf_alleles[vcf_col]
     vcf_alleles.fillna("0|0", inplace=True)
 
+    if len(vcf_alleles) == 0:
+        print("WARNING: No alleles are being added to the VCF file.")
+        print("Check that the gene names in the input file (column names) match those in the loci file.")
+    else:
+        print(f"Appending {len(vcf_alleles)} alleles to {args.vcf}")
     with open(args.vcf, "a") as f:
         f.write(vcf_alleles.to_csv(index=False, sep="\t", header=False))
 
@@ -235,4 +258,6 @@ def _get_vcf_columns(vcf_file):
         while not line.startswith("#CHROM"):
             line = f.readline()
     # Remove leading # and \n, then split by tab.
+    return line[1:].strip().split("\t")  # [9:]
+    return line[1:].strip().split("\t")  # [9:]
     return line[1:].strip().split("\t")  # [9:]

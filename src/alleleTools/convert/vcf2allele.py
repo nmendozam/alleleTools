@@ -21,6 +21,8 @@ from typing import List
 
 import pandas as pd
 
+from alleleTools.convert.alleleTable import AlleleTable
+
 from ..argtypes import file_path, output_path
 from ..convert.vcf import VCF
 
@@ -138,33 +140,13 @@ def call_function(args):
     # sort the columns
     true_alleles = true_alleles.reindex(sorted(true_alleles.columns), axis=1)
 
+    # Create allele table
+    alt = AlleleTable()
+    alt.alleles = true_alleles
     # add phenotype column if provided
-    if args.phe:
-        print("Warn: add phenotype (--phe) feature isn't tested")
-        phe = pd.read_csv(args.phe, sep=" ", comment="##")
-        phe.set_index("IID", inplace=True)
-        true_alleles = true_alleles.join(phe.phenotype)
-    else:
-        true_alleles["phenotype"] = 0
+    alt.load_phenotype(args.phe)
 
-    # move phenotype to the first column
-    cols = true_alleles.columns.tolist()
-    cols.insert(0, cols.pop(len(cols) - 1))
-
-    true_alleles.reset_index(inplace=True)  # move sample id to column
-
-    if args.population:
-        true_alleles.insert(
-            0, "population", args.population
-        )  # add population column at the beginning
-
-    true_alleles.to_csv(
-        args.output,
-        sep="\t",
-        index=False,
-        na_rep="NA",
-        header=args.output_header
-    )
+    alt.to_csv(args.output, header=args.output_header)
 
 
 class VCFalleles:

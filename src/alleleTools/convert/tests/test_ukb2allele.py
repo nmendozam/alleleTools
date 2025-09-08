@@ -1,10 +1,7 @@
 import pandas as pd
 
-from ..convert.ukb2allele import (
-    _convert_ukb_to_allele,
-    __format_allele_names,
-    _na_missing_alleles,
-)
+from ..ukb2allele import (__format_allele_names, _convert_ukb_to_allele,
+                          _na_missing_alleles)
 
 
 def test_convert_ukb_to_allele():

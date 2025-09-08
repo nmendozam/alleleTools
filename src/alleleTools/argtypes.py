@@ -75,9 +75,13 @@ def file_path(in_string: str) -> str:
         >>> file_path("/path/to/existing_file.txt")
         "/path/to/existing_file.txt"
     """
+    # Default parameters are empty, so we don't complain
+    if not in_string:
+        return in_string
+
     file = path(in_string)
     if not os.path.isfile(file):
-        raise argparse.ArgumentTypeError(f"{in_string} is not a valid file")
+        raise argparse.ArgumentTypeError(f"The file '{in_string}' is not a valid file")
     return file
 
 

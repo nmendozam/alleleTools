@@ -193,9 +193,11 @@ class FieldTree:
 
     Attributes:
         field (str): The field value at this node.
-        support (int): Number of times this field value has been added at this position,
-            which indicates how many times it has been genotyped by different tools.
-        children (List[FieldTree]): List of child nodes representing subsequent fields.
+        support (int): Number of times this field value has been added at this
+            position, which indicates how many times it has been genotyped by
+            different tools.
+        children (List[FieldTree]): List of child nodes
+        representing subsequent fields.
 
     Example:
         For alleles A*01:01 and A*01:02, the tree will have a root 'A',
@@ -299,6 +301,7 @@ class FieldTree:
         # For homozygous calls adjust the minimum support threshold
         if len(solutions) == 1:
             solutions = self.__get_consensus__(min_support_n)
+            solutions *= 2
 
         return self.__format_solutions_as_alleles__(solutions)
 

@@ -15,10 +15,12 @@ Author: Nicolás Mendoza Mejía (2023)
 
 from typing import List, Tuple
 
+import numpy as np
 import pandas as pd
 
 from ..allele import Allele, FieldTree
-from ..argtypes import output_path
+from ..argtypes import file_path, output_path
+from ..convert.alleleTable import AlleleTable
 from .ikmb_report import Gene, Report, read_json
 
 
@@ -59,6 +61,12 @@ def setup_parser(subparsers):
         default=0.6,
     )
     parser.add_argument(
+        "--phe",
+        type=file_path,
+        help="input phe file name (to add phenotype column)",
+        default="",
+    )
+    parser.add_argument(
         "--output",
         metavar="path",
         type=output_path,
@@ -95,12 +103,12 @@ def call_function(args):
     df = df[df["coverage"] >= args.min_coverage]
 
     # Convert and save file
-    alt = reports_as_allele_table(df)
-    alt.to_csv(args.output, sep="\t", index=True)
+    alt = reports_as_allele_table(df, args.phe)
+    alt.to_csv(args.output)
 
 
-def reports_as_allele_table(reports: pd.DataFrame) -> pd.DataFrame:
-    reports["alleles"].fillna("").apply(list)
+def reports_as_allele_table(reports: pd.DataFrame, phe_file: str) -> AlleleTable:
+    # reports["alleles"].fillna("").apply(list)
     # pivot table
     df_pivot = reports.pivot_table(
         values="alleles",
@@ -115,16 +123,19 @@ def reports_as_allele_table(reports: pd.DataFrame) -> pd.DataFrame:
     genes = [gene for gene in genes if gene != "sample"]
     for gene in genes:
         # Fill non genotyped alleles or filtered alleles
-        pairs = df_pivot[gene].fillna("").apply(list).tolist()
+        pairs = df_pivot.pop(gene).fillna("").apply(list).tolist()
         # Expand the pair to two columns
         df_pivot[[f"{gene}_1", f"{gene}_2"]] = pd.DataFrame(
             pairs, index=df_pivot.index)
-        df_pivot = df_pivot.drop(columns=[gene])
 
-    # Add phenotype column as the second column
-    df_pivot.insert(0, "phenotype", 0)
+    # Replace "" with nan
+    df_pivot.replace("", np.nan, inplace=True)
 
-    return df_pivot
+    alt = AlleleTable()
+    alt.alleles = df_pivot
+    alt.load_phenotype(phe_file)
+
+    return alt
 
 
 class ConsensusGene(Gene):
