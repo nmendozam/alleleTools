@@ -1,3 +1,4 @@
+import math
 import re
 from enum import Enum
 from typing import List, Tuple
@@ -138,6 +139,9 @@ class Allele:
         """Hash function for use in sets and dictionaries."""
         return hash(str(self))
 
+    def get_fields(self) -> List[str]:
+        return self.fields
+
     def truncate(self, new_resolution: int):
         """
         Reduce the resolution of the allele to the specified level.
@@ -242,6 +246,53 @@ class FieldTree:
         """
         return self.__str__()
 
+    def set_support(self, new_weight: float, recursive: bool = True) -> None:
+        """
+        Change the support value. When recursive is True, it will change the
+        support value for all children.
+        """
+        self.support = new_weight
+
+        if not recursive:
+            return
+
+        for child in self.children:
+            child.set_support(new_weight, recursive=recursive)
+
+    def add_batch(self, batch: List[list], weight: float = 1.0):
+        """
+        Helper method to append a list of field lists to the current tree.
+
+        Args:
+            batch (List[list]): A list containing lists of field values (str).
+        """
+        if len(batch) == 0:
+            return
+
+        for fields in batch:
+            self.add(fields, weight=weight)
+
+    def merge_tree(self, tree: "FieldTree"):
+        """
+        Merges a foreign tree into the current tree. The top level should
+        match with this tree.
+
+        Args:
+            tree (FieldTree): The foreign tree.
+        """
+        assert tree.field == self.field
+
+        self.support += tree.support
+
+        children = {child.field: child for child in self.children}
+
+        for t_child in tree.children:
+            if t_child.field not in children.keys():
+                self.children.append(t_child)
+                continue
+
+            children[t_child.field].merge_tree(t_child)
+
     def add(self, fields: list, weight: float = 1.0):
         """
         Add a sequence of fields to the tree, incrementing counts and creating
@@ -298,11 +349,14 @@ class FieldTree:
         # Look for consensus solutions
         max_support = self.support
         min_support_n = max_support * min_support
-        solutions = self.__get_consensus__(min_support_n / 2)
+        solutions = self.__get_consensus__(math.ceil(min_support_n))
 
         # Get the two most supported alleles
         solutions.sort(key=lambda i: i[1], reverse=True)
         solutions = solutions[:2]
+
+        # Now sort by allele name
+        solutions.sort(key=lambda i: i[0])
 
         # For homozygous calls adjust the minimum support threshold
         if len(solutions) == 1:
@@ -366,8 +420,14 @@ class FieldTree:
         solutions = list()
         for child in self.children:
             child_sol = child.__get_consensus__(min_support_number)
+            if not child_sol:
+                continue
             solutions.extend(self.__merge_with_current_node__(child_sol))
-        return solutions
+        
+        if solutions:
+            return solutions
+
+        return [(self.field, self.support)]
 
     def __merge_with_current_node__(
             self, res: List[Tuple[str, float]]

@@ -107,7 +107,9 @@ def call_function(args):
     alt.to_csv(args.output)
 
 
-def reports_as_allele_table(reports: pd.DataFrame, phe_file: str) -> AlleleTable:
+def reports_as_allele_table(
+        reports: pd.DataFrame, phe_file: str
+) -> AlleleTable:
     # reports["alleles"].fillna("").apply(list)
     # pivot table
     df_pivot = reports.pivot_table(
@@ -154,11 +156,24 @@ class ConsensusGene(Gene):
         """
         tree = FieldTree(self.name)
         for tool, alleles in self.calls.items():
-            alleles = set(alleles)
-            for allele in alleles:
-                p_allele = Allele(allele, gene=self.name)
-                tree.add(p_allele.fields)
+            if len(alleles) == 0:
+                continue
 
+            # Create a new tree for each tool
+            tool_tree = FieldTree(self.name)
+            alleles = set(alleles)  # Remove duplicates
+            alleles = [
+                Allele(allele, gene=self.name).get_fields()
+                for allele in alleles
+            ]
+            tool_tree.add_batch(alleles)
+            # All children count only as one vote (one tool)
+            tool_tree.set_support(new_weight=1, recursive=True)
+
+            # Now we submit the vote from this tool
+            tree.merge_tree(tool_tree)
+
+        # Get the consensus from the main tree
         alleles, support = tree.get_consensus(min_support=min_support)
         return alleles, support
 

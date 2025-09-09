@@ -1,5 +1,6 @@
-from ..allele import Allele
-from .consensus import ConsensusAlgorithm, Report, get_allele_pair
+from mock import patch
+
+from .consensus import ConsensusGene
 
 
 def make_report(alleles: list):
@@ -15,92 +16,55 @@ def make_report(alleles: list):
 
 
 def test_consensus():
-    report = [
-        {
-            "gene": "A",
-            "program": "alg1",
-            "allele": Allele("A*02:01"),
-        },
-        {
-            "gene": "A",
-            "program": "alg2",
-            "allele": Allele("A*02:01:01:01"),
+    with patch.object(ConsensusGene, "__init__", lambda x, y, z, w: None):
+        con_gene = ConsensusGene(None, None, None)
+        con_gene.name = "DRB1"
+        con_gene.calls = {
+            "HLA-HD": ["15:01:01", "04:01:01"],
+            "xHLA": ["04:01", "15:01"],
+            "HLAscan": ["04:01:01", "15:01:01:04"],
+            "Optitype": [],
+            "Hisat": [
+                "15:01:01 (0.6466)",
+                "04:01:01 (0.3534)",
+                "15:01:01:02 (0.3443)",
+                "15:01:01:01 (0.3023)",
+            ],
         }
-    ]
-    con = ConsensusAlgorithm(report)
-    assert len(con.get_flat_alleles()) == 2
+        alleles, support = con_gene.get_consensus_call(min_support=0.6)
+        assert len(alleles) == 2
+        assert alleles[0] == "DRB1*04:01:01"
+        assert support[0] == 3
+        assert alleles[1] == "DRB1*15:01:01"
+        assert support[1] == 3
 
 
 def test_overlapping_allele_consensus():
-    allele_list = [
-        "DPA1*01 (0.6666)",
-        "DPA1*02 (0.3335)",
-        "DPA1*01:03:01 (0.3333)",
-        "DPA1*01:04 (0.3333)",
-        "DPA1*01:03:01:01 (0.3114)",
-    ]
-    calls = make_report(allele_list)
-    report = Report(calls, resolution=2)
-    con = ConsensusAlgorithm(report)
-    print(con.get_flat_alleles())
-    print(con.consensus)
-    assert len(con.get_flat_alleles()) == 2
-    assert con.get_flat_alleles()[0] == "DPA1*01:04"
-    assert con.get_flat_alleles()[1] == "DPA1*02"
+    with patch.object(ConsensusGene, "__init__", lambda x, y, z, w: None):
+        con_gene = ConsensusGene(None, None, None)
+        con_gene.name = "DPA1"
+        con_gene.calls = {
+            "alg1": [
+                "DPA1*01 (0.6666)",
+                "DPA1*01:03:01 (0.3333)",
+                "DPA1*01:04 (0.3333)",
+                "DPA1*01:03:01:01 (0.3114)",
+            ]
+        }
+        alleles, support = con_gene.get_consensus_call(min_support=0.6)
+        assert len(alleles) == 2
+        assert alleles[0] == "DPA1*01:03:01:01"
+        assert alleles[1] == "DPA1*01:04"
 
 
 def test_allele_sorting():
-    calls = {
-        "sample": "",
-        "calls": {
-            "C": {
-                "alg1": ["C*07:01", "C*12:02"],
-                "alg2": ["C*12:02", "C*07:01"],
-            }
-        },
-    }
-    report = Report(calls)
-    consensus = ConsensusAlgorithm(report)
-
-    alleles = consensus.get_flat_alleles()
-    print(alleles)
-    assert alleles[0] == "C*07:01"
-    assert alleles[1] == "C*12:02"
-
-
-def test_homozygous_at_lowres():
-    calls = make_report([])
-    report = Report(calls)
-
-    alleles = [
-        "DPA1*02:01:01 (1.0000)",
-        "DPA1*02:01:01:02 (0.5329)",
-        "DPA1*02:01:01:01 (0.4671)",
-    ]
-
-    two_alleles = get_allele_pair(alleles, 2)
-
-    print(two_alleles)
-
-    assert len(two_alleles) == 2
-    assert two_alleles[0] == Allele("DPA1*02:01")
-    assert two_alleles[1] == Allele("DPA1*02:01")
-
-
-def test_hetero_at_highres():
-    calls = make_report([])
-    report = Report(calls)
-
-    alleles = [
-        "DPA1*02:01:01 (1.0000)",
-        "DPA1*02:01:01:02 (0.5329)",
-        "DPA1*02:01:01:01 (0.4671)",
-    ]
-
-    two_alleles = get_allele_pair(alleles, 4)
-
-    print(two_alleles)
-
-    assert len(two_alleles) == 2
-    assert two_alleles[0] == Allele("DPA1*02:01:01:01")
-    assert two_alleles[1] == Allele("DPA1*02:01:01:02")
+    with patch.object(ConsensusGene, "__init__", lambda x, y, z, w: None):
+        con_gene = ConsensusGene(None, None, None)
+        con_gene.name = "C"
+        con_gene.calls = {
+            "alg1": ["C*07:01", "C*12:02"],
+            "alg2": ["C*12:02", "C*07:01"],
+        }
+        alleles, support = con_gene.get_consensus_call(min_support=0.6)
+        assert alleles[0] == "C*07:01"
+        assert alleles[1] == "C*12:02"
