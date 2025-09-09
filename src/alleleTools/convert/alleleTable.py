@@ -100,7 +100,7 @@ class AlleleTable:
             exit(1)
 
     def to_csv(
-            self, filename: str, header: bool = False, population: str = ""
+            self, filename: str, header: bool = True, population: str = ""
     ):
         """
         Export the allele table to a CSV file.
@@ -123,7 +123,6 @@ class AlleleTable:
             # Move phenotype to the first column
             col = df.pop("phenotype")
             df.insert(0, "phenotype", col)
-
 
         # add population column at the beginning
         if population:
