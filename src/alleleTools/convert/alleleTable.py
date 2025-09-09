@@ -6,6 +6,7 @@ data structure for storing and manipulating allele data along with associated
 phenotype and covariate information.
 """
 
+import numpy as np
 import pandas as pd
 
 
@@ -82,6 +83,7 @@ class AlleleTable:
         """
         self.phenotype = phenotype
         self.phenotype.name = "phenotype"
+        self.phenotype.index.name = "sample"
         self.__verify_phe_samples__()
 
     def __verify_phe_samples__(self):
@@ -111,6 +113,9 @@ class AlleleTable:
                 population per allele table is supported.
         """
         df = self.alleles.copy()
+
+        # Convert alleles to string
+        df = df.map(str).replace("", np.nan)
 
         if not self.phenotype.empty:
             # Add phenotype to df, checking that the index matches
