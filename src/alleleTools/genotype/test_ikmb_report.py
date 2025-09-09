@@ -1,8 +1,10 @@
 import pandas as pd
 import pytest
 
-from .ikmb_report import Gene, Report
-from .plot_ikmb_coverage import read_reports_asdf, remove_HLA_prefix
+from alleleTools.genotype.consensus import ConsensusGene
+
+from .ikmb_report import Gene, Report, remove_HLA_prefix
+from .plot_ikmb_coverage import read_reports_asdf
 
 
 def test_remove_HLA_prefix():
@@ -32,19 +34,21 @@ class TestGeneConsensus:
             "alg1": ["A*01:01", "A*02:01"],
             "alg2": ["A*01:01", "A*02:01"],
         }
-        gene = Gene("A", coverage, calls)
-        assert gene.get_consensus_call() == ("A*01:01,A*02:01", 2)
+        gene = ConsensusGene("A", coverage, calls)
+        alleles, support = gene.get_consensus_call(min_support=0.6)
+        assert alleles == ['A*01:01', 'A*02:01']
+        assert support == [2, 2]
 
 
 def test_gene_asdict():
     coverage = [{"exon": 1, "mean_cov": 10}, {"exon": 2, "mean_cov": 30}]
     calls = {"HLA-HD": ["A*01:01", "A*02:01"]}
-    gene = Gene("A", coverage, calls)
-    d = gene.asdict()
+    gene = ConsensusGene("A", coverage, calls)
+    d = gene.consensus_dict(0.6)
     assert d["gene"] == "A"
     assert d["coverage"] == 20
-    assert type(d["consensus"]) == str
-    assert type(d["support"]) == int
+    assert type(d["alleles"][0]) == str
+    assert type(d["support"][0]) == int
 
 
 def test_report_aslist():
