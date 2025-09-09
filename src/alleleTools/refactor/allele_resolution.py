@@ -17,7 +17,12 @@ Example:
 
 Author: Nicolás Mendoza Mejía (2025)
 """
-import os
+
+import pandas as pd
+
+from alleleTools.allele import Allele
+
+from ..convert.alleleTable import AlleleTable
 
 
 def setup_parser(subparsers):
@@ -28,21 +33,21 @@ def setup_parser(subparsers):
         epilog="Author: Nicolás Mendoza Mejía (2025)",
     )
     parser.add_argument(
-        "resolution",
-        help="The resolution to normalize (e.g., 'one', 'two', 'three')",
-        type=str,
-        choices=["one", "two", "three"],
-        default="three",
-    )
-    parser.add_argument(
         "input",
         type=str,
         help="Path to the input file containing allele resolutions",
     )
     parser.add_argument(
-        "output",
+        "--output",
         type=str,
         help="Path to the output file where normalized allele resolutions will be saved",
+    )
+    parser.add_argument(
+        "--resolution",
+        help="The resolution to normalize (e.g., 'one', 'two', 'three')",
+        type=int,
+        choices=[1, 2, 3],
+        default=3,
     )
     parser.add_argument(
         "--prefix",
@@ -58,23 +63,33 @@ def call_function(args):
     """
     Normalize allele resolutions with the provided arguments.
     """
+    alt = open_allele_table(args.input)
+    alt = normalize_resolution(alt, resolution=args.resolution)
+    alt.to_csv(args.output)
 
-    # Get the base directory of the current script
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    cmd = ["bash", os.path.join(base_dir, "allele_resolution.sh")]
 
-    # Add the arguments provided by the user
-    cmd.append(args.resolution)
-    cmd.append(args.input)
-    cmd.append(args.output)
-    cmd.append(args.prefix)
+def open_allele_table(input: str, fields_separator: str = "\t") -> AlleleTable:
+    alt = AlleleTable()
+    df = pd.read_csv(input, sep=fields_separator)
 
-    # Execute the command
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    if result.returncode != 0:
-        print("Error running allele_resolution.sh:")
-        print("output:")
-        print(result.stdout)
-        print("error:")
-        print(result.stderr)
-        exit(result.returncode)
+    df.set_index("sample", inplace=True)
+
+    alt.phenotype = df.pop("phenotype")
+    alt.alleles = df
+
+    alt = parse_allele_table(alt, prefix="\\*")
+
+    return alt
+
+
+def normalize_resolution(alt: AlleleTable, resolution: int) -> AlleleTable:
+    alt.alleles = alt.alleles.map(lambda x: x.truncate(resolution))
+    return alt
+
+
+def parse_allele_table(alt: AlleleTable, prefix: str) -> AlleleTable:
+    df = alt.alleles.copy()
+    df.fillna("", inplace=True)
+    df = df.map(lambda x: Allele(x))
+    alt.alleles = df
+    return alt

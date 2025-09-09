@@ -6,7 +6,7 @@ including resolution standardization. These tools help ensure consistency across
 different allele datasets and facilitate downstream analysis.
 """
 
-from . import allele_resolution_wrapper
+from . import allele_resolution
 
 
 def setup_parser(subparsers):
@@ -37,6 +37,6 @@ def setup_parser(subparsers):
         required=True,
     )
 
-    allele_resolution_wrapper.setup_parser(refactor_parser)
+    allele_resolution.setup_parser(refactor_parser)
 
     return parser

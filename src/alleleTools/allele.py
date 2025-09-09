@@ -51,8 +51,8 @@ class Allele:
     """
 
     def __init__(self, code, gene: str = "") -> None:
-        if not code:
-            raise Exception("No allele to parse")
+        self.fields: List[str] = []
+        self.gene = ""
 
         if isinstance(code, list):
             assert len(gene) > 0
@@ -61,6 +61,9 @@ class Allele:
             return
 
         assert isinstance(code, str)
+
+        if code == "":
+            return
 
         # Extract confidence score (Hisat)
         confidence_score = re.search(r"\((.*?)\)", code)
@@ -111,6 +114,8 @@ class Allele:
         """
         if not hasattr(self, "gene"):
             return ""
+        if not self.gene and not self.fields:
+            return ""
         return f"{self.gene}*{':'.join(self.fields)}"
 
     def __len__(self) -> int:
@@ -144,8 +149,9 @@ class Allele:
             If new_resolution is greater than current resolution, no change is made.
         """
         if new_resolution > len(self):
-            return
+            return Allele("")
         self.fields = self.fields[:new_resolution]
+        return self
 
     def compare(self, allele: "Allele") -> AlleleMatchStatus:
         """
