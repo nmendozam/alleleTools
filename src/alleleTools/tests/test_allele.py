@@ -1,3 +1,5 @@
+import pytest
+
 from typing import List
 
 from ..allele import Allele, AlleleMatchStatus, FieldTree
@@ -23,7 +25,7 @@ def build_allele_tree(gene: str, alleles: List[Allele]) -> FieldTree:
         root.add(allele.fields)
     return root
 
-class TestAllele:
+class TestHlaAllele:
     def test_comparison_results(self):
         a1 = Allele("A*02:01")
         a2 = Allele("A*02:01:01:01")
@@ -43,6 +45,16 @@ class TestAllele:
         a1 = Allele("A*02")
         assert str(a1) == "A*02"
 
+
+class TestKirAllele:
+    @pytest.mark.parametrize("allele_str", [
+        "KIR2DL1*00302",
+        "KIR3DS1*013",
+        "KIR2DL4*null"
+    ])
+    def test_allele_parsing(self, allele_str):
+        a1 = Allele(allele_str)
+        assert str(a1) == allele_str
 
 
 class TestFieldTree:
