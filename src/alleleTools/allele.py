@@ -1,8 +1,11 @@
+import json
 import math
 import re
 from enum import Enum
 from typing import List, Tuple
+from abc import ABC, abstractmethod
 
+from .utils.assets import get_asset_path
 
 class AlleleMatchStatus(Enum):
     """
@@ -51,56 +54,23 @@ class Allele:
         >>> print(len(allele))  # 3
     """
 
-    def __init__(self, code, gene: str = "") -> None:
-        self.fields: List[str] = []
-        self.gene = ""
-
-        if isinstance(code, list):
-            assert len(gene) > 0
-            self.fields = code
-            self.gene = gene
-            return
-
-        assert isinstance(code, str)
-
-        if code == "":
-            print("Warning: Allele code was be empty")
-            return
+    def __init__(
+            self,
+            gene: str,
+            fields: List[str],
+            confidence: str | None = None,
+            gene_delimiter: str = "*",
+            field_delimiter: str = ":"
+            ):
+        self.fields: List[str] = fields
+        self.gene = gene
+        self.gene_delimiter = gene_delimiter
+        self.field_delimiter = field_delimiter
 
         # Extract confidence score (Hisat)
-        confidence_score = re.search(r"\((.*?)\)", code)
-        if confidence_score:
-            self.confidence = float(confidence_score.group(1))
+        if confidence:
+            self.confidence = float(confidence)
 
-        if gene:
-            self.gene = gene
-            # Extract allele name 01:01:01
-            self.__parse_fields(code)
-            return
-
-        # Extract allele name GENE*01:01:01
-        self.__parse_gene_and_fields(code)
-
-    def __parse_fields(self, code: str):
-        pattern = r"(\d{2})(:\d{2})*"
-        allele_pattern = re.search(pattern, code)
-
-        if not allele_pattern:
-            raise Exception(f"Error allele '{code}' is not parsable")
-
-        allele_code = allele_pattern.group(0)
-        self.fields = allele_code.split(":")
-
-    def __parse_gene_and_fields(self, code: str):
-        pattern = r"(\w+)\*(\d{2})(:\d{2})*"
-        allele_pattern = re.search(pattern, code)
-
-        if not allele_pattern:
-            raise Exception(f"Error allele '{code}' is not parsable")
-
-        allele_code = allele_pattern.group(0)
-        self.gene, fields = allele_code.split("*")
-        self.fields = fields.split(":")
 
     def __repr__(self) -> str:
         if not hasattr(self, "gene"):
@@ -118,7 +88,7 @@ class Allele:
             return ""
         if not self.gene and not self.fields:
             return ""
-        return f"{self.gene}*{':'.join(self.fields)}"
+        return f"{self.gene}{self.gene_delimiter}{self.field_delimiter.join(self.fields)}"
 
     def __len__(self) -> int:
         """
@@ -143,7 +113,7 @@ class Allele:
     def get_fields(self) -> List[str]:
         return self.fields
 
-    def truncate(self, new_resolution: int):
+    def truncate(self, new_resolution: int) -> "Allele":
         """
         Reduce the resolution of the allele to the specified level.
 
@@ -154,7 +124,7 @@ class Allele:
             If new_resolution is greater than current resolution, no change is made.
         """
         if new_resolution > len(self):
-            return Allele("")
+            return Allele("", [])
         self.fields = self.fields[:new_resolution]
         return self
 
@@ -192,6 +162,140 @@ class Allele:
             return AlleleMatchStatus.MORE_RESOLUTION
 
         return AlleleMatchStatus.EQUAL
+
+class ParsingStrategy(ABC):
+    """
+    Abstract base class for allele parsing strategies.
+    """
+    @abstractmethod
+    def parse(self, text: str) -> Allele:
+        pass
+
+class DelimitedParser(ParsingStrategy):
+    """
+    Parser for alleles using simple delimiters. Two parameters are needed:
+        - gene_delimiter: character that separates the gene name from the fields
+        - field_delimiter: character that separates the different fields
+    
+    Example:
+        For allele "A*01:02:03", gene_delimiter="*", field_delimiter=":"
+    Results:
+        1. gene = "A"
+        2. fields = ["01", "02", "03"]
+    """
+    def __init__(self, gene_delimiter: str, field_delimiter: str):
+        self.gene_delimiter = gene_delimiter
+        self.field_delimiter = field_delimiter
+
+    def parse(self, text: str) -> Allele:
+        parts = text.split(self.gene_delimiter)
+        if len(parts) != 2:
+            print(f"Warning: Could not parse allele from text '{text}'")
+            return Allele("", [])
+        gene = parts[0]
+        field_part = parts[1]
+        fields = field_part.split(self.field_delimiter)
+        return Allele(gene=gene, fields=fields, gene_delimiter=self.gene_delimiter, field_delimiter=self.field_delimiter)
+
+class RegexParser(ParsingStrategy):
+    """
+    Parser for alleles using regular expressions. It only requires the regex pattern.
+    It should contain named groups for 'gene', 'field1', 'field2', etc. An optional
+    group 'confidence' can also be included to capture confidence scores.
+
+    field_delimiter and gene_delimiter can also be specified. These parameters will only be used
+    to format the the allele string representation.
+
+    This parser is more flexible and robust than the DelimitedParser, as it can handle
+    more complex allele formats. However, it requires knowledge of regular expressions.
+
+    Example:
+        For allele "A*01",
+        pattern = r"(?:(?P<gene>\\w+)\\*)?(?P<field1>\\d{2})"
+    Results:
+        1. gene = "A"
+        2. fields = ["01"]
+    """
+    def __init__(self, pattern: str, field_delimiter: str, gene_delimiter: str):
+        self.pattern = re.compile(pattern)
+        self.field_delimiter = field_delimiter
+        self.gene_delimiter = gene_delimiter
+
+    def parse(self, text: str) -> Allele:
+        match = self.pattern.search(text)
+
+        if not match:
+            print(f"Warning: Could not parse allele from text '{text}'")
+            return Allele("", [])
+
+        fields = []
+        result = match.groupdict()
+        for key, value in result.items():
+            if key.startswith("field") and value is not None:
+                fields.append(value)
+        
+        return Allele(
+            gene=result.get('gene', ""),
+            fields=fields,
+            confidence=result.get('confidence', None),
+            field_delimiter=self.field_delimiter,
+            gene_delimiter=self.gene_delimiter
+        )
+
+
+class AlleleParser:
+    """
+    Configurable allele parser that supports multiple parsing strategies.
+    This class loads parsing configurations from a JSON file.
+
+    The configuration can be overwritten by providing a custom config file during
+    initialization (config_file parameter).
+
+    Use:
+        parser = AlleleParser(gene_family="hla", config_file="custom_config.json")
+        allele = parser.parse("A*01:02:03")
+    """
+
+    def __init__(self, gene_family: str, config_file: str = ""):
+        # Load default config
+        config_def = get_asset_path("parser_config.json")
+        with open(config_def, "r") as f:
+            self.config = json.load(f)
+
+        # Load custom config
+        if config_file != "":
+            with open(config_file, "r") as f:
+                self.config.update(json.load(f))
+
+        self.strategies = self._build_strategies()
+        self.set_gene_family(gene_family)
+
+    def _build_strategies(self):
+        strategies = dict()
+        for name, config in self.config.items():
+            if config['type'] == 'delimited':
+                strategies[name] = DelimitedParser(
+                    config['gene_delimiter'], config['field_delimiter']
+                )
+            elif config['type'] == 'regex':
+                strategies[name] = RegexParser(
+                    config['pattern'], field_delimiter=config.get('field_delimiter', ":"), gene_delimiter=config.get('gene_delimiter', "*")
+                )
+
+        return strategies
+
+    def set_gene_family(self, gene_family: str):
+        if gene_family not in self.strategies:
+            raise Exception(f"Gene '{gene_family}' not found in allele parser configuration")
+        self.gene_family = gene_family
+    
+    def get_delimiters(self) -> Tuple[str, str]:
+        strategy = self.strategies[self.gene_family]
+        return strategy.gene_delimiter, strategy.field_delimiter
+
+    def parse(self, code: str) -> Allele:
+        return self.strategies[self.gene_family].parse(code)
+
 
 
 class FieldTree:
@@ -326,12 +430,14 @@ class FieldTree:
         self.children.append(new_tree)
 
     def get_consensus(
-            self, min_support: float
+            self, min_support: float, gene_delimiter: str = "*", field_delimiter: str = ":"
     ) -> Tuple[List[str], List[float]]:
         """
         Gets a list of up to two possible consensus solutions that meet the
         criteria of the minimum support. This is basically a tree search
         algorithm.
+
+        Two additional parameters can be provided to format the allele strings.
 
         Args:
             min_support (float): minimum proportion of support required. Each
@@ -339,6 +445,8 @@ class FieldTree:
                 allele has been genotyped is stored in each node of the tree.
                 This value is used to filter consensus alleles based on their
                 support values.
+            gene_delimiter (str): Delimiter between gene name and fields.
+            field_delimiter (str): Delimiter between fields.
 
         Returns:
             Tuple[List[str], List[float]]: Consensus alleles and their support
@@ -364,10 +472,10 @@ class FieldTree:
             solutions = self.__get_consensus__(min_support_n)
             solutions *= 2
 
-        return self.__format_solutions_as_alleles__(solutions)
+        return self.__format_solutions_as_alleles__(solutions, gene_delimiter, field_delimiter)
 
     def __format_solutions_as_alleles__(
-            self, solutions: List[Tuple[str, float]]
+            self, solutions: List[Tuple[str, float]], gene_delimiter: str, field_delimiter: str
     ) -> Tuple[List[str], List[float]]:
         """
         Formats the solutions as two separate lists:
@@ -375,6 +483,8 @@ class FieldTree:
         Args:
             solutions (list): is a list of the found consensus alleles with
                 their scores
+            gene_delimiter (str): Delimiter between gene name and fields.
+            field_delimiter (str): Delimiter between fields.
 
 
         Returns:
@@ -395,7 +505,7 @@ class FieldTree:
 
             # Use the allele class as an interface to format the string
             alleles.append(
-                str(Allele(code=nodes[1:], gene=nodes[0]))
+                str(Allele(gene=nodes[0], fields=nodes[1:], gene_delimiter=gene_delimiter, field_delimiter=field_delimiter))
             )
 
         return alleles, supports

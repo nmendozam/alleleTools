@@ -3,7 +3,7 @@ from typing import List, Tuple
 
 import pandas as pd
 
-from ..allele import Allele
+from ..allele import AlleleParser
 
 
 def remove_HLA_prefix(coverage: dict) -> dict:
@@ -32,14 +32,16 @@ class Gene:
     This object holds the genes parsed from genotyping reports
     """
 
-    def __init__(self, name: str, coverage: List[dict], calls: dict):
+    def __init__(self, name: str, coverage: List[dict], calls: dict, allele_parser: AlleleParser):
         self.name = name
         self.coverage = pd.DataFrame(coverage)
         self.calls = calls
+        self.allele_parser = allele_parser
 
         self.alleles = list()
         for alleles in self.calls.values():
-            self.alleles.extend([str(Allele(a, gene=self.name)) for a in alleles])
+            parsed_calls = [str(self.allele_parser.parse(a)) for a in alleles]
+            self.alleles.extend(parsed_calls)
 
     def __str__(self) -> str:
         return str(
@@ -68,8 +70,10 @@ class Gene:
 
 
 class Report:
-    def __init__(self, report: dict):
+    def __init__(self, report: dict, allele_parser: AlleleParser):
         self.sample = report["sample"]
+
+        self.allele_parser = allele_parser
 
         self.__parse_genes__(calls=report["calls"], coverage=report["coverage"])
 
@@ -87,11 +91,11 @@ class Report:
             )
             self.genes.append(g)
 
-    def __parse_gene__(self, name: str, coverage: List[dict], calls: dict):
+    def __parse_gene__(self, name: str, coverage: List[dict], calls: dict) -> Gene:
         """
         Parses a single gene from the report.
         """
-        return Gene(name=name, coverage=coverage, calls=calls)
+        return Gene(name=name, coverage=coverage, calls=calls, allele_parser=self.allele_parser)
 
     def aslist(self) -> List[dict]:
         """

@@ -3,13 +3,14 @@ Given that we want to group epitopes by genus, we need to
 query the Taxonomy database to get the genus name for each
 TaxId.
 """
-# %%
+
+from typing import Any
 import pandas as pd
 from Bio import Entrez
 from Bio.Entrez import efetch, read
 
 
-def extract_rank(row) -> pd.DataFrame:
+def extract_rank(row) -> pd.Series[Any]:
     linage = row["LineageEx"]
     extract = ["TaxId", "ScientificName", "Division"]
     new_row = {tag: row[tag] for tag in extract}

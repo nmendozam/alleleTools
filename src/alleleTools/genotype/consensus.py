@@ -18,7 +18,7 @@ from typing import List, Tuple
 import numpy as np
 import pandas as pd
 
-from ..allele import Allele, FieldTree
+from ..allele import AlleleParser, FieldTree
 from ..argtypes import file_path, output_path
 from ..convert.alleleTable import AlleleTable
 from .ikmb_report import Gene, Report, read_json
@@ -73,6 +73,18 @@ def setup_parser(subparsers):
         help="Path to output file",
         default="output.alt",
     )
+    parser.add_argument(
+        "--gene_family",
+        type=str,
+        help="Specify the gene family e.i. 'hla', 'kir'",
+        default="hla",
+    )
+    parser.add_argument(
+        "--config_file",
+        type=file_path,
+        help="Path to a custom allele parsing configuration file",
+        default="",
+    )
 
     parser.set_defaults(func=call_function)
 
@@ -92,10 +104,12 @@ def call_function(args):
             - input: List of JSON file handles with genotyping reports
             - output: Path to output consensus file
     """
+    parser = AlleleParser(gene_family=args.gene_family, config_file=args.config_file)
+
     reports = list()
     for file in args.input:
         j = read_json(file)
-        report = ConsensusReport(j)
+        report = ConsensusReport(j, allele_parser=parser)
         reports.extend(report.consensus(args.min_support))
 
     # Filter under covered sample's genes
@@ -163,7 +177,7 @@ class ConsensusGene(Gene):
             tool_tree = FieldTree(self.name)
             alleles = set(alleles)  # Remove duplicates
             alleles = [
-                Allele(allele, gene=self.name).get_fields()
+                self.allele_parser.parse(self.name + '*' + allele).get_fields()
                 for allele in alleles
             ]
             tool_tree.add_batch(alleles)
@@ -173,8 +187,15 @@ class ConsensusGene(Gene):
             # Now we submit the vote from this tool
             tree.merge_tree(tool_tree)
 
+        # Get delimiters
+        gene_delimiter, field_delimiter = self.allele_parser.get_delimiters()
+
         # Get the consensus from the main tree
-        alleles, support = tree.get_consensus(min_support=min_support)
+        alleles, support = tree.get_consensus(
+            min_support=min_support,
+            gene_delimiter=gene_delimiter,
+            field_delimiter=field_delimiter
+            )
         return alleles, support
 
     def consensus_dict(self, min_support: float) -> dict:
@@ -200,7 +221,7 @@ class ConsensusReport(Report):
     def __parse_gene__(
         self, name: str, coverage: List[dict], calls: dict
     ) -> ConsensusGene:
-        return ConsensusGene(name, coverage, calls)
+        return ConsensusGene(name, coverage, calls, self.allele_parser)
 
     def consensus(self, min_support: float) -> List[dict]:
         """

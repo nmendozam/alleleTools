@@ -18,9 +18,10 @@ Example:
 Author: Nicolás Mendoza Mejía (2025)
 """
 
+from alleleTools.argtypes import file_path
 import pandas as pd
 
-from alleleTools.allele import Allele
+from alleleTools.allele import AlleleParser
 
 from ..convert.alleleTable import AlleleTable
 
@@ -50,11 +51,18 @@ def setup_parser(subparsers):
         default=3,
     )
     parser.add_argument(
-        "--prefix",
+        "--gene_family",
         type=str,
-        help="Symbol separating gene name from allele number. For HLA-A*01:02 is * (default: '\\*')",
-        default="\\*",
+        help="Specify the gene family e.i. 'hla', 'kir'",
+        default="hla",
     )
+    parser.add_argument(
+        "--config_file",
+        type=file_path,
+        help="Path to a custom allele parsing configuration file",
+        default="",
+    )
+
 
     parser.set_defaults(func=call_function)
 
@@ -63,12 +71,13 @@ def call_function(args):
     """
     Normalize allele resolutions with the provided arguments.
     """
-    alt = open_allele_table(args.input)
+    parser = AlleleParser(gene_family=args.gene_family, config_file=args.config_file)
+    alt = open_allele_table(args.input, allele_parser=parser)
     alt = normalize_resolution(alt, resolution=args.resolution)
     alt.to_csv(args.output)
 
 
-def open_allele_table(input: str, fields_separator: str = "\t") -> AlleleTable:
+def open_allele_table(input: str, allele_parser: AlleleParser, fields_separator: str = "\t") -> AlleleTable:
     alt = AlleleTable()
     df = pd.read_csv(input, sep=fields_separator)
 
@@ -77,7 +86,7 @@ def open_allele_table(input: str, fields_separator: str = "\t") -> AlleleTable:
     alt.phenotype = df.pop("phenotype")
     alt.alleles = df
 
-    alt = parse_allele_table(alt, prefix="\\*")
+    alt = parse_allele_table(alt, allele_parser=allele_parser)
 
     return alt
 
@@ -87,9 +96,9 @@ def normalize_resolution(alt: AlleleTable, resolution: int) -> AlleleTable:
     return alt
 
 
-def parse_allele_table(alt: AlleleTable, prefix: str) -> AlleleTable:
+def parse_allele_table(alt: AlleleTable, allele_parser: AlleleParser) -> AlleleTable:
     df = alt.alleles.copy()
     df.fillna("", inplace=True)
-    df = df.map(lambda x: Allele(x))
+    df = df.map(lambda x: allele_parser.parse(x))
     alt.alleles = df
     return alt

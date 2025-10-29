@@ -1,3 +1,4 @@
+from alleleTools.allele import AlleleParser
 import pandas as pd
 import pytest
 
@@ -6,6 +7,7 @@ from alleleTools.genotype.consensus import ConsensusGene
 from .ikmb_report import Gene, Report, remove_HLA_prefix
 from .plot_ikmb_coverage import read_reports_asdf
 
+parser = AlleleParser(gene_family="hla")
 
 def test_remove_HLA_prefix():
     cov = {"HLA-A": [1, 2], "HLA-B": [3, 4], "C": [5]}
@@ -20,13 +22,13 @@ def test_remove_HLA_prefix():
 def test_gene_mean_coverage():
     coverage = [{"exon": 1, "mean_cov": 10}, {"exon": 2, "mean_cov": 30}]
     calls = {"HLA-HD": ["A*01:01", "A*02:01"]}
-    gene = Gene("A", coverage, calls)
+    gene = Gene("A", coverage, calls, allele_parser=parser)
     assert gene.mean_coverage() == 20
 
 
 class TestGeneConsensus:
     @pytest.fixture
-    def coverage(self) -> dict:
+    def coverage(self) -> list:
         return [{"exon": 1, "mean_cov": 10}, {"exon": 2, "mean_cov": 30}]
 
     def test_similar_calls(self, coverage):
@@ -34,7 +36,20 @@ class TestGeneConsensus:
             "alg1": ["A*01:01", "A*02:01"],
             "alg2": ["A*01:01", "A*02:01"],
         }
-        gene = ConsensusGene("A", coverage, calls)
+        gene = ConsensusGene("A", coverage, calls, allele_parser=parser)
+        alleles, support = gene.get_consensus_call(min_support=0.6)
+        assert alleles == ['A*01:01', 'A*02:01']
+        assert support == [2, 2]
+
+    def test_no_gene_name(self, coverage):
+        """
+        Depending on the version the IkMB reports might not have a gene name.
+        """
+        calls = {
+            "alg1": ["01:01", "02:01"],
+            "alg2": ["01:01", "02:01"],
+        }
+        gene = ConsensusGene("A", coverage, calls, allele_parser=parser)
         alleles, support = gene.get_consensus_call(min_support=0.6)
         assert alleles == ['A*01:01', 'A*02:01']
         assert support == [2, 2]
@@ -43,7 +58,9 @@ class TestGeneConsensus:
 def test_gene_asdict():
     coverage = [{"exon": 1, "mean_cov": 10}, {"exon": 2, "mean_cov": 30}]
     calls = {"HLA-HD": ["A*01:01", "A*02:01"]}
-    gene = ConsensusGene("A", coverage, calls)
+
+    gene = ConsensusGene("A", coverage, calls, allele_parser=parser)
+
     d = gene.consensus_dict(0.6)
     assert d["gene"] == "A"
     assert d["coverage"] == 20
@@ -63,7 +80,7 @@ def test_report_aslist():
             "HLA-B": [{"exon": 1, "mean_cov": 40}, {"exon": 2, "mean_cov": 60}],
         },
     }
-    report = Report(report_dict)
+    report = Report(report_dict, allele_parser=parser)
     aslist = report.aslist()
     assert isinstance(aslist, list)
     assert aslist[0]["gene"] == "A"
@@ -92,7 +109,7 @@ def test_read_reports_asdf(tmp_path):
     file2 = tmp_path / "file2.json"
     file1.write_text(str(data1).replace("'", '"'))
     file2.write_text(str(data2).replace("'", '"'))
-    df = read_reports_asdf([str(file1), str(file2)])
+    df = read_reports_asdf([str(file1), str(file2)], allele_parser=parser)
     assert isinstance(df, pd.DataFrame)
     assert set(df["sample"]) == {"S1", "S2"}
     assert set(df["gene"]) == {"A", "B"}

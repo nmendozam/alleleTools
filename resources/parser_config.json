@@ -1,0 +1,20 @@
+{
+    "hla": {
+        "type": "regex",
+        "pattern":"(?:(?P<gene>\\w+)\\*)(?P<field1>\\d{2})(?::(?P<field2>\\d{2}))?(?::(?P<field3>\\d{2}))?(?::(?P<field4>\\d{2}))?"
+    },
+    "kir": {
+        "type": "regex",
+        "pattern": "(?P<gene>KIR[\\d\\w]*)\\*(?P<field1>\\d{3})(?P<field2>\\d{2})?(?P<field3>\\d{2})?",
+        "field_delimiter": ""
+    },
+    "hla_hisat": {
+        "type": "regex",
+        "pattern":"(?:(?P<gene>\\w+)\\*)?(?P<field1>\\d{2})(?::(?P<field2>\\d{2}))?(?::(?P<field3>\\d{2}))?(?::(?P<field4>\\d{2}))?(?: \\((?P<confidence>.*?)\\))?"
+    },
+    "hla_delimited": {
+        "type": "delimited",
+        "gene_delimiter": "*",
+        "field_delimiter": ":"
+    }
+}

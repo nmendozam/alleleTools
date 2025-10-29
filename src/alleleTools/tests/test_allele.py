@@ -2,7 +2,7 @@ import pytest
 
 from typing import List
 
-from ..allele import Allele, AlleleMatchStatus, FieldTree
+from ..allele import Allele, AlleleMatchStatus, FieldTree, AlleleParser
 
 
 def build_allele_tree(gene: str, alleles: List[Allele]) -> FieldTree:
@@ -25,24 +25,73 @@ def build_allele_tree(gene: str, alleles: List[Allele]) -> FieldTree:
         root.add(allele.fields)
     return root
 
+class TestAlleleParser:
+    def test_default_parser(self):
+        parser = AlleleParser(gene_family="hla")
+        assert "hla" in parser.config
+        assert "kir" in parser.config
+        assert "hla_hisat" in parser.config
+        assert "hla_delimited" in parser.config
+
+    def test_hla_parsing(self):
+        parser = AlleleParser(gene_family="hla")
+        allele_str = "A*02:01:01:01 (high confidence)"
+        allele = parser.parse(allele_str)
+
+        print(allele)
+        
+        assert allele.gene == "A"
+        assert allele.fields == ["02", "01", "01", "01"]
+
+    def test_hla_hisat_parsing(self):
+        parser = AlleleParser(gene_family="hla_hisat")
+        allele_str = "A*02:01:01:01 (0.5)"
+        allele = parser.parse(allele_str)
+
+        print(allele)
+
+        assert allele.gene == "A"
+        assert allele.fields == ["02", "01", "01", "01"]
+        assert allele.confidence == 0.5
+
+    def test_delimited_parsing(self):
+        parser = AlleleParser(gene_family="hla_delimited")
+        allele_str = "A*02:01:01:01"
+        allele = parser.parse(allele_str)
+
+        print(allele)
+        
+        assert allele.gene == "A"
+        assert allele.fields == ["02", "01", "01", "01"]
+    
+    def test_wrong_parser(self):
+        # check that the exception is raised
+        with pytest.raises(Exception):
+            parser = AlleleParser(gene_family="wrong_parser")
+            allele_str = "InvalidAlleleString"
+            parser.parse(allele_str)
+
+
 class TestHlaAllele:
+    parser = AlleleParser(gene_family="hla")
+
     def test_comparison_results(self):
-        a1 = Allele("A*02:01")
-        a2 = Allele("A*02:01:01:01")
+        a1 = self.parser.parse("A*02:01")
+        a2 = self.parser.parse("A*02:01:01:01")
 
         assert a1.compare(a2) == AlleleMatchStatus.MORE_RESOLUTION
         assert a2.compare(a1) == AlleleMatchStatus.LESS_RESOLUTION
         assert a1.compare(a1) == AlleleMatchStatus.EQUAL
 
-        a3 = Allele("B*02:01:01:01")
+        a3 = self.parser.parse("B*02:01:01:01")
         assert a1.compare(a3) == AlleleMatchStatus.NOT_EQUAL
 
 
     def test_allele_parsing(self):
-        a1 = Allele("A*02:01")
+        a1 = self.parser.parse("A*02:01")
         assert str(a1) == "A*02:01"
 
-        a1 = Allele("A*02")
+        a1 = self.parser.parse("A*02")
         assert str(a1) == "A*02"
 
 
@@ -50,16 +99,20 @@ class TestKirAllele:
     @pytest.mark.parametrize("allele_str", [
         "KIR2DL1*00302",
         "KIR3DS1*013",
-        "KIR2DL4*null"
+        "KIR2DL4*000"
     ])
     def test_allele_parsing(self, allele_str):
-        a1 = Allele(allele_str)
+        parser = AlleleParser(gene_family="kir")
+        a1 = parser.parse(allele_str)
+
+        assert isinstance(a1, Allele)
         assert str(a1) == allele_str
 
 
 class TestFieldTree:
     def parse_alleles(self, alleles: list) -> list:
-        return [Allele(a) for a in alleles]
+        parser = AlleleParser(gene_family="hla")
+        return [parser.parse(a) for a in alleles]
 
     def test_one_allele(self):
         alleles = ["A*01"]

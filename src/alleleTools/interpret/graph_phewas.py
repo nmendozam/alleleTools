@@ -75,7 +75,7 @@ def call_function(args):
 
 def create_phewas_plot(input_file: str,
                        output_file: str,
-                       figsize: Tuple[int, ...] = (15, 6),
+                       figsize: Tuple[float, float] = (15, 6),
                        significance_threshold: float = 10**-5,
                        allele_name: str = '',
                        ):
@@ -112,7 +112,7 @@ def create_phewas_plot(input_file: str,
                 f"No data found for allele name '{allele_name}' in the input file. Check that the argument --allele_name matches with the provided input file.")
 
     df.sort_values(by='Category', inplace=True)
-    df.index = range(len(df.index))
+    df.reset_index(drop=True, inplace=True)
     df["position"] = df.index
 
     # Calculate -log10(P-value)
@@ -140,7 +140,7 @@ def create_phewas_plot(input_file: str,
     beginning = group_cat['position'].min()
     sizes = group_cat['position'].size()
     middle = ((sizes / 2) + beginning).sort_values()
-    plt.xticks(middle.to_list(), middle.index, rotation=45, ha='right')
+    plt.xticks(middle.to_list(), list(middle.index), rotation=45, ha='right')
 
     # Set x and y limits
     plt.xlim(0, len(df.index))  # Adjust x-axis limits based on your data
