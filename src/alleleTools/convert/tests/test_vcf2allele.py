@@ -1,5 +1,5 @@
 from ..vcf2allele import VCF
-from ..utils.assets import get_asset_path
+from ...utils.assets import get_asset_path
 
 
 def test_read_vcf():
