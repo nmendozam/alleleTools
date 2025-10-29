@@ -8,11 +8,11 @@ and genomic coordinate mapping.
 
 Author: Nicolás Mendoza Mejía (2023)
 """
-import os
 
 import pandas as pd
 
 from ..argtypes import file_path
+from ..utils.assets import get_asset_path
 
 
 def setup_parser(subparsers):
@@ -101,14 +101,10 @@ def call_function(args):
         exit(1)
     
     if not args.loci_file:
-        from .. import alleleTools
-        path = os.path.dirname(os.path.abspath(alleleTools.__file__))
-        # remove two levels to get to the root of the package
-        path = os.path.dirname(os.path.dirname(path))
         if args.gene_cluster == "HLA":
-            args.loci_file = os.path.join(path, "resources/gene_table.tsv")
+            args.loci_file = get_asset_path("gene_table.tsv")
         elif args.gene_cluster == "KIR":
-            args.loci_file = os.path.join(path, "resources/gene_table_kir.tsv")
+            args.loci_file = get_asset_path("gene_table_kir.tsv")
         else:
             print(
                 "Error: --gene_cluster must be either 'HLA' or 'KIR'."

@@ -1,8 +1,9 @@
 from ..vcf2allele import VCF
+from ..utils.assets import get_asset_path
 
 
 def test_read_vcf():
-    vcf_file = "resources/kir_example.vcf"
+    vcf_file = get_asset_path("resources/kir_example.vcf")
     vcf = VCF(vcf_file)
 
     expected_columns = [
