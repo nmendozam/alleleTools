@@ -64,6 +64,7 @@ class Allele:
         assert isinstance(code, str)
 
         if code == "":
+            print("Warning: Allele code was be empty")
             return
 
         # Extract confidence score (Hisat)

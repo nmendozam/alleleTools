@@ -7,7 +7,7 @@ conversions from various sources including UK Biobank data and standard
 genomic formats.
 """
 
-from . import allele2vcf, ukb2allele, vcf2allele
+from . import allele2vcf, ukb2allele, vcf2allele, kir_mapper
 
 
 def setup_parser(subparsers):
@@ -44,5 +44,6 @@ def setup_parser(subparsers):
     vcf2allele.setup_parser(convert_parser)
     allele2vcf.setup_parser(convert_parser)
     ukb2allele.setup_parser(convert_parser)
+    kir_mapper.setup_parser(convert_parser)
 
     return parser

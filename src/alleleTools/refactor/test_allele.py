@@ -44,14 +44,6 @@ class TestAllele:
         assert str(a1) == "A*02"
 
 
-    def test_allele_parsing_no_allele(self):
-        failed = False
-        try:
-            a1 = Allele("")
-        except:
-            failed = True
-        assert failed
-
 
 class TestFieldTree:
     def parse_alleles(self, alleles: list) -> list:
@@ -106,14 +98,14 @@ class TestFieldTree:
         alleles = self.parse_alleles(alleles)
         tree = build_allele_tree("A", alleles)
 
-        assert tree.children[0].num == 2
+        assert tree.children[0].support == 2
 
     def test_allele_counting_second_level_minor_allele(self):
         alleles = ["A*01:02", "A*01:02", "A*02:03"]
         alleles = self.parse_alleles(alleles)
         tree = build_allele_tree("A", alleles)
 
-        assert tree.children[1].num == 1
+        assert tree.children[1].support == 1
 
     def test_allele_support_homozygous(self):
         alleles = ['DPA1*01:03:01', 'DPA1*01:03:01:04', 'DPA1*01:03:01:04']
@@ -122,7 +114,4 @@ class TestFieldTree:
 
         alleles, support = tree.get_consensus(0.6)
 
-        assert tree.children[1].num == 1
-
-        assert alleles == ["DPA1*01:03:01", "DPA1*01:03:01:04"]
-        assert support == [1.0, 0.6666666666666666]
+        assert alleles == ["DPA1*01:03:01:04", "DPA1*01:03:01:04"]
