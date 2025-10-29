@@ -97,3 +97,8 @@ filterwarnings = """
 line-length = 88
 target-version = ['py39']
 
+
+[tool.coverage.report]
+omit = [
+    "**/test_*",
+]
