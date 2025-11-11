@@ -32,7 +32,7 @@ class Gene:
     This object holds the genes parsed from genotyping reports
     """
 
-    def __init__(self, name: str, coverage: List[dict], calls: dict, allele_parser: AlleleParser):
+    def __init__(self, name: str, calls: dict, allele_parser: AlleleParser, coverage: List[dict] = []):
         self.name = name
         self.coverage = pd.DataFrame(coverage)
         self.calls = calls
@@ -44,18 +44,23 @@ class Gene:
             self.alleles.extend(parsed_calls)
 
     def __str__(self) -> str:
-        return str(
-            {
-                "name": self.name,
-                "calls": self.calls,
-                "mean_cov": self.mean_coverage(),
-            }
-        )
+        ret = {
+            "name": self.name,
+            "calls": self.calls,
+        }
 
-    def mean_coverage(self) -> float:
+        if not self.coverage.empty:
+            ret["mean_cov"] = self.mean_coverage()
+
+        return str(ret)
+
+    def mean_coverage(self) -> float | None:
         """
         Get the mean coverage of exons from the gene
         """
+        if "mean_cov" not in self.coverage.columns:
+            return None
+
         mean_cov = self.coverage["mean_cov"].mean()
         return float(mean_cov)
 
@@ -75,7 +80,8 @@ class Report:
 
         self.allele_parser = allele_parser
 
-        self.__parse_genes__(calls=report["calls"], coverage=report["coverage"])
+        self.__parse_genes__(
+            calls=report["calls"], coverage=report["coverage"])
 
     def __parse_genes__(self, calls: dict, coverage: dict):
         """

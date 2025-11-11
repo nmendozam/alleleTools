@@ -72,6 +72,21 @@ class AlleleTable:
 
         self.set_phenotype(phe["phenotype"])
 
+    def remove_phenotype_zero(self) -> None:
+        """
+        Remove samples with phenotype value equal to zero from the AlleleTable.
+        """
+        if self.phenotype.empty:
+            print("WARNING: Phenotype is empty, cannot remove samples with phenotype zero.")
+            return
+
+        non_zero_samples = self.phenotype[self.phenotype != 0].index
+
+        self.alleles = self.alleles.loc[non_zero_samples]
+        self.phenotype = self.phenotype.loc[non_zero_samples]
+        if not self.covariates.empty:
+            self.covariates = self.covariates.loc[non_zero_samples]
+
     def set_phenotype(self, phenotype: pd.Series) -> None:
         """
         Stores the phenotype series in the AlleleTable

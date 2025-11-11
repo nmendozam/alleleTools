@@ -7,6 +7,7 @@ from abc import ABC, abstractmethod
 
 from .utils.assets import get_asset_path
 
+
 class AlleleMatchStatus(Enum):
     """
     Enumeration for allele comparison results.
@@ -61,7 +62,7 @@ class Allele:
             confidence: str | None = None,
             gene_delimiter: str = "*",
             field_delimiter: str = ":"
-            ):
+    ):
         self.fields: List[str] = fields
         self.gene = gene
         self.gene_delimiter = gene_delimiter
@@ -70,7 +71,6 @@ class Allele:
         # Extract confidence score (Hisat)
         if confidence:
             self.confidence = float(confidence)
-
 
     def __repr__(self) -> str:
         if not hasattr(self, "gene"):
@@ -163,6 +163,7 @@ class Allele:
 
         return AlleleMatchStatus.EQUAL
 
+
 class ParsingStrategy(ABC):
     """
     Abstract base class for allele parsing strategies.
@@ -171,18 +172,20 @@ class ParsingStrategy(ABC):
     def parse(self, text: str) -> Allele:
         pass
 
+
 class DelimitedParser(ParsingStrategy):
     """
     Parser for alleles using simple delimiters. Two parameters are needed:
         - gene_delimiter: character that separates the gene name from the fields
         - field_delimiter: character that separates the different fields
-    
+
     Example:
         For allele "A*01:02:03", gene_delimiter="*", field_delimiter=":"
     Results:
         1. gene = "A"
         2. fields = ["01", "02", "03"]
     """
+
     def __init__(self, gene_delimiter: str, field_delimiter: str):
         self.gene_delimiter = gene_delimiter
         self.field_delimiter = field_delimiter
@@ -196,6 +199,7 @@ class DelimitedParser(ParsingStrategy):
         field_part = parts[1]
         fields = field_part.split(self.field_delimiter)
         return Allele(gene=gene, fields=fields, gene_delimiter=self.gene_delimiter, field_delimiter=self.field_delimiter)
+
 
 class RegexParser(ParsingStrategy):
     """
@@ -216,6 +220,7 @@ class RegexParser(ParsingStrategy):
         1. gene = "A"
         2. fields = ["01"]
     """
+
     def __init__(self, pattern: str, field_delimiter: str, gene_delimiter: str):
         self.pattern = re.compile(pattern)
         self.field_delimiter = field_delimiter
@@ -233,7 +238,7 @@ class RegexParser(ParsingStrategy):
         for key, value in result.items():
             if key.startswith("field") and value is not None:
                 fields.append(value)
-        
+
         return Allele(
             gene=result.get('gene', ""),
             fields=fields,
@@ -286,9 +291,10 @@ class AlleleParser:
 
     def set_gene_family(self, gene_family: str):
         if gene_family not in self.strategies:
-            raise Exception(f"Gene '{gene_family}' not found in allele parser configuration")
+            raise Exception(
+                f"Gene '{gene_family}' not found in allele parser configuration")
         self.gene_family = gene_family
-    
+
     def get_delimiters(self) -> Tuple[str, str]:
         strategy = self.strategies[self.gene_family]
         return strategy.gene_delimiter, strategy.field_delimiter
@@ -296,6 +302,14 @@ class AlleleParser:
     def parse(self, code: str) -> Allele:
         return self.strategies[self.gene_family].parse(code)
 
+
+class Solution:
+    def __init__(self, allele: str, support: float) -> None:
+        self.allele = allele
+        self.support = support
+    def __iter__(self):
+        yield self.allele
+        yield self.support
 
 
 class FieldTree:
@@ -430,7 +444,11 @@ class FieldTree:
         self.children.append(new_tree)
 
     def get_consensus(
-            self, min_support: float, gene_delimiter: str = "*", field_delimiter: str = ":"
+            self,
+            min_support: float,
+            gene_delimiter: str = "*",
+            field_delimiter: str = ":",
+            max_support: float = 0,
     ) -> Tuple[List[str], List[float]]:
         """
         Gets a list of up to two possible consensus solutions that meet the
@@ -456,26 +474,26 @@ class FieldTree:
         assert min_support <= 1 and min_support >= 0
 
         # Look for consensus solutions
-        max_support = self.support
+        if not max_support:
+            max_support = self.support
         min_support_n = max_support * min_support
         solutions = self.__get_consensus__(math.ceil(min_support_n))
 
         # Get the two most supported alleles
-        solutions.sort(key=lambda i: i[1], reverse=True)
+        solutions.sort(key=lambda sol: sol.support, reverse=True)
         solutions = solutions[:2]
 
         # Now sort by allele name
-        solutions.sort(key=lambda i: i[0])
+        solutions.sort(key=lambda sol: sol.allele)
 
         # For homozygous calls adjust the minimum support threshold
-        if len(solutions) == 1:
-            solutions = self.__get_consensus__(min_support_n)
+        if len(solutions) == 1 and solutions[0].support >= max_support / 2:
             solutions *= 2
 
         return self.__format_solutions_as_alleles__(solutions, gene_delimiter, field_delimiter)
 
     def __format_solutions_as_alleles__(
-            self, solutions: List[Tuple[str, float]], gene_delimiter: str, field_delimiter: str
+            self, solutions: List[Solution], gene_delimiter: str, field_delimiter: str
     ) -> Tuple[List[str], List[float]]:
         """
         Formats the solutions as two separate lists:
@@ -505,14 +523,15 @@ class FieldTree:
 
             # Use the allele class as an interface to format the string
             alleles.append(
-                str(Allele(gene=nodes[0], fields=nodes[1:], gene_delimiter=gene_delimiter, field_delimiter=field_delimiter))
+                str(Allele(gene=nodes[0], fields=nodes[1:],
+                    gene_delimiter=gene_delimiter, field_delimiter=field_delimiter))
             )
 
         return alleles, supports
 
     def __get_consensus__(
             self, min_support_number: float
-    ) -> List[Tuple[str, float]]:
+    ) -> List[Solution]:
         """
         Get consensus solutions from the field tree.
 
@@ -526,7 +545,7 @@ class FieldTree:
         if self.support < min_support_number:
             return list()
         if len(self.children) <= 0:
-            return [(self.field, self.support)]
+            return [Solution(self.field, self.support)]
 
         solutions = list()
         for child in self.children:
@@ -534,15 +553,15 @@ class FieldTree:
             if not child_sol:
                 continue
             solutions.extend(self.__merge_with_current_node__(child_sol))
-        
+
         if solutions:
             return solutions
 
-        return [(self.field, self.support)]
+        return [Solution(self.field, self.support)]
 
     def __merge_with_current_node__(
             self, res: List[Tuple[str, float]]
-    ) -> List[Tuple[str, float]]:
+    ) -> List[Solution]:
         """
         Takes as input the list of possible consensus from child nodes
         and merges it with the current node's field. If no response was
@@ -554,8 +573,8 @@ class FieldTree:
             will be ["A:B:2", 2]
         """
         if len(res) == 0:
-            return [(self.field, self.support)]
+            return [Solution(self.field, self.support)]
         sol = list()
         for fields, support in res:
-            sol.append((f"{self.field}:{fields}", support))
+            sol.append(Solution(f"{self.field}:{fields}", support))
         return sol

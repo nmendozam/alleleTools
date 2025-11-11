@@ -104,7 +104,8 @@ def call_function(args):
             - input: List of JSON file handles with genotyping reports
             - output: Path to output consensus file
     """
-    parser = AlleleParser(gene_family=args.gene_family, config_file=args.config_file)
+    parser = AlleleParser(gene_family=args.gene_family,
+                          config_file=args.config_file)
 
     reports = list()
     for file in args.input:
@@ -155,6 +156,30 @@ def reports_as_allele_table(
 
 
 class ConsensusGene(Gene):
+    def __init__(self,
+                 name: str,
+                 calls: dict,
+                 allele_parser: AlleleParser,
+                 coverage: List[dict] = [],
+                 ) -> None:
+        super().__init__(
+            name=name,
+            calls=calls,
+            allele_parser=allele_parser,
+            coverage=coverage
+        )
+        # Set default settings for consensus
+        self.consensus_normalize_weight = True
+        self.max_support = 0
+
+    def set_consensus_settings(
+        self,
+        normalize_weight: bool,
+        max_support: float
+    ):
+        self.consensus_normalize_weight = normalize_weight
+        self.max_support = max_support
+
     def get_consensus_call(
             self, min_support: float
     ) -> Tuple[List[str], List[float]]:
@@ -175,14 +200,16 @@ class ConsensusGene(Gene):
 
             # Create a new tree for each tool
             tool_tree = FieldTree(self.name)
-            alleles = set(alleles)  # Remove duplicates
+            # alleles = set(alleles)  # Remove duplicates
             alleles = [
                 self.allele_parser.parse(self.name + '*' + allele).get_fields()
                 for allele in alleles
             ]
             tool_tree.add_batch(alleles)
-            # All children count only as one vote (one tool)
-            tool_tree.set_support(new_weight=1, recursive=True)
+
+            if self.consensus_normalize_weight:
+                # All children count only as one vote (one tool)
+                tool_tree.set_support(new_weight=1, recursive=True)
 
             # Now we submit the vote from this tool
             tree.merge_tree(tool_tree)
@@ -194,8 +221,9 @@ class ConsensusGene(Gene):
         alleles, support = tree.get_consensus(
             min_support=min_support,
             gene_delimiter=gene_delimiter,
-            field_delimiter=field_delimiter
-            )
+            field_delimiter=field_delimiter,
+            max_support=self.max_support,
+        )
         return alleles, support
 
     def consensus_dict(self, min_support: float) -> dict:
