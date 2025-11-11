@@ -1,7 +1,7 @@
 from alleleTools.allele import AlleleParser
 from mock import patch
 
-from .consensus import ConsensusGene
+from ..from_ikmb_hla import ConsensusGene
 
 
 def make_report(alleles: list):
@@ -19,6 +19,8 @@ def make_report(alleles: list):
 def test_consensus():
     with patch.object(ConsensusGene, "__init__", lambda self, *args: None):
         con_gene = ConsensusGene.__new__(ConsensusGene)
+        con_gene.consensus_normalize_weight = True
+        con_gene.max_support = 0
         con_gene.allele_parser = AlleleParser(gene_family="hla")
         con_gene.name = "DRB1"
         con_gene.calls = {
@@ -44,6 +46,8 @@ def test_consensus():
 def test_overlapping_allele_consensus():
     with patch.object(ConsensusGene, "__init__", lambda self, *args: None):
         con_gene = ConsensusGene.__new__(ConsensusGene)
+        con_gene.consensus_normalize_weight = True
+        con_gene.max_support = 0
         con_gene.allele_parser = AlleleParser(gene_family="hla")
         con_gene.name = "DPA1"
         con_gene.calls = {
@@ -63,6 +67,8 @@ def test_overlapping_allele_consensus():
 def test_allele_sorting():
     with patch.object(ConsensusGene, "__init__", lambda self, *args: None):
         con_gene = ConsensusGene.__new__(ConsensusGene)
+        con_gene.consensus_normalize_weight = True
+        con_gene.max_support = 0
         con_gene.name = "C"
         con_gene.calls = {
             "alg1": ["C*07:01", "C*12:02"],

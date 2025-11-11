@@ -65,7 +65,7 @@ class AlleleTable:
         if "IID" not in phe.columns or "phenotype" not in phe.columns:
             print(
                 f"ERROR: Phenotype file ({phenotype_file}) must contain 'IID' and 'phenotype' columns.")
-            print("Check if the file is well formatted and witespace-separated")
+            print("Check if the file is well formatted and whitespace-separated")
             exit(1)
 
         phe.set_index("IID", inplace=True)

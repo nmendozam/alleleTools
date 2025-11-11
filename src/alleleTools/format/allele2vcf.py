@@ -27,6 +27,7 @@ def setup_parser(subparsers):
     """
     parser = subparsers.add_parser(
         name="allele2vcf",
+        help="Convert allele table to vcf",
         description="Convert allele table to vcf",
         epilog="Author: Nicolás Mendoza Mejía (2023)",
     )

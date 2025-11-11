@@ -7,7 +7,7 @@ organized into subcommands for different categories of operations.
 
 import argparse
 
-from . import convert, genotype, interpret, refactor
+from . import format, plot
 
 
 def main():
@@ -21,10 +21,8 @@ def main():
     )
 
     # Register subcommands
-    convert.setup_parser(subparsers)
-    genotype.setup_parser(subparsers)
-    refactor.setup_parser(subparsers)
-    interpret.setup_parser(subparsers)
+    format.setup_parser(subparsers)
+    plot.setup_parser(subparsers)
 
     args = parser.parse_args()
 

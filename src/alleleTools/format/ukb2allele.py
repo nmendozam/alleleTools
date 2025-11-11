@@ -26,6 +26,7 @@ def setup_parser(subparsers):
     """
     parser = subparsers.add_parser(
         name="ukb2allele",
+        help="Convert UK Biobank HLA data to allele table format",
         description="Convert UK Biobank HLA data to allele table format",
         epilog="Author: Nicolás Mendoza Mejía (2025)",
     )

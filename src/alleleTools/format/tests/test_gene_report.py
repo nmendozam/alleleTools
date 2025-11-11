@@ -2,10 +2,10 @@ from alleleTools.allele import AlleleParser
 import pandas as pd
 import pytest
 
-from alleleTools.genotype.consensus import ConsensusGene
+from alleleTools.format.from_ikmb_hla import ConsensusGene
 
-from .ikmb_report import Gene, Report, remove_HLA_prefix
-from .plot_ikmb_coverage import read_reports_asdf
+from ..gene_report import Gene, Report, remove_HLA_prefix
+from ...plot.plot_ikmb_coverage import read_reports_asdf
 
 parser = AlleleParser(gene_family="hla")
 
@@ -22,7 +22,7 @@ def test_remove_HLA_prefix():
 def test_gene_mean_coverage():
     coverage = [{"exon": 1, "mean_cov": 10}, {"exon": 2, "mean_cov": 30}]
     calls = {"HLA-HD": ["A*01:01", "A*02:01"]}
-    gene = Gene("A", coverage, calls, allele_parser=parser)
+    gene = Gene("A", calls, allele_parser=parser, coverage=coverage)
     assert gene.mean_coverage() == 20
 
 
@@ -36,7 +36,7 @@ class TestGeneConsensus:
             "alg1": ["A*01:01", "A*02:01"],
             "alg2": ["A*01:01", "A*02:01"],
         }
-        gene = ConsensusGene("A", coverage, calls, allele_parser=parser)
+        gene = ConsensusGene("A", calls, allele_parser=parser, coverage=coverage)
         alleles, support = gene.get_consensus_call(min_support=0.6)
         assert alleles == ['A*01:01', 'A*02:01']
         assert support == [2, 2]
@@ -49,7 +49,7 @@ class TestGeneConsensus:
             "alg1": ["01:01", "02:01"],
             "alg2": ["01:01", "02:01"],
         }
-        gene = ConsensusGene("A", coverage, calls, allele_parser=parser)
+        gene = ConsensusGene("A", calls, allele_parser=parser, coverage=coverage)
         alleles, support = gene.get_consensus_call(min_support=0.6)
         assert alleles == ['A*01:01', 'A*02:01']
         assert support == [2, 2]
@@ -59,7 +59,7 @@ def test_gene_asdict():
     coverage = [{"exon": 1, "mean_cov": 10}, {"exon": 2, "mean_cov": 30}]
     calls = {"HLA-HD": ["A*01:01", "A*02:01"]}
 
-    gene = ConsensusGene("A", coverage, calls, allele_parser=parser)
+    gene = ConsensusGene("A", calls, allele_parser=parser, coverage=coverage)
 
     d = gene.consensus_dict(0.6)
     assert d["gene"] == "A"

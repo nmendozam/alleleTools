@@ -1,8 +1,8 @@
 """
-kir-mapper to allele table convertion module.
+kir-mapper to allele table conversion module.
 
 This module reads the reports of kir-mapper and generates
-the allele table. Some filetering based on depth and allele
+the allele table. Some filtering based on depth and allele
 mismatch can be performed.
 
 Author: Nicolás Mendoza Mejía (2025)
@@ -10,8 +10,8 @@ Author: Nicolás Mendoza Mejía (2025)
 
 from typing import List
 from alleleTools.allele import AlleleParser
-from alleleTools.convert.alleleTable import AlleleTable
-from alleleTools.genotype.consensus import ConsensusGene
+from alleleTools.format.alleleTable import AlleleTable
+from alleleTools.format.from_ikmb_hla import ConsensusGene
 import pandas as pd
 
 from ..argtypes import csv_file, output_path, file_path
@@ -29,6 +29,7 @@ def setup_parser(subparsers):
     """
     parser = subparsers.add_parser(
         name="from_kirmapper",
+        help="Convert kir-mapper reports to allele table format",
         description="Convert kir-mapper reports to allele table format",
         epilog="Author: Nicolás Mendoza Mejía (2025)",
     )

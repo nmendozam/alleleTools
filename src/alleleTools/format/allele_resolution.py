@@ -23,7 +23,7 @@ import pandas as pd
 
 from alleleTools.allele import AlleleParser
 
-from ..convert.alleleTable import AlleleTable
+from .alleleTable import AlleleTable
 
 
 def setup_parser(subparsers):

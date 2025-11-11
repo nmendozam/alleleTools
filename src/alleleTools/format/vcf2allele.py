@@ -21,10 +21,10 @@ from typing import List
 
 import pandas as pd
 
-from alleleTools.convert.alleleTable import AlleleTable
+from alleleTools.format.alleleTable import AlleleTable
 
 from ..argtypes import file_path, output_path
-from ..convert.vcf import VCF
+from ..format.vcf import VCF
 
 
 def setup_parser(subparsers):
@@ -39,6 +39,7 @@ def setup_parser(subparsers):
     """
     parser = subparsers.add_parser(
         name="vcf2allele",
+        help="Convert vcf file to allele table",
         description="Convert vcf file to allele table",
         epilog="Author: Nicolás Mendoza Mejía (2023)",
     )

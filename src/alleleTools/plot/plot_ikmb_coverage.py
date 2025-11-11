@@ -1,10 +1,8 @@
-import json
-
 from alleleTools.allele import AlleleParser
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from .ikmb_report import Report, read_json
+from ..format.gene_report import Report, read_json
 
 
 def setup_parser(subparsers):
@@ -19,9 +17,8 @@ def setup_parser(subparsers):
     """
     parser = subparsers.add_parser(
         name="plot_ikmb_coverage",
-        description="""
-        This program plots the coverage of HLA genes from IKMB reports.
-        """,
+        help="Plot the coverage of HLA genes from IKMB reports.",
+        description="Plot the coverage of HLA genes from IKMB reports.",
         epilog="Author: Nicolás Mendoza Mejía (2023)",
     )
     parser.add_argument(

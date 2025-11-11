@@ -7,7 +7,7 @@ researchers understand the functional and clinical significance of allele
 variants.
 """
 
-from . import graph_pathogens, graph_phewas
+from . import graph_pathogens, graph_phewas, plot_ikmb_coverage
 
 
 def setup_parser(subparsers):
@@ -24,7 +24,7 @@ def setup_parser(subparsers):
         argparse.ArgumentParser: The configured parser for the interpret command.
     """
     parser = subparsers.add_parser(
-        "interpret",
+        "plot",
         help="Get useful information about HLA alleles.",
         description="This commands provide some useful tools "
                     "for data interpretation. e.g. pleiotropy reports",
@@ -37,5 +37,6 @@ def setup_parser(subparsers):
 
     graph_phewas.setup_parser(interpret_parser)
     graph_pathogens.setup_parser(interpret_parser)
+    plot_ikmb_coverage.setup_parser(interpret_parser)
 
     return parser

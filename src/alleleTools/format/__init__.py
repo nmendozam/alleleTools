@@ -7,7 +7,8 @@ conversions from various sources including UK Biobank data and standard
 genomic formats.
 """
 
-from . import allele2vcf, ukb2allele, vcf2allele, kir_mapper
+from alleleTools.format import allele_resolution
+from . import allele2vcf, ukb2allele, vcf2allele, kir_mapper, from_ikmb_hla
 
 
 def setup_parser(subparsers):
@@ -24,7 +25,7 @@ def setup_parser(subparsers):
         argparse.ArgumentParser: The configured parser for the convert command.
     """
     parser = subparsers.add_parser(
-        "convert",
+        "format",
         help="Convert allele data between different formats.",
         description="""
         This command facilitates the conversion of allele data from allele
@@ -40,10 +41,12 @@ def setup_parser(subparsers):
         required=True,
     )
 
-    # Register toolconvertion tools
+    # Register conversion tools
     vcf2allele.setup_parser(convert_parser)
     allele2vcf.setup_parser(convert_parser)
     ukb2allele.setup_parser(convert_parser)
     kir_mapper.setup_parser(convert_parser)
+    from_ikmb_hla.setup_parser(convert_parser)
+    allele_resolution.setup_parser(convert_parser)
 
     return parser
