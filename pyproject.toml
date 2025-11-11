@@ -102,3 +102,6 @@ target-version = ['py39']
 omit = [
     "**/test_*",
 ]
+
+[tool.pyright]
+include = ["src"]
