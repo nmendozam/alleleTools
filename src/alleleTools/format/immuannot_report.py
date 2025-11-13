@@ -1,8 +1,13 @@
 import glob
 import gzip
+import multiprocessing
 import os
+import threading
+from queue import Queue
+from typing import List
 
 import pandas as pd
+import progressbar
 
 from ..argtypes import output_path
 
@@ -31,7 +36,12 @@ def setup_parser(subparsers):
         metavar="path",
         type=str,
         nargs="+",
-        help="GTF genotyping files from immuannot",
+        help="GTF genotyping files from immuannot. It can be a glob pattern.",
+    )
+    parser.add_argument(
+        "--threads",
+        type=int,
+        help="Number of parallel process"
     )
     parser.add_argument(
         "--output",
@@ -105,7 +115,7 @@ class GTF:
 
         return ret
 
-    def get_attributes(self, feature="gene") -> list:
+    def get_attributes(self, feature: str="gene") -> list:
         filtered_df = self.dataframe[self.dataframe.feature == feature]
         raw_attris = filtered_df["attribute"].to_list()
 
@@ -116,33 +126,106 @@ class GTF:
         return attris
 
 
-def get_file_list(input):
+def get_file_list(input: List[str]) -> List[str]:
+    file_list = input
+
+    # Check that input is not a glob
     if len(input) == 1 and not os.path.exists(input[0]):
         file_list = glob.glob(input[0])
-        print("processing from glob: ", len(file_list))
-        return file_list
-    print("processing: ", len(input))
-    return input
+
+    print("Processing %d files" % len(file_list))
+    return file_list
+
+
+def process_gtf_file(file: str, out_queue: Queue) -> None:
+    gtf = GTF(file)
+    attributes = gtf.get_attributes()
+
+    for item in attributes:
+        item["name"] = gtf.name
+
+    out_queue.put(attributes)
+
+
+def worker(files: Queue, out_queue: Queue) -> None:
+    while True:
+        file = files.get()
+        if file is None:
+            files.task_done()
+            break
+
+        # Process input file
+        process_gtf_file(file, out_queue)
+
+        files.task_done()
+
+
+def queue_files(files: List[str]) -> Queue:
+    tasks = Queue()
+    for file in files:
+        tasks.put(file)
+    return tasks
+
+
+def print_progress_bar(queue: Queue, max: int) -> None:
+
+    last: float = 0
+    b = progressbar.ProgressBar(max_value=max)
+    b.start()
+    while not queue.empty():
+        done = max - queue.qsize()
+        if done - last >= max / 1000:
+            b.update(done)
+            last = done
+    b.finish()
+
+
+def get_results_as_df(out_queue: Queue) -> pd.DataFrame:
+    results = list()
+    while not out_queue.empty():
+        result = out_queue.get()
+        results.extend(result)
+
+    return pd.DataFrame(results)
 
 
 def call_function(args):
-    all = pd.DataFrame()
-
     file_list = get_file_list(args.input)
-    for file in file_list:
-        gtf = GTF(file)
-        attributes = gtf.get_attributes()
+    in_queue = queue_files(file_list)
 
-        df = pd.DataFrame(attributes)
+    out_queue = Queue()
 
-        name, strand = gtf.name.split('.')
-        df["sample"] = name
-        df["strand"] = strand
+    # Get number of threads
+    num_workers = multiprocessing.cpu_count()
+    if hasattr(args, "threads") and args.threads:
+        num_workers = args.threads
+    print("Deploying %d workers" % num_workers)
 
-        all = pd.concat([all, df])
+    # Deploy input workers
+    threads = []
+    for _ in range(num_workers):
+        in_queue.put(None)
+        thread = threading.Thread(target=worker, args=(in_queue, out_queue))
+        thread.start()
+        threads.append(thread)
 
+    print_progress_bar(in_queue, max=len(file_list))
+
+    # Wait for all threads to finish
+    in_queue.join()
+    for thread in threads:
+        thread.join()
+
+    # Concatenate all samples into a single file
+    all = get_results_as_df(out_queue)
+
+    all[["sample", "strand"]] = all["name"].str.split('.', expand=True)
     all["gene_name"] = all["gene_name"] + '.' + all["strand"]
     table = pd.pivot_table(all, values="template_allele",
                            index="sample", columns="gene_name", aggfunc='sum')
+
+    table["phenotype"] = 0
+    col = table.pop("phenotype")
+    table.insert(0, "phenotype", col)
 
     table.to_csv(args.output, sep='\t')

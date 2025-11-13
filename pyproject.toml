@@ -19,6 +19,7 @@ dependencies = [
 	"requests==2.32.4",
 	"chardet==5.1.0",
 	"yaspin==3.1.0",
+	"progressbar2",
 ]
 classifiers=[
 "Intended Audience :: Developers",
