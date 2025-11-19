@@ -68,7 +68,7 @@ class AlleleTable:
             print("Check if the file is well formatted and whitespace-separated")
             exit(1)
 
-        phe.set_index("IID", inplace=True)
+        phe.set_index(phe["IID"].astype(str), inplace=True)
 
         self.set_phenotype(phe["phenotype"])
 
@@ -130,7 +130,7 @@ class AlleleTable:
         df = self.alleles.copy()
 
         # Convert alleles to string
-        df = df.map(str).replace("", np.nan)
+        df = df.replace({"": np.nan, None: np.nan})
 
         if not self.phenotype.empty:
             # Add phenotype to df, checking that the index matches

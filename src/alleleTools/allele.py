@@ -1,9 +1,9 @@
 import json
 import math
 import re
+from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Iterator, List, Tuple, Union
-from abc import ABC, abstractmethod
 
 from .utils.assets import get_asset_path
 
@@ -59,7 +59,7 @@ class Allele:
         self,
         gene: str,
         fields: List[str],
-        confidence: str | None = None,
+        confidence: Union[str, None] = None,
         gene_delimiter: str = "*",
         field_delimiter: str = ":",
     ):

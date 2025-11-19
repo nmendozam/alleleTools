@@ -1,5 +1,5 @@
 import json
-from typing import List, Tuple
+from typing import List, Union
 
 import pandas as pd
 
@@ -54,7 +54,7 @@ class Gene:
 
         return str(ret)
 
-    def mean_coverage(self) -> float | None:
+    def mean_coverage(self) -> Union[float, None]:
         """
         Get the mean coverage of exons from the gene
         """

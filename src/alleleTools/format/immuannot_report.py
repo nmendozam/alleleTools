@@ -9,7 +9,8 @@ from typing import List
 import pandas as pd
 import progressbar
 
-from ..argtypes import output_path
+from ..argtypes import file_path, output_path
+from .alleleTable import AlleleTable
 
 
 def setup_parser(subparsers):
@@ -42,6 +43,18 @@ def setup_parser(subparsers):
         "--threads",
         type=int,
         help="Number of parallel process"
+    )
+    parser.add_argument(
+        "--max_template_dist",
+        type=int,
+        help="Threshold to include alleles on the output table. Calls with high distances are less accurate.",
+        default=20,
+    )
+    parser.add_argument(
+        "--phe",
+        type=file_path,
+        help="input phe file name (to add phenotype column)",
+        default="",
     )
     parser.add_argument(
         "--output",
@@ -188,18 +201,11 @@ def get_results_as_df(out_queue: Queue) -> pd.DataFrame:
 
     return pd.DataFrame(results)
 
-
-def call_function(args):
-    file_list = get_file_list(args.input)
+def read_input_files(input_files: List[str], num_workers: int) -> Queue:
+    file_list = get_file_list(input_files)
     in_queue = queue_files(file_list)
 
     out_queue = Queue()
-
-    # Get number of threads
-    num_workers = multiprocessing.cpu_count()
-    if hasattr(args, "threads") and args.threads:
-        num_workers = args.threads
-    print("Deploying %d workers" % num_workers)
 
     # Deploy input workers
     threads = []
@@ -215,17 +221,36 @@ def call_function(args):
     in_queue.join()
     for thread in threads:
         thread.join()
+    
+    return out_queue
+
+
+def call_function(args):
+    # Get number of threads
+    num_workers = multiprocessing.cpu_count()
+    if hasattr(args, "threads") and args.threads:
+        num_workers = args.threads
+    print("Deploying %d workers" % num_workers)
+
+    # Read input files
+    out_queue = read_input_files(args.input, num_workers)
 
     # Concatenate all samples into a single file
     all = get_results_as_df(out_queue)
 
+    # Filter by max_template_dist if provided
+    if args.max_template_dist is not None:
+        all = all[all["template_distance"].astype(int) <= args.max_template_dist]
+
     all[["sample", "strand"]] = all["name"].str.split('.', expand=True)
-    all["gene_name"] = all["gene_name"] + '.' + all["strand"]
+    all["gene_name"] = all["gene_name"] + '_' + all["strand"]
     table = pd.pivot_table(all, values="template_allele",
                            index="sample", columns="gene_name", aggfunc='sum')
+    
+    table.set_index(table.index.astype(str), inplace=True)
 
-    table["phenotype"] = 0
-    col = table.pop("phenotype")
-    table.insert(0, "phenotype", col)
+    alt = AlleleTable()
+    alt.alleles = table
+    alt.load_phenotype(args.phe)
 
-    table.to_csv(args.output, sep='\t')
+    alt.to_csv(args.output)
