@@ -43,12 +43,14 @@ classifiers=[
 dev = [
 	"pytest>=6.0",
 	"pytest-cov",
+    "mock==5.2.0",
 	"black",
 	"flake8",
 ]
 test = [
 	"pytest>=6.0",
 	"pytest-cov",
+    "mock==5.2.0",
 ]
 
 [project.urls]
