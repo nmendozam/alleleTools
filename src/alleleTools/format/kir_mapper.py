@@ -9,12 +9,14 @@ Author: Nicolás Mendoza Mejía (2025)
 """
 
 from typing import List
+
+import pandas as pd
+
 from alleleTools.allele import AlleleParser
 from alleleTools.format.alleleTable import AlleleTable
 from alleleTools.format.from_ikmb_hla import ConsensusGene
-import pandas as pd
 
-from ..argtypes import csv_file, output_path, file_path
+from ..argtypes import add_out_altable_args, csv_file, file_path, output_path
 
 
 def setup_parser(subparsers):
@@ -45,46 +47,6 @@ def setup_parser(subparsers):
 
     parser.set_defaults(func=call_function)
 
-    return parser
-
-
-def add_out_altable_args(parser):
-    parser.add_argument(
-        "--output",
-        type=output_path,
-        help="name of the output file",
-        default="output.alt",
-    )
-    parser.add_argument(
-        "--phenotype",
-        type=str,
-        help="""
-        ssv file with 6 columns: eid, fid, ... , Sex, Pheno. No headers and
-        space separated. The column Pheno (last column) will be included as
-        phenotype in the output file.
-        """,
-        default="",
-    )
-
-    # Additional arguments
-    parser.add_argument(
-        "--remove_pheno_zero",
-        action="store_true",
-        help="Remove individuals with phenotype 0 from the output",
-        default=False,
-    )
-    parser.add_argument(
-        "--gene_family",
-        type=str,
-        help="Specify the gene family e.i. 'hla', 'kir'",
-        default="kir",
-    )
-    parser.add_argument(
-        "--config_file",
-        type=file_path,
-        help="Path to a custom allele parsing configuration file",
-        default="",
-    )
     return parser
 
 
@@ -123,10 +85,12 @@ def call_function(args):
     allele_table.index.name = "SampleID"
 
     gene = reports["Gene"].unique()[0]
-    allele_table[[gene + "_1", gene + "_2"]] = allele_table["alleles"].apply(lambda x: pd.Series(x))
+    allele_table[[gene + "_1", gene + "_2"]
+                 ] = allele_table["alleles"].apply(lambda x: pd.Series(x))
 
     alt = AlleleTable()
-    alt.alleles = allele_table.drop(columns=["alleles","original_calls","coverage", "gene", "support"])
+    alt.alleles = allele_table.drop(
+        columns=["alleles", "original_calls", "coverage", "gene", "support"])
     alt.load_phenotype(args.phenotype)
     print(alt.alleles.head())
 
@@ -134,7 +98,6 @@ def call_function(args):
         alt.remove_phenotype_zero()
 
     alt.to_csv(args.output)
-
 
 
 def read_reports(files: List[str]) -> pd.DataFrame:
@@ -156,7 +119,8 @@ def split_alleles(x: str):
         alleles = key.split("+")
         # Rename null to 000 alleles and unresolved to empty string
         alleles = [allele.replace("null", "000") for allele in alleles]
-        alleles = [allele if "unresolved" not in allele else "" for allele in alleles]
+        alleles = [
+            allele if "unresolved" not in allele else "" for allele in alleles]
         ret["kir-mapper" + str(idx)] = alleles
     return ret
 

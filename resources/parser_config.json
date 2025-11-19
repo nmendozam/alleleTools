@@ -1,7 +1,7 @@
 {
     "hla": {
         "type": "regex",
-        "pattern":"(?:(?P<gene>\\w+)\\*)(?P<field1>\\d{2})(?::(?P<field2>\\d{2}))?(?::(?P<field3>\\d{2}))?(?::(?P<field4>\\d{2}))?"
+        "pattern":"(?:(?P<gene>\\w+)\\*)(?P<field1>\\d{2})(?::(?P<field2>\\d{2}))?(?::(?P<field3>\\d{2}))?(?::(?P<field4>\\d{2}))?(?P<suffix>\\w)?"
     },
     "kir": {
         "type": "regex",
@@ -10,7 +10,7 @@
     },
     "hla_hisat": {
         "type": "regex",
-        "pattern":"(?:(?P<gene>\\w+)\\*)?(?P<field1>\\d{2})(?::(?P<field2>\\d{2}))?(?::(?P<field3>\\d{2}))?(?::(?P<field4>\\d{2}))?(?: \\((?P<confidence>.*?)\\))?"
+        "pattern":"(?:(?P<gene>\\w+)\\*)?(?P<field1>\\d{2})(?::(?P<field2>\\d{2}))?(?::(?P<field3>\\d{2}))?(?::(?P<field4>\\d{2}))?(?P<suffix>\\w)?(?: \\((?P<confidence>.*?)\\))?"
     },
     "hla_delimited": {
         "type": "delimited",

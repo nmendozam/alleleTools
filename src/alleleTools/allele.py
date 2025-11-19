@@ -3,7 +3,7 @@ import math
 import re
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import Iterator, List, Tuple, Union
+from typing import List, Tuple, Union
 
 from .utils.assets import get_asset_path
 
@@ -56,17 +56,19 @@ class Allele:
     """
 
     def __init__(
-        self,
-        gene: str,
-        fields: List[str],
-        confidence: Union[str, None] = None,
-        gene_delimiter: str = "*",
-        field_delimiter: str = ":",
+            self,
+            gene: str,
+            fields: List[str],
+            confidence: str = "",
+            gene_delimiter: str = "*",
+            field_delimiter: str = ":",
+            suffix: str = "",
     ):
         self.fields: List[str] = fields
         self.gene = gene
         self.gene_delimiter = gene_delimiter
         self.field_delimiter = field_delimiter
+        self.suffix = suffix
 
         # Extract confidence score (Hisat)
         if confidence:
@@ -88,9 +90,7 @@ class Allele:
             return ""
         if not self.gene and not self.fields:
             return ""
-        return (
-            f"{self.gene}{self.gene_delimiter}{self.field_delimiter.join(self.fields)}"
-        )
+        return f"{self.gene}{self.gene_delimiter}{self.field_delimiter.join(self.fields)}{self.suffix}"
 
     def __len__(self) -> int:
         """
@@ -242,9 +242,9 @@ class RegexParser(ParsingStrategy):
             return Allele("", [])
 
         fields = []
-        result = match.groupdict()
+        result = match.groupdict(default='')
         for key, value in result.items():
-            if key.startswith("field") and value is not None:
+            if key.startswith("field") and value:
                 fields.append(value)
 
         return Allele(
@@ -253,6 +253,7 @@ class RegexParser(ParsingStrategy):
             confidence=result.get("confidence", None),
             field_delimiter=self.field_delimiter,
             gene_delimiter=self.gene_delimiter,
+            suffix=result.get('suffix', "")
         )
 
 

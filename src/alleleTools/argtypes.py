@@ -81,7 +81,8 @@ def file_path(in_string: str) -> str:
 
     file = path(in_string)
     if not os.path.isfile(file):
-        raise argparse.ArgumentTypeError(f"The file '{in_string}' is not a valid file")
+        raise argparse.ArgumentTypeError(
+            f"The file '{in_string}' is not a valid file")
     return file
 
 
@@ -109,3 +110,43 @@ def csv_file(in_string: str) -> str:
         raise argparse.ArgumentTypeError(
             f"{in_string} is not a valid CSV file")
     return file
+
+
+def add_out_altable_args(parser):
+    parser.add_argument(
+        "--output",
+        type=output_path,
+        help="name of the output file",
+        default="output.alt",
+    )
+    parser.add_argument(
+        "--phenotype",
+        type=str,
+        help="""
+        ssv file with 6 columns: eid, fid, ... , Sex, Pheno. No headers and
+        space separated. The column Pheno (last column) will be included as
+        phenotype in the output file.
+        """,
+        default="",
+    )
+
+    # Additional arguments
+    parser.add_argument(
+        "--remove_pheno_zero",
+        action="store_true",
+        help="Remove individuals with phenotype 0 from the output",
+        default=False,
+    )
+    parser.add_argument(
+        "--gene_family",
+        type=str,
+        help="Specify the gene family e.i. 'hla', 'kir'",
+        default="kir",
+    )
+    parser.add_argument(
+        "--config_file",
+        type=file_path,
+        help="Path to a custom allele parsing configuration file",
+        default="",
+    )
+    return parser

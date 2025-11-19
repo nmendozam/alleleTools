@@ -9,8 +9,8 @@ genomic formats.
 
 from alleleTools.format import allele_resolution
 
-from . import (allele2vcf, from_ikmb_hla, immuannot_report, kir_mapper,
-               ukb2allele, vcf2allele)
+from . import (allele2vcf, from_ikmb_hla, g_group, immuannot_report,
+               kir_mapper, ukb2allele, vcf2allele)
 
 
 def setup_parser(subparsers):
@@ -51,5 +51,6 @@ def setup_parser(subparsers):
     from_ikmb_hla.setup_parser(convert_parser)
     allele_resolution.setup_parser(convert_parser)
     immuannot_report.setup_parser(convert_parser)
+    g_group.setup_parser(convert_parser)
 
     return parser
