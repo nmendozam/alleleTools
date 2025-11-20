@@ -11,7 +11,7 @@ from .alleleTable import AlleleTable
 
 def setup_parser(subparsers):
     parser = subparsers.add_parser(
-        name="g_group",
+        name="hla_group",
         description="Group alleles according to the g-group nomenclature",
         epilog="Author: Nicolás Mendoza Mejía (2025)",
     )
