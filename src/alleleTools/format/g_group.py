@@ -1,10 +1,11 @@
-import math
-from typing import Union
+import os
+import re
+from typing import Tuple, Union
 
 import pandas as pd
 
 from ..argtypes import add_out_altable_args
-from ..utils.assets import get_asset_path
+from ..utils.assets import download_file, get_asset_path
 from .alleleTable import AlleleTable
 
 
@@ -19,6 +20,12 @@ def setup_parser(subparsers):
         "input",
         type=str,
         help="Allele table with the alleles that you want to convert",
+    )
+    parser.add_argument(
+        "group_type",
+        type=str,
+        choices=["g-group", "p-group"],
+        help="Type of group nomenclature to use (g-group or p-group)",
     )
     parser = add_out_altable_args(parser)
 
@@ -35,17 +42,17 @@ def call_function(args):
     # pop the first column as phenotype
     phenotype = df.pop(df.columns[0])
 
-    # Melt and apply g-group conversion
+    # Melt and apply group conversion
     df = df.melt(ignore_index=False, var_name='col_index', value_name='allele')
     df['gene'] = df['allele'].apply(
         lambda x: x.split('*')[0] if pd.notna(x) else x)
-    df['g_group'] = df.apply(lambda row: group.lookup(row['gene'], row['allele']), axis=1)
+    df['group'] = df.apply(lambda row: group.lookup(row['gene'], row['allele']), axis=1)
 
-    df.loc[df['g_group'].isna(), 'g_group'] = df.loc[df['g_group'].isna(), 'allele'] 
+    df.loc[df['group'].isna(), 'group'] = df.loc[df['group'].isna(), 'allele'] 
 
 
     alt = AlleleTable()
-    alt.alleles = df.pivot_table(index=df.index, columns='col_index', values='g_group', aggfunc='first')
+    alt.alleles = df.pivot_table(index=df.index, columns='col_index', values='group', aggfunc='first')
     alt.phenotype = phenotype
     alt.phenotype.name = "phenotype"
     alt.to_csv(args.output)
@@ -57,7 +64,7 @@ class GrouperHLA:
         https://hla.alleles.org/pages/wmda/g_groups/
         """
         if not reference_file:
-            reference_file = get_asset_path("hla_nom_g.txt")
+            reference_file = self._get_group_norm_file("g-group")
 
         ref = pd.read_csv(reference_file,
                         sep=';', comment="#", header=None)
@@ -78,27 +85,91 @@ class GrouperHLA:
             index[gene].update(dic)
 
         self.index = index
+    
+    def _get_group_norm_file(self, group: str) -> str:
+        group_files = {
+            "g-group":(
+                "hla_nom_g.txt",
+                "https://hla.alleles.org/wmda/g_groups/hla_nom_g.txt"
+                ),
+            "p-group":(
+                "hla_nom_p.txt",
+                "https://hla.alleles.org/wmda/p_groups/hla_nom_p.txt"
+                ),
+            }
 
+        if group not in group_files:
+            raise ValueError(f"Unknown group type: {group}. Supported types are {list(group_files.keys())}.")
 
-    def lookup(self, gene: str, allele: str) -> Union[str, float]:
+        file, url = group_files[group]
+        path = get_asset_path(file)
+
+        if not os.path.exists(path):
+            download_file(
+                url=url,
+                dest=path,
+            )
+        return path
+    
+    def _prepare(self, gene: str, allele: str) -> Tuple[Union[dict, None], Union[str, None]]:
+        """
+        Validate inputs and return (gene_ref, allele_stripped).
+        Returns (None, None) if validation fails (caller will return NaN).
+        """
         if not gene or not allele:
-            return float('nan')
+            return None, None
         if pd.isna(gene) or pd.isna(allele):
-            return float('nan')
+            return None, None
+        if gene not in self.index:
+            return None, None
 
         gene_ref = self.index[gene]
+        allele_stripped = allele.replace(gene + '*', '')
 
-        allele = allele.replace(gene + '*', '') # remove gene prefix
+        return gene_ref, allele_stripped
 
-        if allele in gene_ref: # return exact match
-            ret = gene_ref[allele]
-            return gene + '*' + ret if isinstance(ret, str) else ret
+    def lookup(self, gene: str, allele: str) -> Union[str, None]:
+        """
+        Lookup g-group for the given allele. If exact match is not found,
+        attempt to find a partial match.
+        """
+        gene_ref, allele_stripped = self._prepare(gene, allele)
+        if gene_ref is None or allele_stripped is None:
+            return None
 
-        # If not exact match, look for partial matches
-        partial = [k for k in gene_ref.keys() if k.startswith(allele)]
+        if allele_stripped not in gene_ref:
+            return self.lookup_partial(gene, allele)
+
+        return self.lookup_exact(gene, allele)
+
+    def lookup_exact(self, gene: str, allele: str) -> Union[str, None]:
+        """
+        Finds a g-group for the exact allele provided.
+        """
+        gene_ref, allele_stripped = self._prepare(gene, allele)
+        if gene_ref is None or allele_stripped is None:
+            return None
+
+        ret = gene_ref[allele_stripped]
+        return gene + '*' + ret if isinstance(ret, str) else ret
+
+    def lookup_partial(self, gene: str, allele: str) -> Union[str, None]:
+        """
+        Finds a g-group for the partial allele provided. The index does not
+        contain all posible combinations of alleles. It only has the highest
+        resolution alleles, so looking for a partial match is necessary.
+
+        A g-group is returned only if one possible match is found.
+        """
+        gene_ref, allele_stripped = self._prepare(gene, allele)
+        if gene_ref is None or allele_stripped is None:
+            return None
+
+        # Look for partial matches
+        partial = [k for k in gene_ref.keys() if k.startswith(allele_stripped)]
 
         if len(partial) == 0:
-            return float('nan')
+            return None
         
         # If more than one partial match, check if all fit in the same group
         groups = [gene_ref[p] for p in partial]
@@ -108,8 +179,9 @@ class GrouperHLA:
             ret = uniq_groups.pop()
             return gene + '*' + ret if isinstance(ret, str) else ret
         
-        if len(allele.split(':')) > 2: 
-            print(f"WARNING: Ambiguous g-group assignment for [{gene}*{allele}]. Multiple possible groups found: {groups}.")
+        # 1-field alleles tend to be ambiguous, so just warn for alleles with more fields.
+        if len(allele_stripped.split(':')) > 1: 
+            print(f"WARNING: Ambiguous g-group assignment for [{gene}*{allele_stripped}]. Multiple possible groups found: {groups}.")
 
-        return float('nan')
+        return None
 
