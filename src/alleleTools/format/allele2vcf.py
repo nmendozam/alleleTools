@@ -26,7 +26,7 @@ def setup_parser(subparsers):
         argparse.ArgumentParser: The configured parser for allele2vcf.
     """
     parser = subparsers.add_parser(
-        name="allele2vcf",
+        name="to_vcf",
         help="Convert allele table to vcf",
         description="Convert allele table to vcf",
         epilog="Author: Nicolás Mendoza Mejía (2023)",

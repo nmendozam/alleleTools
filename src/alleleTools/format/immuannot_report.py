@@ -26,6 +26,7 @@ def setup_parser(subparsers):
     """
     parser = subparsers.add_parser(
         name="from_immuannot",
+        help="Convert immuannot reports to allele table format",
         description="""
         This command converts a group of file reports from immuannot and
         converts the genotyping data to allele table.

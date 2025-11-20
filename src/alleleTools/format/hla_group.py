@@ -12,7 +12,8 @@ from .alleleTable import AlleleTable
 def setup_parser(subparsers):
     parser = subparsers.add_parser(
         name="hla_group",
-        description="Group alleles according to the g-group nomenclature",
+        help="Group alleles by g- or p-group nomenclature",
+        description="Group alleles according to the g- or p-group nomenclature",
         epilog="Author: Nicolás Mendoza Mejía (2025)",
     )
     # Input/output arguments
