@@ -114,11 +114,11 @@ def call_function(args):
 
     # Pre-process taxa id
     leading_id = "NCBITaxon:"
-    data["TaxId"] = data["source_organism_iri"].replace(
-        leading_id, "", regex=True)
-    taxon_ids = data.loc[contains_ncbi_id,
-                         "TaxId"].dropna().unique().astype(int)
-    taxon_ids = map(str, taxon_ids)
+    data["TaxId"] = data["source_organism_iri"]\
+        .replace( leading_id, "", regex=True)
+    taxon_ids = data.loc[contains_ncbi_id, "TaxId"]\
+        .dropna().unique().astype(int)
+    taxon_ids = taxon_ids.astype(str).tolist()
 
     # Proceed to get the genus and family of each ncbi taxon id
     taxon_ranks = query_taxon_ids(taxon_ids, args.email)
@@ -133,7 +133,7 @@ def call_function(args):
 # %% Stacked plot by percentage
 
 
-def adjustFigAspect(fig, aspect=1):
+def adjustFigAspect(fig, aspect:float=1):
     """
     Adjust subplot parameters to achieve the correct aspect ratio.
 
@@ -182,10 +182,10 @@ def graph_by_genus(data: pd.DataFrame, division: str, output_file: str):
     )
     grouped = grouped["assay_iris"].unstack()
     n_samples = grouped.sum(axis=1)
-    grouped.index = [
+    grouped.index = pd.Index([
         "{} (n={})".format(y.replace("_", " ").title(), int(val))
         for y, val in n_samples.to_dict().items()
-    ]
+    ])
     grouped = grouped[grouped.sum(axis=1) > 10]
 
     # sort by the sum of the columns
@@ -195,25 +195,25 @@ def graph_by_genus(data: pd.DataFrame, division: str, output_file: str):
     # normalize rows
     grouped = grouped.div(grouped.sum(axis=1), axis=0)
 
+    colors = {
+        "Negative": "#8b0000",
+        "Positive-Low": "#f6655f",
+        "Positive": "#c1f57d",
+        "Positive-Intermediate": "#97e692",
+        "Positive-High": "#069d59"
+    }
     # Filter qualitative values
-    # expected_values = set([
-    #         "Positive-Low",
-    #         "Negative",
-    #         "Positive",
-    #         "Positive-Intermediate",
-    #         "Positive-High",
-    #     ]
-    # )
-    # qual_values = grouped.index.get_level_values("qualitative_measure")
-    # qual_values = expected_values.intersection(set(qual_values))
-    # grouped = grouped.loc[:, qual_values]
+    colors = {key: val for key, val in colors.items() if key in grouped.columns}
 
-    # grouped = grouped.sort_index(axis=1)
+    # Sort columns
+    qual_measurements = list(colors.keys())
+    grouped = grouped.loc[:, qual_measurements]
 
-    grouped[["Negative", "Positive-Low"]
-            ] = grouped[["Negative", "Positive-Low"]] * -1
+    # Invert negative values
+    all_negatives = ["Negative", "Positive-Low"]
+    negative_values = [val for val in grouped.columns if val in all_negatives]
+    grouped[negative_values] = grouped[negative_values] * -1
 
-    colors = ["#8b0000", "#f6655f", "#fdb966", "#97e692", "#069d59"]
     fig, ax = plt.subplots()
     adjustFigAspect(fig, aspect=0.7)
     grouped.plot(kind="barh", stacked=True, width=0.7, color=colors, ax=ax)

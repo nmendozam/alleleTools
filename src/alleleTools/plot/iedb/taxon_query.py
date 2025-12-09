@@ -4,6 +4,8 @@ query the Taxonomy database to get the genus name for each
 TaxId.
 """
 
+from typing import List, cast
+
 import pandas as pd
 from Bio import Entrez
 from Bio.Entrez import efetch, read
@@ -19,7 +21,7 @@ def extract_rank(row) -> pd.Series:
     return pd.Series(new_row)
 
 
-def query_taxon_ids(taxon_ids: list, email: str) -> pd.DataFrame:
+def query_taxon_ids(taxon_ids: List[str], email: str) -> pd.DataFrame:
     """
     Given a list of taxon ids, query the NCBI taxonomy database
     and return a DataFrame with the results.
@@ -29,7 +31,7 @@ def query_taxon_ids(taxon_ids: list, email: str) -> pd.DataFrame:
     taxon_id = ",".join(taxon_ids)
     handle = efetch(db="taxonomy", id=str(taxon_id), retmode="xml")
     records = read(handle)
-    df = pd.json_normalize(records)
+    df = pd.json_normalize(cast(List[dict], records))
 
     return df.apply(extract_rank, axis=1)
 
