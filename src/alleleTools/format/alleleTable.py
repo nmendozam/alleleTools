@@ -146,6 +146,7 @@ class AlleleTable:
             )
 
         # move sample id to column
+        df.index.name = "sample"
         df.reset_index(inplace=True)
 
         df.to_csv(
