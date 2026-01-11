@@ -1,12 +1,13 @@
 import os
-import re
 from typing import Tuple, Union
 
 import pandas as pd
 
 from ..argtypes import add_out_altable_args
 from ..utils.assets import download_file, get_asset_path
+from ..allele import AlleleParser
 from .alleleTable import AlleleTable
+import swifter
 
 
 def setup_parser(subparsers):
@@ -23,10 +24,11 @@ def setup_parser(subparsers):
         help="Allele table with the alleles that you want to convert",
     )
     parser.add_argument(
-        "group_type",
+        "--group_type",
         type=str,
         choices=["g-group", "p-group"],
         help="Type of group nomenclature to use (g-group or p-group)",
+        default="g-group",
     )
     parser = add_out_altable_args(parser)
 
@@ -36,7 +38,7 @@ def setup_parser(subparsers):
 
 
 def call_function(args):
-    group = GrouperHLA()
+    group = GrouperHLA(args.group_type)
 
     df = pd.read_csv(args.input, sep='\t', index_col=0, dtype=str, header=None)
 
@@ -45,29 +47,32 @@ def call_function(args):
 
     # Melt and apply group conversion
     df = df.melt(ignore_index=False, var_name='col_index', value_name='allele')
-    df['gene'] = df['allele'].apply(
+    df.index.name = 'sample'
+    df = df.reset_index()
+
+    # Apply conversions
+    df['gene'] = df['allele'].swifter.apply(
         lambda x: x.split('*')[0] if pd.notna(x) else x)
-    df['group'] = df.apply(lambda row: group.lookup(row['gene'], row['allele']), axis=1)
+    df['group'] = df.swifter.apply(lambda row: group.lookup(row['gene'], row['allele']), axis=1)
 
     df.loc[df['group'].isna(), 'group'] = df.loc[df['group'].isna(), 'allele'] 
 
 
     alt = AlleleTable()
-    alt.alleles = df.pivot_table(index=df.index, columns='col_index', values='group', aggfunc='first')
+    alt.alleles = df.pivot_table(index="sample", columns='col_index', values='group', aggfunc='first')
     alt.phenotype = phenotype
     alt.phenotype.name = "phenotype"
     alt.to_csv(args.output)
 
 class GrouperHLA:
-    def __init__(self, reference_file: str = ""):
+    def __init__(self, reference_file: str = "g-group"):
         """
         Load the reference file that was downloaded from:
         https://hla.alleles.org/pages/wmda/g_groups/
         """
-        if not reference_file:
-            reference_file = self._get_group_norm_file("g-group")
+        file_path = self._get_group_norm_file(reference_file)
 
-        ref = pd.read_csv(reference_file,
+        ref = pd.read_csv(file_path,
                         sep=';', comment="#", header=None)
         ref.columns = ["gene", "alleles", "groups"]
 
@@ -91,11 +96,11 @@ class GrouperHLA:
         group_files = {
             "g-group":(
                 "hla_nom_g.txt",
-                "https://hla.alleles.org/wmda/g_groups/hla_nom_g.txt"
+                "https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/wmda/hla_nom_g.txt"
                 ),
             "p-group":(
                 "hla_nom_p.txt",
-                "https://hla.alleles.org/wmda/p_groups/hla_nom_p.txt"
+                "https://raw.githubusercontent.com/ANHIG/IMGTHLA/Latest/wmda/hla_nom_p.txt"
                 ),
             }
 
@@ -176,13 +181,28 @@ class GrouperHLA:
         groups = [gene_ref[p] for p in partial]
         uniq_groups = set(groups)
 
-        if len(uniq_groups) == 1: # return single partial match
-            ret = uniq_groups.pop()
-            return gene + '*' + ret if isinstance(ret, str) else ret
-        
-        # 1-field alleles tend to be ambiguous, so just warn for alleles with more fields.
-        if len(allele_stripped.split(':')) > 1: 
-            print(f"WARNING: Ambiguous g-group assignment for [{gene}*{allele_stripped}]. Multiple possible groups found: {groups}.")
+        if len(uniq_groups) != 1: # Ambiguous match
+            return self._resolve_ambiguity(gene, allele_stripped, uniq_groups)
 
-        return None
+        # Return the single partial match
+        ret = uniq_groups.pop()
+        return gene + '*' + ret if isinstance(ret, str) else ret
+        
+    
+    def _resolve_ambiguity(self, gene: str, allele_stripped: str, uniq_groups: set) -> Union[str, None]:
+        parser = AlleleParser("hla")
+        allele_p = parser.parse(gene + '*' + allele_stripped)
+
+        # Alleles of one field or less shouldn't be resolved
+        if len(allele_p) <= 1:
+            return None
+
+        groups_p = [parser.parse(gene + '*' + group) for group in uniq_groups if isinstance(group, str)]
+
+        truncated_groups = set([p.truncate(len(allele_p)) for p in groups_p])
+
+        if len(truncated_groups) != 1:
+            return None
+        
+        return str(truncated_groups.pop())
 
