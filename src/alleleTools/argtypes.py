@@ -5,7 +5,6 @@ output paths and specific file formats.
 
 import argparse
 import os
-from pathlib import Path
 
 
 def path(in_string: str) -> str:
@@ -29,6 +28,24 @@ def path(in_string: str) -> str:
         raise argparse.ArgumentTypeError(f"{in_string} does not exist.")
     return in_string
 
+def check_dir_writable(directory: str) -> None:
+    """
+    Check if a directory is writable and valid.
+
+    Args:
+        directory (str): The directory path to check.
+    
+    Raises:
+        argparse.ArgumentTypeError: If the directory does not exist, is not writable,
+                                  or is not a directory.
+    """
+    if not os.path.exists(directory):
+        raise argparse.ArgumentTypeError(
+            f"The directory {directory} does not exist.")
+    elif not os.access(directory, os.W_OK):
+        raise argparse.ArgumentTypeError( f"The directory {directory} is not writable.")
+    elif not os.path.isdir(directory):
+        raise argparse.ArgumentTypeError(f"The path {directory} is not a directory.")
 
 def output_path(in_string: str) -> str:
     """
@@ -49,12 +66,15 @@ def output_path(in_string: str) -> str:
         >>> output_path("/existing/dir/new_file.txt")
         "/existing/dir/new_file.txt"
     """
-    basepath = Path(in_string).parent
-    if not basepath.exists():
-        raise argparse.ArgumentTypeError(
-            f"the directory {basepath} does not exist.")
-    elif os.path.isfile(in_string):
-        raise argparse.ArgumentTypeError(f"{in_string} already exists!")
+    filename = in_string
+    base_dir = os.path.dirname(filename)
+    print("Base dir:", base_dir)
+    if base_dir:
+        check_dir_writable(base_dir)
+    elif os.path.isdir(filename):
+        raise argparse.ArgumentTypeError(f"A directory with the name {filename} exists. Please provide a file name.")
+    elif os.path.isfile(filename):
+        raise argparse.ArgumentTypeError(f"{filename} already exists!")
     return in_string
 
 
