@@ -249,7 +249,12 @@ class ConsensusReport(Report):
     def __parse_gene__(
         self, name: str, coverage: List[dict], calls: dict
     ) -> ConsensusGene:
-        return ConsensusGene(name, coverage, calls, self.allele_parser)
+        return ConsensusGene(
+            name=name,
+            calls=calls,
+            allele_parser=self.allele_parser,
+            coverage=coverage,
+            )
 
     def consensus(self, min_support: float) -> List[dict]:
         """
