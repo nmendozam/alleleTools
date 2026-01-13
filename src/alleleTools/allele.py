@@ -196,7 +196,6 @@ class DelimitedParser(ParsingStrategy):
     def parse(self, text: str) -> Allele:
         parts = text.split(self.gene_delimiter)
         if len(parts) != 2:
-            print(f"Warning: Could not parse allele from text '{text}'")
             return Allele("", [])
         gene = parts[0]
         field_part = parts[1]
@@ -238,7 +237,6 @@ class RegexParser(ParsingStrategy):
         match = self.pattern.search(text)
 
         if not match:
-            print(f"Warning: Could not parse allele from text '{text}'")
             return Allele("", [])
 
         fields = []

@@ -68,7 +68,6 @@ def output_path(in_string: str) -> str:
     """
     filename = in_string
     base_dir = os.path.dirname(filename)
-    print("Base dir:", base_dir)
     if base_dir:
         check_dir_writable(base_dir)
     elif os.path.isdir(filename):
