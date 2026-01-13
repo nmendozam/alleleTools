@@ -52,13 +52,6 @@ def setup_parser(subparsers):
         help="name of the output file",
         default="output.alt",
     )
-    # Additional arguments
-    parser.add_argument(
-        "--remove_pheno_zero",
-        action="store_true",
-        help="Remove individuals with phenotype 0 from the output",
-        default=False,
-    )
 
     parser.set_defaults(func=call_function)
 
@@ -241,9 +234,6 @@ def _convert_ukb_to_allele(
     ]
     df_case_control = df_case_control[non_gene_col + gene_columns]
 
-    # remove Pheno with 0
-    if rm_phe_zero:
-        df_case_control = df_case_control[df_case_control["Pheno"] != 0]
 
     return df_case_control
 
