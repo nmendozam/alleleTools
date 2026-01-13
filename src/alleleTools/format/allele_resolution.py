@@ -62,7 +62,12 @@ def setup_parser(subparsers):
         help="Path to a custom allele parsing configuration file",
         default="",
     )
-
+    parser.add_argument(
+        "--max_miss",
+        type=int,
+        help="maximum missing alleles allowed per sample",
+        default=0,
+    )
 
     parser.set_defaults(func=call_function)
 
@@ -76,6 +81,16 @@ def call_function(args):
     alt = AlleleParsedTable.open(args.input)
     alt.parse_alleles(allele_parser=parser)
     alt.normalize_resolution(resolution=args.resolution)
+
+    # filter out samples with too many missing alleles
+    if args.max_miss > 0:
+        alt = alt.convert_to_altable()
+        mask = alt.alleles.isnull().sum(axis=1) < args.max_miss
+        alt.alleles = alt.alleles[mask]
+        print(
+            f"Filtered out {(~mask).sum()} samples with more than {args.max_miss} missing alleles"
+        )
+
     alt.to_csv(args.output)
 
 
@@ -99,14 +114,14 @@ class AlleleParsedTable(AlleleTable):
         df = df.map(lambda x: allele_parser.parse(x))
         self.alleles = df
         return self
-    
+
     def convert_to_altable(self) -> AlleleTable:
         alt = AlleleTable()
-        alt.alleles = self.alleles.copy().astype(str)
+        alt.alleles = self._alleles_as_str_()
         alt.phenotype = self.phenotype.copy()
         alt.covariates = self.covariates.copy()
         return alt
-    
+
     def to_csv(
             self, filename: str, header: bool = True, population: str = ""
     ):
@@ -123,4 +138,3 @@ class AlleleParsedTable(AlleleTable):
         # Convert alleles back to string
         self.alleles = self.alleles.astype(str)
         super().to_csv(filename, header, population)
-    

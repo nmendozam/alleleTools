@@ -33,16 +33,28 @@ class AlleleTable:
         >>> table.phenotype = pd.Series(...)
     """
 
-    def __init__(self):
+    def __init__(
+            self,
+            alleles: pd.DataFrame = pd.DataFrame(),
+            phenotype: pd.Series = pd.Series(),
+            covariates: pd.DataFrame = pd.DataFrame(),
+            ):
         """
         Initialize an empty AlleleTable.
 
         Creates empty pandas structures for alleles, phenotypes, and covariates
         that can be populated with data.
         """
-        self.alleles = pd.DataFrame()
-        self.phenotype = pd.Series()
-        self.covariates = pd.DataFrame()
+        # Some safety checks
+        if not alleles.empty:
+            if alleles.index.name != "sample":
+                raise ValueError("Alleles DataFrame index must be named 'sample'")
+            if len(alleles.columns) % 2 != 0:
+                raise ValueError("Alleles DataFrame must have an even number of columns")
+
+        self.alleles = alleles
+        self.phenotype = phenotype
+        self.covariates = covariates
 
     def load_phenotype(self, phenotype_file: str) -> None:
         """
@@ -134,7 +146,7 @@ class AlleleTable:
         )
 
         if df.columns[0] != "phenotype":
-            raise ValueError("The second column of %s must be 'phenotype'", filename)
+            raise ValueError("The second column of %s must be 'phenotype'" % filename)
 
         # pop the second column as phenotype
         ins.phenotype = df.pop(df.columns[0])
@@ -143,6 +155,17 @@ class AlleleTable:
 
         return ins
     
+    def _alleles_as_str_(self) -> pd.DataFrame:
+        """
+        Convert alleles DataFrame to string representation.
+        """
+        # Convert alleles to string
+        df = self.alleles.copy().astype(str)
+        # Replace empty strings and None with NaN
+        df = df.replace({"": np.nan, None: np.nan, "nan": np.nan})
+
+        return df
+
     def to_csv(
             self, filename: str, header: bool = True, population: str = ""
     ):
@@ -156,10 +179,7 @@ class AlleleTable:
                 phenotype with a population name. Currently, only one
                 population per allele table is supported.
         """
-        df = self.alleles.copy().astype(str)
-
-        # Convert alleles to string
-        df = df.replace({"": np.nan, None: np.nan})
+        df = self._alleles_as_str_()
 
         if not self.phenotype.empty:
             # Add phenotype to df, checking that the index matches

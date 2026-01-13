@@ -9,6 +9,9 @@ of homozygous/heterozygous calls.
 Author: Nicolás Mendoza Mejía (2025)
 """
 
+from typing import Tuple
+
+from alleleTools.format.alleleTable import AlleleTable
 import pandas as pd
 
 from ..argtypes import csv_file, output_path
@@ -81,13 +84,13 @@ def call_function(args):
     phenotype = pd.read_csv(args.phenotype, sep=" ", header=None)
     phenotype.columns = ["eid", "FID", "_", "__", "Sex", "Pheno"]
 
-    output = _convert_ukb_to_allele(input, phenotype, args.remove_pheno_zero)
+    alleles, phenotype = _convert_ukb_to_allele(input, phenotype)
 
+    alt = AlleleTable(alleles=alleles, phenotype=phenotype)
     # Save the result to a file
-    output.to_csv(args.output, sep="\t", index=False, header=False)
+    alt.to_csv(args.output)
 
-    print(output.info())
-    print(output["Pheno"].value_counts())
+    print(phenotype.value_counts())
     print(f"Output saved to {args.output}")
 
 
@@ -182,7 +185,7 @@ def __by_gene(df: pd.DataFrame):
 
 def _convert_ukb_to_allele(
     input: pd.DataFrame, phenotype: pd.DataFrame, rm_phe_zero: bool = False
-) -> pd.DataFrame:
+) -> Tuple[pd.DataFrame, pd.Series]:
     """
     Convert UK Biobank HLA data to standardized allele table format.
 
@@ -234,8 +237,13 @@ def _convert_ukb_to_allele(
     ]
     df_case_control = df_case_control[non_gene_col + gene_columns]
 
+    df_case_control.set_index("eid", inplace=True)
+    df_case_control.index.name = "sample"
 
-    return df_case_control
+    pheno = df_case_control.pop("Pheno")
+    pheno.name = "phenotype"
+
+    return df_case_control, pheno
 
 
 def __format_allele_names(expanded: pd.DataFrame) -> pd.DataFrame:
