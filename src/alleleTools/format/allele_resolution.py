@@ -72,33 +72,55 @@ def call_function(args):
     Normalize allele resolutions with the provided arguments.
     """
     parser = AlleleParser(gene_family=args.gene_family, config_file=args.config_file)
-    alt = open_allele_table(args.input, allele_parser=parser)
-    alt = normalize_resolution(alt, resolution=args.resolution)
+
+    alt = AlleleParsedTable.open(args.input)
+    alt.parse_alleles(allele_parser=parser)
+    alt.normalize_resolution(resolution=args.resolution)
     alt.to_csv(args.output)
 
 
-def open_allele_table(input: str, allele_parser: AlleleParser, fields_separator: str = "\t") -> AlleleTable:
-    alt = AlleleTable()
-    df = pd.read_csv(input, sep=fields_separator)
+class AlleleParsedTable(AlleleTable):
+    @classmethod
+    def open(cls, filename: str, sep: str = "\t") -> "AlleleParsedTable":
+        base = AlleleTable.open(filename, sep)
+        inst = cls()
+        inst.alleles = base.alleles
+        inst.phenotype = base.phenotype
+        inst.covariates = base.covariates
+        return inst
 
-    df.set_index("sample", inplace=True)
+    def normalize_resolution(self, resolution: int) -> "AlleleParsedTable":
+        self.alleles = self.alleles.map(lambda x: x.truncate(resolution))
+        return self
 
-    alt.phenotype = df.pop("phenotype")
-    alt.alleles = df
+    def parse_alleles(self, allele_parser) -> "AlleleParsedTable":
+        df = self.alleles.copy()
+        df.fillna("", inplace=True)
+        df = df.map(lambda x: allele_parser.parse(x))
+        self.alleles = df
+        return self
+    
+    def convert_to_altable(self) -> AlleleTable:
+        alt = AlleleTable()
+        alt.alleles = self.alleles.copy().astype(str)
+        alt.phenotype = self.phenotype.copy()
+        alt.covariates = self.covariates.copy()
+        return alt
+    
+    def to_csv(
+            self, filename: str, header: bool = True, population: str = ""
+    ):
+        """
+        Export the allele table to a CSV file.
 
-    alt = parse_allele_table(alt, allele_parser=allele_parser)
-
-    return alt
-
-
-def normalize_resolution(alt: AlleleTable, resolution: int) -> AlleleTable:
-    alt.alleles = alt.alleles.map(lambda x: x.truncate(resolution))
-    return alt
-
-
-def parse_allele_table(alt: AlleleTable, allele_parser: AlleleParser) -> AlleleTable:
-    df = alt.alleles.copy()
-    df.fillna("", inplace=True)
-    df = df.map(lambda x: allele_parser.parse(x))
-    alt.alleles = df
-    return alt
+        Args:
+            filename (str): The name of the output CSV file.
+            header (bool): Flag to store the file with column names or not
+            population (str): Adds an extra column in the position left to
+                phenotype with a population name. Currently, only one
+                population per allele table is supported.
+        """
+        # Convert alleles back to string
+        self.alleles = self.alleles.astype(str)
+        super().to_csv(filename, header, population)
+    

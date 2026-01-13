@@ -113,7 +113,36 @@ class AlleleTable:
             print("%d samples are missing:" % len(missing_samples))
             print(missing_samples.to_list())
             exit(1)
+    
+    @classmethod
+    def open(cls, filename: str, sep: str = "\t") -> "AlleleTable":
+        """
+        Load allele data from a CSV file into the AlleleTable.
 
+        Args:
+            filename (str): The path to the input CSV file.
+        """
+        ins = cls()
+        ins.__init__()
+        df = pd.read_csv(
+            filename,
+            sep=sep,
+            index_col=0,
+            header=0,
+            dtype=str,
+            na_values=["NA"]
+        )
+
+        if df.columns[0] != "phenotype":
+            raise ValueError("The second column of %s must be 'phenotype'", filename)
+
+        # pop the second column as phenotype
+        ins.phenotype = df.pop(df.columns[0])
+
+        ins.alleles = df
+
+        return ins
+    
     def to_csv(
             self, filename: str, header: bool = True, population: str = ""
     ):
@@ -127,7 +156,7 @@ class AlleleTable:
                 phenotype with a population name. Currently, only one
                 population per allele table is supported.
         """
-        df = self.alleles.copy()
+        df = self.alleles.copy().astype(str)
 
         # Convert alleles to string
         df = df.replace({"": np.nan, None: np.nan})

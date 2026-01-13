@@ -40,13 +40,10 @@ def setup_parser(subparsers):
 def call_function(args):
     group = GrouperHLA(args.group_type)
 
-    df = pd.read_csv(args.input, sep='\t', index_col=0, dtype=str, header=None)
-
-    # pop the first column as phenotype
-    phenotype = df.pop(df.columns[0])
+    alt_before = AlleleTable.open(args.input)
 
     # Melt and apply group conversion
-    df = df.melt(ignore_index=False, var_name='col_index', value_name='allele')
+    df = alt_before.alleles.melt(ignore_index=False, var_name='col_index', value_name='allele')
     df.index.name = 'sample'
     df = df.reset_index()
 
@@ -60,7 +57,7 @@ def call_function(args):
 
     alt = AlleleTable()
     alt.alleles = df.pivot_table(index="sample", columns='col_index', values='group', aggfunc='first')
-    alt.phenotype = phenotype
+    alt.phenotype = alt_before.phenotype
     alt.phenotype.name = "phenotype"
     alt.to_csv(args.output)
 

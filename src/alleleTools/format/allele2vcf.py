@@ -9,6 +9,7 @@ and genomic coordinate mapping.
 Author: Nicolás Mendoza Mejía (2023)
 """
 
+from alleleTools.format.alleleTable import AlleleTable
 import pandas as pd
 
 from ..argtypes import file_path
@@ -113,7 +114,8 @@ def call_function(args):
             )
             exit(1)
 
-    genotypes = pd.read_csv(args.input, sep=args.field_separator)
+    alt = AlleleTable.open(args.input, sep=args.field_separator)
+    genotypes = alt.alleles.copy()
     gene_loci = pd.read_csv(args.loci_file, sep="\t")
 
     pairs = _gene_pairs(genotypes.columns)
@@ -255,6 +257,4 @@ def _get_vcf_columns(vcf_file):
         while not line.startswith("#CHROM"):
             line = f.readline()
     # Remove leading # and \n, then split by tab.
-    return line[1:].strip().split("\t")  # [9:]
-    return line[1:].strip().split("\t")  # [9:]
     return line[1:].strip().split("\t")  # [9:]
