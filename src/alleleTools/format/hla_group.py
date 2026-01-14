@@ -1,5 +1,5 @@
 import os
-from typing import Tuple, Union
+from typing import Union
 
 import pandas as pd
 
@@ -48,9 +48,13 @@ def call_function(args):
     df = df.reset_index()
 
     # Apply conversions
-    df['gene'] = df['allele'].swifter.apply(
-        lambda x: x.split('*')[0] if pd.notna(x) else x)
-    df['group'] = df.swifter.apply(lambda row: group.lookup(row['gene'], row['allele']), axis=1)
+    df[['gene', 'allele_stripped']] = df['allele'].str.split('*', n=1, expand=True)
+    df = quick_lookup(group, df)
+
+    # Slow lookup on remaining NaNs for alleles with a resolution 2 or more fields
+    miss_group = df['group'].isna() & (df['allele_stripped'].str.count(':') >= 1)
+    missing = df[miss_group] 
+    df.loc[miss_group, 'group'] = missing.swifter.apply(lambda row: group.lookup(row['gene'], row['allele_stripped']), axis=1)
 
     df.loc[df['group'].isna(), 'group'] = df.loc[df['group'].isna(), 'allele'] 
 
@@ -60,6 +64,26 @@ def call_function(args):
     alt.phenotype = alt_before.phenotype
     alt.phenotype.name = "phenotype"
     alt.to_csv(args.output)
+
+def quick_lookup(group: "GrouperHLA", df: pd.DataFrame) -> pd.DataFrame:
+    """
+    This optimization was not comprehensibly tested to see if it improves performance, but
+    in theory it should be faster than doing individual lookups. It only does exact matches though.
+
+    Args:
+        group (GrouperHLA): The GrouperHLA instance with the g-group/p-group index.
+        df (pd.DataFrame): DataFrame with 'gene' and 'allele_stripped' columns.
+    Returns:
+        pd.DataFrame: DataFrame with an added 'group' column.
+    """
+    ref_rows = []
+    for g, mapping in group.index.items():          # mapping: {allele_stripped: group_value}
+        for allele_s, grp in mapping.items():
+            ref_rows.append((g, allele_s, grp))
+    ref_df = pd.DataFrame(ref_rows, columns=['gene', 'allele_stripped', 'group'])
+
+    # Bulk join exact matches (fast)
+    return df.merge(ref_df, how='left', on=['gene', 'allele_stripped'])
 
 class GrouperHLA:
     def __init__(self, reference_file: str = "g-group"):
@@ -113,50 +137,33 @@ class GrouperHLA:
                 dest=path,
             )
         return path
-    
-    def _prepare(self, gene: str, allele: str) -> Tuple[Union[dict, None], Union[str, None]]:
-        """
-        Validate inputs and return (gene_ref, allele_stripped).
-        Returns (None, None) if validation fails (caller will return NaN).
-        """
-        if not gene or not allele:
-            return None, None
-        if pd.isna(gene) or pd.isna(allele):
-            return None, None
-        if gene not in self.index:
-            return None, None
 
-        gene_ref = self.index[gene]
-        allele_stripped = allele.replace(gene + '*', '')
-
-        return gene_ref, allele_stripped
-
-    def lookup(self, gene: str, allele: str) -> Union[str, None]:
+    def lookup(self, gene: str, allele_stripped: str) -> Union[str, None]:
         """
         Lookup g-group for the given allele. If exact match is not found,
         attempt to find a partial match.
         """
-        gene_ref, allele_stripped = self._prepare(gene, allele)
+        gene_ref = self.index.get(gene, None)
         if gene_ref is None or allele_stripped is None:
             return None
 
         if allele_stripped not in gene_ref:
-            return self.lookup_partial(gene, allele)
+            return self.lookup_partial(gene, allele_stripped)
 
-        return self.lookup_exact(gene, allele)
+        return self.lookup_exact(gene, allele_stripped)
 
-    def lookup_exact(self, gene: str, allele: str) -> Union[str, None]:
+    def lookup_exact(self, gene: str, allele_stripped: str) -> Union[str, None]:
         """
         Finds a g-group for the exact allele provided.
         """
-        gene_ref, allele_stripped = self._prepare(gene, allele)
+        gene_ref = self.index.get(gene, None)
         if gene_ref is None or allele_stripped is None:
             return None
 
         ret = gene_ref[allele_stripped]
         return gene + '*' + ret if isinstance(ret, str) else ret
 
-    def lookup_partial(self, gene: str, allele: str) -> Union[str, None]:
+    def lookup_partial(self, gene: str, allele_stripped: str) -> Union[str, None]:
         """
         Finds a g-group for the partial allele provided. The index does not
         contain all posible combinations of alleles. It only has the highest
@@ -164,7 +171,10 @@ class GrouperHLA:
 
         A g-group is returned only if one possible match is found.
         """
-        gene_ref, allele_stripped = self._prepare(gene, allele)
+        # TODO: Optimize this function to avoid looping over all entries
+        # could be done by building a trie structure for the alleles.
+
+        gene_ref = self.index.get(gene, None)
         if gene_ref is None or allele_stripped is None:
             return None
 
