@@ -20,6 +20,7 @@ The commands are sorted in categories, referred to as modules:
    :hidden:
 
    file_types
+   algorithms
 
 .. toctree::
    :maxdepth: 1
