@@ -1,4 +1,4 @@
-Supported file formats
+File formats
 ========================================
 Various file formats are supported. Here we provide an overview of the most common. Specially those that are not described in detail elsewhere in other packages.
 
@@ -7,12 +7,20 @@ Various file formats are supported. Here we provide an overview of the most comm
 
 allele table (.alt)
 ------------------------------
-The allele table format (.alt) is a simple tab-delimited text file designed to represent allele data in a structured manner. Each row corresponds to a sample, and each column represents a specific gene or locus. The first column contains sample identifiers. The second column contains additional phenotype information. The subsequent columns contain allele information for each gene. There most be two columns per gene, representing the two alleles for diploid organisms.
+The allele table format (.alt) is a simple tab-delimited text file designed to
+represent allele data in a structured manner. Each row corresponds to a sample,
+and each column represents a specific gene or locus. The first column contains
+sample identifiers. The second column contains additional phenotype information.
+The subsequent columns contain allele information for each gene. There most be
+two columns per gene, representing the two alleles for diploid organisms.
 ::
 
     sample    phenotype      HLA-A_1    HLA-A_2
     Sample1     1            A*01:01    A*02:01
-    Sample2     0            A*03:01    A*01:01
+    Sample2     0            A*03:01    NA
+
+Missing alleles must be represented as "NA", otherwise they will be treated as
+valid alleles depending on the `allele_parsers` used.
 
 .. note::
     Certain commands may parse the alleles to perform specific tasks. Only
