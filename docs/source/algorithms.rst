@@ -2,6 +2,7 @@ Algorithms
 ==================
 Some complex algorithms implemented in AlleleTools are described below.
 
+.. _consensus_algorithm:
 Consensus from multiple genotypes
 ---------------------------------
 Given that several solutions to genotype complex genes are not fully accurate,
