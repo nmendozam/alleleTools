@@ -19,7 +19,7 @@ dependencies = [
 	"requests==2.32.4",
 	"chardet==5.1.0",
 	"yaspin==3.1.0",
-	"progressbar2",
+	"progressbar==2.5",
 ]
 classifiers=[
 "Intended Audience :: Developers",
@@ -44,8 +44,12 @@ dev = [
 	"pytest>=6.0",
 	"pytest-cov",
     "mock==5.2.0",
-	"black",
+	"black==25.1.0",
 	"flake8",
+    "pyright",
+    "pandas-stubs",
+    "sphinx==7.3.7",
+    "sphinx-rtd-theme==3.0.2",
 ]
 test = [
 	"pytest>=6.0",
