@@ -1,6 +1,6 @@
 <div style="padding-left: 10%;">
 <p align="center">
-    <img src="./resources/icon.svg" alt="AlleleTools Icon" width="260"/>
+    <img src="./docs/source/_static/logo.svg" alt="AlleleTools Icon" width="260"/>
 </p>
 </div>
 
