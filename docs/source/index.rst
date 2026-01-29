@@ -8,12 +8,36 @@ AlleleTools: documentation
 AlleleTools is a CLI (Command Line Interface) tool for researchers working with allele data from complex genes (e.g., HLA, KIR). It aims to provide a comprehensive suite of functionalities for data conversion, quality control, statistical analysis, and visualization.
 
 
+
+CLI modules
+--------------------
+
 The commands are sorted in categories, referred to as modules:
 
 1. format: a group commands that convert allele data between different file
    formats. Including vcf, csv, our own format .alt (from allele table) and others.
 2. plot: some commands to visualize allele data, specially from external sources.
 3. test: perform statistical analysis on the allele dataset.
+
+.. toctree::
+   :maxdepth: 1
+
+   modules/format
+   modules/plot
+   modules/test
+
+API Documentation
+--------------------
+
+For contributors and developers, an API reference is available below.
+
+.. toctree::
+   :maxdepth: 1
+
+   api/alleleTools
+
+.. This section is for the left panel contents table:
+    Include files here if you want them to appear in the index.
 
 .. toctree::
    :maxdepth: 1
@@ -25,16 +49,16 @@ The commands are sorted in categories, referred to as modules:
 .. toctree::
    :maxdepth: 1
    :caption: CLI modules
+   :hidden:
 
    modules/format
    modules/plot
    modules/test
     
 
-For contributors and developers, an API documentation is also available at:
-
 .. toctree::
    :maxdepth: 1
    :caption: API Documentation
+   :hidden:
 
    api/alleleTools
