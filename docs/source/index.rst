@@ -24,9 +24,17 @@ The commands are sorted in categories, referred to as modules:
 
 .. toctree::
    :maxdepth: 1
-   :caption: Modules
+   :caption: CLI modules
 
    modules/format
    modules/plot
    modules/test
     
+
+For contributors and developers, an API documentation is also available at:
+
+.. toctree::
+   :maxdepth: 1
+   :caption: API Documentation
+
+   api/alleleTools

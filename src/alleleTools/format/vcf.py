@@ -88,7 +88,7 @@ class VCF:
         """
         Remove a prefix from allele IDs in the dataframe.
 
-        This is commonly used to remove gene prefixes like "HLA_" or "KIR"
+        This is commonly used to remove gene prefixes like `'HLA_' or 'KIR_'`
         from allele identifiers to standardize naming.
 
         Args:

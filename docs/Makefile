@@ -14,6 +14,11 @@ help:
 
 .PHONY: help Makefile
 
+
+# Generate apidoc documentation with sphinx-apidoc
+apidoc:
+	sphinx-apidoc -o source/api/ ../src/alleleTools -T -M -f -e -d 2
+
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
