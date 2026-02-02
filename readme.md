@@ -1,7 +1,15 @@
-<div style="padding-left: 10%;">
+<div style="padding-left: 10%;" align="center">
 <p align="center">
     <img src="./docs/source/_static/logo.svg" alt="AlleleTools Icon" width="260"/>
 </p>
+
+
+  <p align="center">
+    <br />
+    <a href="https://github.com/nmendozam/alleleTools/issues">Report Bug</a>
+    &middot;
+    <a href="https://alleletools.readthedocs.io">Explore the docs</a>
+  </p>
 </div>
 
 # <p align="center"> Gene agnostic AlleleTools! </p>
@@ -44,4 +52,12 @@ Other commands can be listed using:
 altools --help
 altools format --help
 ```
+
+You can find more information about the usage in the [documentation](https://alleletools.readthedocs.io).
+
+## Cite
+If you find this package useful for your research, please consider citing it. You can cite the current repository. Alternatively, although this is a personal project and has not been published yet, the first mention to the package was made in:
+
+Mendoza-Mejía, N., Kolbe, D., Özer, O., Dose, J., Torres, G. G., Franke, A., Nygaard, M., & Nebel, A. (2025). __HLA-DRB1*15:01 is associated with a reduced likelihood of longevity in northern European men__. Genome Medicine, 17(1), 125. https://doi.org/10.1186/s13073-025-01554-1
+
 

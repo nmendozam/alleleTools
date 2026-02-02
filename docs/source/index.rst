@@ -14,27 +14,16 @@ CLI modules
 
 The commands are sorted in categories, referred to as modules:
 
-1. format: a group commands that convert allele data between different file
+1. :doc:`Format<modules/format>`: a group commands that convert allele data between different file
    formats. Including vcf, csv, our own format .alt (from allele table) and others.
-2. plot: some commands to visualize allele data, specially from external sources.
-3. test: perform statistical analysis on the allele dataset.
-
-.. toctree::
-   :maxdepth: 1
-
-   modules/format
-   modules/plot
-   modules/test
+2. :doc:`Plot<modules/plot>`: some commands to visualize allele data, specially from external sources.
+3. :doc:`Test<modules/test>`: perform statistical analysis on the allele dataset.
 
 API Documentation
 --------------------
 
-For contributors and developers, an API reference is available below.
+For contributors and developers, an :doc:`API reference<api/alleleTools>` is available.
 
-.. toctree::
-   :maxdepth: 1
-
-   api/alleleTools
 
 .. This section is for the left panel contents table:
     Include files here if you want them to appear in the index.
