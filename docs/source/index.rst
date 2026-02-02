@@ -7,6 +7,7 @@ AlleleTools: documentation
 =======================================
 AlleleTools is a CLI (Command Line Interface) tool for researchers working with allele data from complex genes (e.g., HLA, KIR). It aims to provide a comprehensive suite of functionalities for data conversion, quality control, statistical analysis, and visualization.
 
+The installation instructions and a quick start guide can be found in the `Repo's Getting started section <https://github.com/nmendozam/alleleTools?tab=readme-ov-file#getting-started>`__ section.
 
 
 CLI modules
@@ -14,10 +15,10 @@ CLI modules
 
 The commands are sorted in categories, referred to as modules:
 
-1. :doc:`Format<modules/format>`: a group commands that convert allele data between different file
-   formats. Including vcf, csv, our own format .alt (from allele table) and others.
+1. :doc:`Format<modules/format>`: a group of commands that convert allele data between different file
+   formats. Including vcf, csv, our own format :ref:`alt_format` and others.
 2. :doc:`Plot<modules/plot>`: some commands to visualize allele data, specially from external sources.
-3. :doc:`Test<modules/test>`: perform statistical analysis on the allele dataset.
+3. :doc:`Test<modules/test>`: a module to perform statistical analysis on the allele dataset.
 
 API Documentation
 --------------------
