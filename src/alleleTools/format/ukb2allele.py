@@ -11,8 +11,9 @@ Author: Nicolás Mendoza Mejía (2025)
 
 from typing import Tuple
 
-from alleleTools.format.alleleTable import AlleleTable
 import pandas as pd
+
+from alleleTools.format.alleleTable import AlleleTable
 
 from ..argtypes import csv_file, output_path
 
@@ -50,6 +51,18 @@ def setup_parser(subparsers):
         required=True,
     )
     parser.add_argument(
+        "--min_abundance",
+        type=float,
+        help="minumum dosage for HLA alleles",
+        default=0.7,
+    )
+    parser.add_argument(
+        "--homozygous_thr",
+        type=float,
+        help="dosage level used to determine whether the allele is homozygous or not",
+        default=1.4,
+    )
+    parser.add_argument(
         "--output",
         type=output_path,
         help="name of the output file",
@@ -84,7 +97,10 @@ def call_function(args):
     phenotype = pd.read_csv(args.phenotype, sep=" ", header=None)
     phenotype.columns = ["eid", "FID", "_", "__", "Sex", "Pheno"]
 
-    alleles, phenotype = _convert_ukb_to_allele(input, phenotype)
+    alleles, phenotype = _convert_ukb_to_allele(input,
+                                                phenotype,
+                                                args.min_abundance,
+                                                args.homozygous_thr)
 
     alt = AlleleTable(alleles=alleles, phenotype=phenotype)
     # Save the result to a file
@@ -184,7 +200,11 @@ def __by_gene(df: pd.DataFrame):
 
 
 def _convert_ukb_to_allele(
-    input: pd.DataFrame, phenotype: pd.DataFrame, rm_phe_zero: bool = False
+    input: pd.DataFrame,
+    phenotype: pd.DataFrame,
+    rm_phe_zero: bool = False,
+    min_abundance: float = 0.7,
+    homozygous_thr: float = 1.4
 ) -> Tuple[pd.DataFrame, pd.Series]:
     """
     Convert UK Biobank HLA data to standardized allele table format.
@@ -211,7 +231,7 @@ def _convert_ukb_to_allele(
 
     # Filter rows based on abundance
     df_filtered = __evaluate_abundance(
-        df_melted, min_abundance=0.7, homo_thr=1.4
+        df_melted, min_abundance=min_abundance, homo_thr=homozygous_thr
     )
 
     # Joint allele names from each individual
